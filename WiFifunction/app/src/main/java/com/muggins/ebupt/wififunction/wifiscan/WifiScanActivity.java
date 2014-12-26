@@ -157,7 +157,10 @@ public class WifiScanActivity extends Activity{
     }
 
     public void linkedwifi(View view){
+        Log.e("X", "linkedwifi");
         password = ((EditText) dialog.findViewById(R.id.dialog_pw_edit)).getText().toString();
+        Log.e("x", wifi_name);
+        Log.e("X", password);
         wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(wifi_name, password, 3));
         dialog.dismiss();
     }

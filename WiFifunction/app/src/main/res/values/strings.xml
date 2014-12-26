@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WiFifunction</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="wifiscan">WiFi扫描</string>
+    <string name="wifiview">功能浏览</string>
+    <string name="wifiset">设置</string>
+</resources>

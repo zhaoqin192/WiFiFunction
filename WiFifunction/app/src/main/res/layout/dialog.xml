@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#000000">
+    <TextView
+        android:id="@+id/dialog_ssid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="SSID"
+        android:textSize="20sp"
+        android:textColor="#1E90FF"/>
+    <View
+        android:id="@+id/dialog_devider1"
+        android:layout_below="@id/dialog_ssid"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#1E90FF" />
+    <TextView
+        android:id="@+id/dialog_pw_text"
+        android:layout_below="@id/dialog_devider1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:text="密码"
+        android:textSize="15sp"
+        android:textColor="#FFFFFF"/>
+    <EditText
+        android:id="@+id/dialog_pw_edit"
+        android:layout_below="@id/dialog_pw_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textColor="#FFFFFF"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@null"/>
+    <View
+        android:id="@+id/dialog_devider2"
+        android:layout_below="@id/dialog_pw_edit"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="#1E90FF" />
+    <RelativeLayout
+        android:id="@+id/dialog_layout2"
+        android:layout_below="@id/dialog_devider2"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/dialog_ok"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="确定"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:onClick="linkedwifi"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="58dp" />
+        <Button
+            android:id="@+id/dialog_cancel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="取消"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:onClick="cancel"
+            android:layout_toStartOf="@+id/dialog_ok"
+            android:layout_marginRight="60dp"
+            android:layout_alignParentTop="true" />
+        </RelativeLayout>
+</RelativeLayout>

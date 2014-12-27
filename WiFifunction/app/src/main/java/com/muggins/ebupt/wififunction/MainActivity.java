@@ -2,6 +2,7 @@ package com.muggins.ebupt.wififunction;
 
 import android.app.TabActivity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,8 @@ import com.muggins.ebupt.wififunction.settings.SettingsActivity;
 import com.muggins.ebupt.wififunction.webview.ViewActivity;
 import com.muggins.ebupt.wififunction.wifiscan.WifiScanActivity;
 
+import org.litepal.tablemanager.Connector;
+
 
 public class MainActivity extends TabActivity {
     private TabHost mtabHost;
@@ -19,7 +22,7 @@ public class MainActivity extends TabActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        SQLiteDatabase db = Connector.getDatabase();
         mtabHost = getTabHost();
         addwifiscan();
         addwebview();

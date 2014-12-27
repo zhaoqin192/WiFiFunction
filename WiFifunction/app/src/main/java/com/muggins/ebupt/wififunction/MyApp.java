@@ -1,11 +1,12 @@
 package com.muggins.ebupt.wififunction;
 
-import android.app.Application;
+
+import org.litepal.LitePalApplication;
 
 /**
  * Created by qin on 2014/12/26.
  */
-public class MyApp extends Application{
+public class MyApp extends LitePalApplication{
     private String key;
 
     public String getKey() {

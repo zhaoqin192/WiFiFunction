@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -32,6 +33,9 @@ import java.util.TimerTask;
 
 import com.muggins.ebupt.wififunction.MyApp;
 import com.muggins.ebupt.wififunction.R;
+import com.muggins.ebupt.wififunction.databases.WiFiMessage;
+
+import org.litepal.crud.DataSupport;
 
 /**
  * Created by qin on 2014/12/26.
@@ -119,17 +123,48 @@ public class WifiScanActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ScanResult temp = list.get(position);
-                LayoutInflater inflater = LayoutInflater.from(WifiScanActivity.this);
-                RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.dialog, null);
-
+                List<WiFiMessage> wifilist = DataSupport.where("SSID = ?", temp.SSID).find(WiFiMessage.class);
+                if(wifilist.size() == 0){
+                    LayoutInflater inflater = LayoutInflater.from(WifiScanActivity.this);
+                    RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.dialog, null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(WifiScanActivity.this);
+                    dialog = builder.create();
+                    dialog.show();
+                    dialog.getWindow().setContentView(layout);
+                    dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                    TextView textView = (TextView) dialog.findViewById(R.id.dialog_ssid);
+                    textView.setText(temp.SSID);
+                    wifi_link_name = temp.SSID;
+                }else{
+                    String tempssid;
+                    String temppw;
+                    tempssid = wifilist.get(0).getSSID();
+                    temppw = wifilist.get(0).getPassword();
+                    wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(tempssid, temppw, 3));
+                }
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final ScanResult temp = list.get(position);
                 AlertDialog.Builder builder = new AlertDialog.Builder(WifiScanActivity.this);
-                dialog = builder.create();
-                dialog.show();
-                dialog.getWindow().setContentView(layout);
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-                TextView textView = (TextView) dialog.findViewById(R.id.dialog_ssid);
-                textView.setText(temp.SSID);
-                wifi_link_name = temp.SSID;
+                builder.setMessage("是否取消保存？");
+                builder.setTitle("提示");
+                builder.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DataSupport.deleteAll(WiFiMessage.class, "SSID = ?", temp.SSID);
+                    }
+                });
+                builder.setNegativeButton("否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+                return true;
             }
         });
     }
@@ -167,6 +202,10 @@ public class WifiScanActivity extends Activity{
         password = ((EditText) dialog.findViewById(R.id.dialog_pw_edit)).getText().toString();
         wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(wifi_link_name, password, 3));
         dialog.dismiss();
+        WiFiMessage wiFiMessage = new WiFiMessage();
+        wiFiMessage.setSSID(wifi_link_name);
+        wiFiMessage.setPassword(password);
+        wiFiMessage.save();
     }
     public void cancel(View view){
         dialog.dismiss();

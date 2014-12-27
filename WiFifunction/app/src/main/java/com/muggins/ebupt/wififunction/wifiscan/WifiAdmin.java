@@ -8,6 +8,7 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
+import android.util.Log;
 
 public class WifiAdmin {
     // 定义WifiManager对象
@@ -161,7 +162,6 @@ public class WifiAdmin {
         config.allowedPairwiseCiphers.clear();
         config.allowedProtocols.clear();
         config.SSID = "\"" + SSID + "\"";
-
         WifiConfiguration tempConfig = this.IsExsits(SSID);
         if(tempConfig != null) {
             mWifiManager.removeNetwork(tempConfig.networkId);

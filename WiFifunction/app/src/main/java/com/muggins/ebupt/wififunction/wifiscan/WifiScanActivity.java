@@ -45,6 +45,7 @@ public class WifiScanActivity extends Activity{
     private WifiAdmin wifiAdmin;
     private MyAdapter myAdapter;
     private String wifi_name;
+    private String wifi_link_name;
     private String bssid;
     private String password;
     private int wifi_level;
@@ -67,9 +68,12 @@ public class WifiScanActivity extends Activity{
             @Override
             public void run() {
                 //WifiInfo对象包含了当前连接中的相关信息
+                wifiInfo = null;
                 wifiInfo = wifiManager.getConnectionInfo();
                 Message msg = new Message();
                 wifi_name = wifiInfo.getSSID();
+                wifi_name.replaceAll("\"", "");
+                Log.e("1", wifi_name);
                 wifi_level = wifiInfo.getRssi();
                 bssid = wifiInfo.getBSSID();
                 MyApp myApp = (MyApp) getApplicationContext();
@@ -115,14 +119,17 @@ public class WifiScanActivity extends Activity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ScanResult temp = list.get(position);
-
                 LayoutInflater inflater = LayoutInflater.from(WifiScanActivity.this);
                 RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.dialog, null);
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(WifiScanActivity.this);
                 dialog = builder.create();
                 dialog.show();
                 dialog.getWindow().setContentView(layout);
                 dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+                TextView textView = (TextView) dialog.findViewById(R.id.dialog_ssid);
+                textView.setText(temp.SSID);
+                wifi_link_name = temp.SSID;
             }
         });
     }
@@ -157,11 +164,8 @@ public class WifiScanActivity extends Activity{
     }
 
     public void linkedwifi(View view){
-        Log.e("X", "linkedwifi");
         password = ((EditText) dialog.findViewById(R.id.dialog_pw_edit)).getText().toString();
-        Log.e("x", wifi_name);
-        Log.e("X", password);
-        wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(wifi_name, password, 3));
+        wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(wifi_link_name, password, 3));
         dialog.dismiss();
     }
     public void cancel(View view){

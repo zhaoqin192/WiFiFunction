@@ -7,4 +7,5 @@
     <string name="wifiscan">WiFi扫描</string>
     <string name="wifiview">功能浏览</string>
     <string name="wifiset">设置</string>
+    <string name="wifimanager">功能管理</string>
 </resources>

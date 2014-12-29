@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 
+import com.muggins.ebupt.wififunction.functionmanager.ManagerActivity;
 import com.muggins.ebupt.wififunction.settings.SettingsActivity;
 import com.muggins.ebupt.wififunction.webview.ViewActivity;
 import com.muggins.ebupt.wififunction.wifiscan.WifiScanActivity;
@@ -26,7 +27,9 @@ public class MainActivity extends TabActivity {
         mtabHost = getTabHost();
         addwifiscan();
         addwebview();
+        addmanager();
         addsettings();
+        mtabHost.setCurrentTab(3);
     }
 
     public void addwifiscan(){
@@ -49,6 +52,16 @@ public class MainActivity extends TabActivity {
         mtabHost.addTab(spec);
     }
 
+    public void addmanager(){
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, ManagerActivity.class);
+
+        TabSpec spec = mtabHost.newTabSpec("manager");
+        spec.setIndicator(getString(R.string.wifimanager), null);
+        spec.setContent(intent);
+        mtabHost.addTab(spec);
+    }
+
     public void addsettings(){
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, SettingsActivity.class);
@@ -58,6 +71,7 @@ public class MainActivity extends TabActivity {
         spec.setContent(intent);
         mtabHost.addTab(spec);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

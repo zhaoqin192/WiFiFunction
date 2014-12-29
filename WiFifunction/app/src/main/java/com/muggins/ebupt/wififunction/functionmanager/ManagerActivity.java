@@ -1,37 +1,32 @@
-package com.muggins.ebupt.wififunction.webview;
+package com.muggins.ebupt.wififunction.functionmanager;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
-import com.muggins.ebupt.wififunction.MyApp;
 import com.muggins.ebupt.wififunction.R;
 
 /**
- * Created by qin on 2014/12/26.
+ * Created by qin on 2014/12/29.
  */
-public class ViewActivity extends Activity{
+public class ManagerActivity extends Activity{
     private WebView webView;
     private String url;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e("X", "viewactivity");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.wifiview);
-        webView = (WebView) findViewById(R.id.webview);
+        setContentView(R.layout.managerview);
 
+        webView = (WebView) findViewById(R.id.managerview);
         getweb();
     }
 
     public void getweb(){
-        MyApp myApp = (MyApp) getApplicationContext();
-        Toast.makeText(ViewActivity.this, myApp.getKey(), Toast.LENGTH_SHORT).show();
 
-        url = "http://a.mini.com";
+        url = "http://www.ebupt.com";
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
 

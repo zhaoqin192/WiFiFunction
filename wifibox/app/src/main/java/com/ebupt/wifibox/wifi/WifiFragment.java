@@ -23,6 +23,6 @@ public class WifiFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactsLayout = inflater.inflate(R.layout.wifi_layout, container, false);
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return contactsLayout;
     }
 }

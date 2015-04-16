@@ -21,6 +21,6 @@ public class WebFragment extends Fragment{
         contactslayout = inflater.inflate(R.layout.web_layout, container, false);
 
 
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return contactslayout;
     }
 }

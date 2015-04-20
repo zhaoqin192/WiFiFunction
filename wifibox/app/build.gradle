@@ -24,4 +24,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile files('/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/classes.jar')
     compile files('libs/classes.jar')
+    compile project(':AndroidBootstrap')
+    compile files('libs/volley.jar')
+    compile files('libs/litepal-1.1.1-src.jar')
 }

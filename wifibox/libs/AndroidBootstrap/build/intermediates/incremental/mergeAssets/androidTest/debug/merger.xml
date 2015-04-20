@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="debug"><source path="/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/build/intermediates/bundles/debug/assets"><file name="fontawesome-webfont.ttf" path="/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/build/intermediates/bundles/debug/assets/fontawesome-webfont.ttf"/></source></dataSet><dataSet config="main"><source path="/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/androidTest/assets"/></dataSet></merger>

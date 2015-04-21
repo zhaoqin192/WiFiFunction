@@ -1,39 +1,54 @@
 package com.ebupt.wifibox;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ebupt.wifibox.device.DeviceFragment;
+import com.ebupt.wifibox.group.GroupFragment;
 import com.ebupt.wifibox.settings.SettingsFragment;
-import com.ebupt.wifibox.web.WebFragment;
-import com.ebupt.wifibox.wifi.WifiFragment;
 
 
 
 public class MainActivity extends Activity implements View.OnClickListener{
 
-    private WifiFragment wifiFragment;
-    private WebFragment webFragment;
+    private GroupFragment groupFragment;
+    private DeviceFragment deviceFragment;
     private SettingsFragment settingsFragment;
 
-    private View wifilayout;
-    private View weblayout;
+    private View grouplayout;
+    private View devicelayout;
     private View settingslayout;
 
-    private TextView wifitext;
-    private TextView webtext;
+    private TextView grouptext;
+    private TextView devicetext;
     private TextView settingstext;
 
     private FragmentManager fragmentManager;
 
+    private TextView titletext;
+    private ImageView titleright;
+    private Dialog dialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_main);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.mytitle);
+        titletext = (TextView) findViewById(R.id.myTitle);
 
         initViews();
         fragmentManager = getFragmentManager();
@@ -41,26 +56,26 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void initViews() {
-        wifilayout = findViewById(R.id.wifi_layout);
-        weblayout = findViewById(R.id.web_layout);
+        grouplayout = findViewById(R.id.group_layout);
+        devicelayout = findViewById(R.id.device_layout);
         settingslayout = findViewById(R.id.settings_layout);
 
-        wifitext = (TextView) findViewById(R.id.wifi_text);
-        webtext = (TextView) findViewById(R.id.web_text);
+        grouptext = (TextView) findViewById(R.id.group_text);
+        devicetext = (TextView) findViewById(R.id.device_text);
         settingstext = (TextView) findViewById(R.id.settings_text);
 
-        wifilayout.setOnClickListener(this);
-        weblayout.setOnClickListener(this);
+        grouplayout.setOnClickListener(this);
+        devicelayout.setOnClickListener(this);
         settingslayout.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.wifi_layout:
+            case R.id.group_layout:
                 setTabSelection(0);
                 break;
-            case R.id.web_layout:
+            case R.id.device_layout:
                 setTabSelection(1);
                 break;
             case R.id.settings_layout:
@@ -72,59 +87,83 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void clearSelection() {
-        wifitext.setTextColor(Color.parseColor("#000000"));
-        webtext.setTextColor(Color.parseColor("#000000"));
+        grouptext.setTextColor(Color.parseColor("#000000"));
+        devicetext.setTextColor(Color.parseColor("#000000"));
         settingstext.setTextColor(Color.parseColor("#000000"));
     }
 
     private void setTabSelection(int index) {
         clearSelection();
-
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        hideFragment(fragmentTransaction);
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        hideFragment(transaction);
         switch (index) {
             case 0:
-                wifitext.setTextColor(Color.parseColor("#50B1DB"));
-                if (wifiFragment == null) {
-                    wifiFragment = new WifiFragment();
-                    fragmentTransaction.add(R.id.content, wifiFragment);
+                grouptext.setTextColor(Color.parseColor("#50B1DB"));
+                if (groupFragment == null) {
+                    groupFragment = new GroupFragment();
+                    transaction.add(R.id.content, groupFragment);
                 } else {
-                    fragmentTransaction.show(wifiFragment);
+                    transaction.show(groupFragment);
                 }
+                titletext.setText("团管理");
+                titleright = (ImageView) findViewById(R.id.myDetail);
+                titleright.setVisibility(View.VISIBLE);
+                titleright.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDialog();
+                    }
+                });
                 break;
             case 1:
-                webtext.setTextColor(Color.parseColor("#50B1DB"));
-                if (webFragment == null) {
-                    webFragment = new WebFragment();
-                    fragmentTransaction.add(R.id.content, webFragment);
+                devicetext.setTextColor(Color.parseColor("#50B1DB"));
+                if (deviceFragment == null) {
+                    deviceFragment = new DeviceFragment();
+                    transaction.add(R.id.content, deviceFragment);
                 } else {
-                    fragmentTransaction.show(webFragment);
+                    transaction.show(deviceFragment);
                 }
+                titleright.setVisibility(View.GONE);
+                titletext.setText("设备");
                 break;
             case 2:
             default:
                 settingstext.setTextColor(Color.parseColor("#50B1DB"));
                 if (settingsFragment == null) {
                     settingsFragment = new SettingsFragment();
-                    fragmentTransaction.add(R.id.content, settingsFragment);
+                    transaction.add(R.id.content, settingsFragment);
                 } else {
-                    fragmentTransaction.show(settingsFragment);
+                    transaction.show(settingsFragment);
                 }
+                titleright.setVisibility(View.GONE);
+                titletext.setText("设置");
                 break;
         }
-        fragmentTransaction.commit();
+        transaction.commit();
     }
 
     private void hideFragment(FragmentTransaction transaction) {
-        if (wifiFragment != null) {
-            transaction.hide(wifiFragment);
+        if (groupFragment != null) {
+            transaction.hide(groupFragment);
         }
-        if (webFragment != null) {
-            transaction.hide(webFragment);
+        if (deviceFragment != null) {
+            transaction.hide(deviceFragment);
         }
         if (settingsFragment != null) {
             transaction.hide(settingsFragment);
         }
     }
 
+
+    private void showDialog() {
+        LayoutInflater inflaterDI = LayoutInflater.from(MainActivity.this);
+        LinearLayout layout = (LinearLayout) inflaterDI.inflate(R.layout.add_group_layout, null);
+        dialog = new AlertDialog.Builder(MainActivity.this).create();
+        dialog.show();
+        dialog.getWindow().setContentView(layout);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+
+
+    }
 }

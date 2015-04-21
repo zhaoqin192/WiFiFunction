@@ -26,7 +26,8 @@ public class BootstrapButton extends FrameLayout {
         INFO("info", R.drawable.bbuton_info, R.drawable.bbuton_info_rounded, R.color.white),
         WARNING("warning", R.drawable.bbuton_warning, R.drawable.bbuton_warning_rounded, R.color.white),
         DANGER("danger", R.drawable.bbuton_danger, R.drawable.bbuton_danger_rounded, R.color.white),
-        INVERSE("inverse", R.drawable.bbuton_inverse, R.drawable.bbuton_inverse_rounded, R.color.white);
+        INVERSE("inverse", R.drawable.bbuton_inverse, R.drawable.bbuton_inverse_rounded, R.color.white),
+        DEFAULT_RED_ROUNDED("default_red_rounded", R.drawable.bbuton_default, R.drawable.bbuton_default_rounded, R.color.black);
 
         private final String type;
         private final int normalBg;

@@ -1,0 +1,36 @@
+package com.ebupt.wifibox.databases;
+
+import org.litepal.crud.DataSupport;
+
+/**
+ * Created by zhaoqin on 4/21/15.
+ */
+public class GroupMSG extends DataSupport{
+    private String group_name;
+    private String group_date;
+    private String group_count;
+
+    public void setGroup_count(String group_count) {
+        this.group_count = group_count;
+    }
+
+    public String getGroup_count() {
+        return group_count;
+    }
+
+    public void setGroup_name(String group_name) {
+        this.group_name = group_name;
+    }
+
+    public String getGroup_name() {
+        return group_name;
+    }
+
+    public void setGroup_date(String group_date) {
+        this.group_date = group_date;
+    }
+
+    public String getGroup_date() {
+        return group_date;
+    }
+}

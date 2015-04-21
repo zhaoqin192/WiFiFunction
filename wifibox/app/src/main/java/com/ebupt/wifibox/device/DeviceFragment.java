@@ -1,4 +1,4 @@
-package com.ebupt.wifibox.web;
+package com.ebupt.wifibox.device;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 import com.ebupt.wifibox.R;
 
 /**
- * Created by zhaoqin on 4/15/15.
+ * Created by zhaoqin on 4/21/15.
  */
-public class WebFragment extends Fragment{
+public class DeviceFragment extends Fragment {
     private View contactslayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        contactslayout = inflater.inflate(R.layout.web_layout, container, false);
+        contactslayout = inflater.inflate(R.layout.device_layout, container, false);
 
 
         return contactslayout;

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp">
         <RelativeLayout
-            android:id="@+id/wifi_layout"
+            android:id="@+id/group_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" >
@@ -32,17 +32,17 @@
                     <!--android:src="@drawable/home_light" />-->
 
                 <TextView
-                    android:id="@+id/wifi_text"
+                    android:id="@+id/group_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="WIFI"
+                    android:text="团管理"
                     android:textColor="#82858b" />
             </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/web_layout"
+            android:id="@+id/device_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" >
@@ -63,11 +63,11 @@
                 <!--android:src="@drawable/home_light" />-->
 
                 <TextView
-                    android:id="@+id/web_text"
+                    android:id="@+id/device_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="YueBox"
+                    android:text="设备"
                     android:textColor="#82858b" />
             </LinearLayout>
         </RelativeLayout>
@@ -98,7 +98,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="SETTINGS"
+                    android:text="设置"
                     android:textColor="#82858b" />
             </LinearLayout>
         </RelativeLayout>
@@ -109,5 +109,9 @@
         android:layout_above="@id/main_bottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
-
+    <View
+        android:layout_below="@id/content"
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
+        android:background="#000000" />
 </RelativeLayout>

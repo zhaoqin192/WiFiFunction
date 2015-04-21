@@ -1,4 +1,4 @@
-package com.ebupt.wifibox.group;
+package com.ebupt.wifibox.group.list;
 
 import android.content.Context;
 import android.view.View;

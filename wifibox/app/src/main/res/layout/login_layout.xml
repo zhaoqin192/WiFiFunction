@@ -22,8 +22,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:hint="用户名"
+        android:gravity="center_vertical"
         bootstrapbutton:be_roundedCorners="true"
-        android:gravity="center"
         bootstrapbutton:be_state="default"
         />
 
@@ -35,6 +35,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:hint="密码"
+        android:inputType="textPassword"
         bootstrapbutton:be_roundedCorners="true"
         android:gravity="center"
         bootstrapbutton:be_state="default"
@@ -47,8 +48,8 @@
         android:layout_below="@id/login_edit_passwd"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:text="登陆"
-        android:textSize="20sp"
+        android:text="登录"
+        android:textSize="17sp"
         bootstrapbutton:bb_type="danger"
         bootstrapbutton:bb_roundedCorners="true"
         ></com.beardedhen.androidbootstrap.BootstrapButton>

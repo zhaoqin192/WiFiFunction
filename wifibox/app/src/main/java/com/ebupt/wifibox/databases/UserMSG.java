@@ -6,17 +6,10 @@ import org.litepal.crud.DataSupport;
  * Created by zhaoqin on 4/20/15.
  */
 public class UserMSG extends DataSupport{
-    private String name;
     private String phone;
     private String passwd;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    private Boolean memory;
+    private Boolean auto;
 
     public String getPasswd() {
         return passwd;
@@ -32,5 +25,21 @@ public class UserMSG extends DataSupport{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Boolean getMemory() {
+        return memory;
+    }
+
+    public void setMemory(Boolean memory) {
+        this.memory = memory;
+    }
+
+    public Boolean getAuto() {
+        return auto;
+    }
+
+    public void setAuto(Boolean auto) {
+        this.auto = auto;
     }
 }

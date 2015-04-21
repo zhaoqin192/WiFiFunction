@@ -12,7 +12,6 @@ import android.widget.ListView;
 
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.GroupMSG;
-import com.ebupt.wifibox.group.list.GroupAdapter;
 import com.ebupt.wifibox.group.list.GroupList;
 
 import java.util.ArrayList;

@@ -22,6 +22,7 @@
             android:id="@+id/group_list_add"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:clickable="true"
             android:src="@drawable/group_add"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
@@ -29,7 +30,7 @@
             />
         <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/group_list_upload_button"
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="护照上传"
@@ -37,7 +38,7 @@
             bootstrapbutton:bb_type="danger"
             ></com.beardedhen.androidbootstrap.BootstrapButton>
         <com.beardedhen.androidbootstrap.BootstrapButton
-            android:layout_width="120dp"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="签到列表"

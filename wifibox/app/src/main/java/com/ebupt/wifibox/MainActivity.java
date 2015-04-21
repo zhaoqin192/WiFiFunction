@@ -5,6 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +19,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
@@ -53,6 +58,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         initViews();
         fragmentManager = getFragmentManager();
         setTabSelection(0);
+
+
+        IntentFilter login_success = new IntentFilter("login_success");
+        registerReceiver(broadcastReceiver, login_success);
+        IntentFilter login_error = new IntentFilter("login_error");
+        registerReceiver(broadcastReceiver, login_error);
     }
 
     private void initViews() {
@@ -163,7 +174,23 @@ public class MainActivity extends Activity implements View.OnClickListener{
         dialog.getWindow().setContentView(layout);
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
+    }
 
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("login_success")) {
+                Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+            }
+            if (intent.getAction().equals("login_error")) {
+                Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 }

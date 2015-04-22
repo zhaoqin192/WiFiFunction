@@ -45,11 +45,11 @@ public class GroupAdapter extends BaseAdapter{
             new ViewHolder(convertView);
         }
         final ViewHolder holder = (ViewHolder) convertView.getTag();
-        final GroupMSG groupMSG = list.get(position);
+        GroupMSG groupMSG = list.get(position);
 
-//        holder.item_name.setText("XXX");
-//        holder.item_date.setText("XXX");
-//        holder.item_count.setText("XXX");
+        holder.item_name.setText(groupMSG.getGroup_name());
+        holder.item_date.setText(groupMSG.getGroup_date());
+        holder.item_count.setText(groupMSG.getGroup_count());
 
         return convertView;
     }

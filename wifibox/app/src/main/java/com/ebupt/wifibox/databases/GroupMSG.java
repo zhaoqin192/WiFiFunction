@@ -8,14 +8,14 @@ import org.litepal.crud.DataSupport;
 public class GroupMSG extends DataSupport{
     private String group_name;
     private String group_date;
-    private int group_count;
+    private String group_count;
     private String group_id;
 
-    public void setGroup_count(int group_count) {
+    public void setGroup_count(String group_count) {
         this.group_count = group_count;
     }
 
-    public int getGroup_count() {
+    public String getGroup_count() {
         return group_count;
     }
 

@@ -3,20 +3,24 @@ package com.ebupt.wifibox.group.list;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
+import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 import com.ebupt.wifibox.networks.Networks;
 
@@ -44,7 +48,31 @@ public class GroupList extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.group_list_layout);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.mytitle);
+        TextView titletext = (TextView) findViewById(R.id.myTitle);
+        Intent intent = getIntent();
+        titletext.setText(intent.getStringExtra("name"));
+        TextView backtext = (TextView) findViewById(R.id.myBack_text);
+        backtext.setVisibility(View.VISIBLE);
+        backtext.setText("团管理");
+        backtext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        ImageView back = (ImageView) findViewById(R.id.myBack);
+        back.setVisibility(View.VISIBLE);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         initViews();
 

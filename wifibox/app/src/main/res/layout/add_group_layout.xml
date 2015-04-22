@@ -47,11 +47,12 @@
             />
         <ImageView
             android:id="@+id/add_group_calendar_img"
+            android:clickable="true"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:src="@drawable/calendar"
+            android:layout_marginRight="25dp"
+            android:src="@drawable/calendar02"
             android:layout_centerVertical="true"
             />
         <com.beardedhen.androidbootstrap.BootstrapEditText
@@ -59,7 +60,8 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/add_group_calendar_img"
-            android:layout_marginRight="20dp"
+            android:layout_marginRight="15dp"
+            android:editable="false"
             bootstrapbutton:be_roundedCorners="true"
             android:gravity="center"
             bootstrapbutton:be_state="default"
@@ -81,6 +83,7 @@
             android:textColor="#363636"
             />
         <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/add_group_count"
             android:layout_width="170dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -92,7 +95,7 @@
         </RelativeLayout>
     
     <RelativeLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button

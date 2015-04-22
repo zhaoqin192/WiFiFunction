@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ebupt.wifibox.R;
@@ -70,7 +71,13 @@ public class ListAdapter extends BaseExpandableListAdapter{
             convertView = View.inflate(context, R.layout.group_list_item, null);
             new ViewHolder(convertView);
         }
+        final ViewHolder holder = (ViewHolder) convertView.getTag();
 
+        if (isExpanded) {
+            holder.img.setImageResource(R.drawable.close);
+        } else {
+            holder.img.setImageResource(R.drawable.open);
+        }
 
         return convertView;
     }
@@ -88,10 +95,12 @@ public class ListAdapter extends BaseExpandableListAdapter{
     class ViewHolder {
         TextView name;
         TextView passports;
+        ImageView img;
 
         public ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.group_list_item_name);
             passports = (TextView) view.findViewById(R.id.group_list_item_passport);
+            img = (ImageView) view.findViewById(R.id.group_list_item_img);
             view.setTag(this);
         }
     }

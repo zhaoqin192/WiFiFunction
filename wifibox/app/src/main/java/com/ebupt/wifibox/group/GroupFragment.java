@@ -48,14 +48,20 @@ public class GroupFragment extends Fragment {
         datalist = new ArrayList<>();
 
 
-        GroupMSG groupMSG = null;
-        for (int i = 0; i < 4; i++) {
-            groupMSG = new GroupMSG();
-            groupMSG.setGroup_name("1");
-            groupMSG.setGroup_date("1");
-            groupMSG.setGroup_count(1);
-            datalist.add(groupMSG);
+        List<GroupMSG> temp = DataSupport.findAll(GroupMSG.class);
+        if (temp.size() != 0) {
+            for (GroupMSG groupMSG : temp) {
+                datalist.add(0, groupMSG);
+            }
         }
+//        GroupMSG groupMSG = null;
+//        for (int i = 0; i < 4; i++) {
+//            groupMSG = new GroupMSG();
+//            groupMSG.setGroup_name("1");
+//            groupMSG.setGroup_date("1");
+//            groupMSG.setGroup_count("1");
+//            datalist.add(groupMSG);
+//        }
 
         adapter = new GroupAdapter(getActivity(), datalist);
         listView.setAdapter(adapter);
@@ -63,6 +69,7 @@ public class GroupFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), GroupList.class);
+                intent.putExtra("name", datalist.get(position).getGroup_name());
                 startActivity(intent);
             }
         });
@@ -105,8 +112,6 @@ public class GroupFragment extends Fragment {
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 dialog.hide();
             }
         });

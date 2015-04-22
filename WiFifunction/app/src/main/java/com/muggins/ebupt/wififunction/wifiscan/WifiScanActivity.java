@@ -71,8 +71,7 @@ public class WifiScanActivity extends Activity{
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                //WifiInfo对象包含了当前连接中的相关信息
-                wifiInfo = null;
+                //WifiInfo对象包含了当前连接中的相关信息ge                wifiInfo = null;
                 wifiInfo = wifiManager.getConnectionInfo();
                 Message msg = new Message();
                 wifi_name = wifiInfo.getSSID();

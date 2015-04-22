@@ -21,10 +21,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapEditText;
+import com.ebupt.wifibox.databases.GroupMSG;
+import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
 import com.ebupt.wifibox.settings.SettingsFragment;
 
+import org.litepal.crud.DataSupport;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class MainActivity extends Activity implements View.OnClickListener{
@@ -46,6 +54,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private TextView titletext;
     private ImageView titleright;
     private Dialog dialog;
+    private MyApp myApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +63,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.activity_main);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.mytitle);
         titletext = (TextView) findViewById(R.id.myTitle);
+
+        myApp = (MyApp) getApplicationContext();
 
         initViews();
         fragmentManager = getFragmentManager();
@@ -174,6 +185,50 @@ public class MainActivity extends Activity implements View.OnClickListener{
         dialog.getWindow().setContentView(layout);
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
+        final BootstrapEditText groupName = (BootstrapEditText) layout.findViewById(R.id.add_group_name);
+        final BootstrapEditText groupDate = (BootstrapEditText) layout.findViewById(R.id.add_group_calendar);
+
+        BootstrapButton groupOk = (BootstrapButton) layout.findViewById(R.id.add_group_ok);
+        groupOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (groupName.getText().toString().equals("")) {
+                    Toast.makeText(MainActivity.this, "请输入团名", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (groupDate.getText().toString().equals("")) {
+                    Toast.makeText(MainActivity.this, "请输入出发时间", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                GroupMSG groupMSG = new GroupMSG();
+                groupMSG.setGroup_name(groupName.getText().toString());
+                groupMSG.setGroup_date(groupDate.getText().toString());
+                groupMSG.setGroup_count(0);
+
+                StringBuffer str = new StringBuffer("");
+
+                str.append(myApp.phone);
+
+                SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+                str.append(format.format(new Date()));
+                groupMSG.setGroup_id(str.toString());
+
+                groupMSG.saveThrows();
+
+                Toast.makeText(MainActivity.this, "创建成功", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent("addGroup");
+                sendBroadcast(intent);
+                dialog.hide();
+            }
+        });
+
+        BootstrapButton groupCancel = (BootstrapButton) layout.findViewById(R.id.add_group_cancel);
+        groupCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.hide();
+            }
+        });
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

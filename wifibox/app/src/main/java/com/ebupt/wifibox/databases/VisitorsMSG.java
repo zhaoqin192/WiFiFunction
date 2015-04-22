@@ -10,6 +10,16 @@ public class VisitorsMSG extends DataSupport{
     private String passports;
     private String groupid;
 
+//    public VisitorsMSG(String name, String passports) {
+//        super();
+//        this.name = name;
+//        this.passports = passports;
+//    }
+//
+//    public VisitorsMSG() {
+//
+//    }
+
     public void setName(String name) {
         this.name = name;
     }

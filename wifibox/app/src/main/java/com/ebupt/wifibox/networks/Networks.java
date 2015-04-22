@@ -14,6 +14,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.ebupt.wifibox.databases.UserMSG;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
@@ -65,29 +66,24 @@ public class Networks {
         requestQueue.add(jsonRequest);
     }
 
-    public static void passports(Context context) {
+    public static void passports(Context context, String phone, String mac, String tourid, String gs, String array) {
         final String TAG = "passports";
         requestQueue = Volley.newRequestQueue(context);
         StringBuffer url = new StringBuffer("");
 
-        UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
-        if (userMSG == null) {
-            Toast.makeText(context, "未注册用户", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         HashMap<String, String> params = new HashMap<>();
-        params.put("guide", userMSG.getPhone());
-        params.put("mac", "");
-        params.put("tourid", "");
-        params.put("gs", "");
-        params.put("passports", "");
+        params.put("guide", phone);
+        params.put("mac", mac);
+        params.put("tourid", tourid);
+        params.put("gs", gs);
+        params.put("passport", array);
 
         //[{name:”张三”，passport:“123231”},{name:”李四”,passport”12312312”}]
 
 
-        JSONObject jsonObject = new JSONObject(params);
-        JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url.toString(), jsonObject,
+        JSONObject jsstring = new JSONObject(params);
+        JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url.toString(), jsstring,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject jsonObject) {
@@ -102,23 +98,18 @@ public class Networks {
         requestQueue.add(jsonRequest);
     }
 
-    public static void userInfos(Context context) {
+    public static void userInfos(Context context, String phone, String mac, String tourid, String gs, String array) {
         final String TAG = "userInfos";
         requestQueue = Volley.newRequestQueue(context);
         StringBuffer url = new StringBuffer("");
 
-        UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
-        if (userMSG == null) {
-            Toast.makeText(context, "未注册用户", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         HashMap<String, String> params = new HashMap<>();
-        params.put("guide", userMSG.getPhone());
-        params.put("mac", "");
-        params.put("tourid", "");
-        params.put("gs", "");//201504177080808
-        params.put("userInfos", "");
+        params.put("guide", phone);
+        params.put("mac", mac);
+        params.put("tourid", tourid);
+        params.put("gs", gs);//201504177080808
+        params.put("userInfos", array);
 
         //[{names:“张三”,phone:”13411111111”,mac:”123321”},{names:“张三”,phone:”13411111111”,mac:”123321”}]
 

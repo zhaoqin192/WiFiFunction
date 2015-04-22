@@ -3,8 +3,8 @@
     <dbname value="wifibox"></dbname>
     <version value="1"></version>
     <list>
-        <mapping name="com.ebupt.wifibox.databases.UserMSG" ></mapping>
-        <mapping name="com.ebupt.wifibox.databases.GroupMSG" ></mapping>
-        <mapping name="com.ebupt.wifibox.databases.VisitorsMSG" ></mapping>
-        </list>
+        <mapping class="com.ebupt.wifibox.databases.UserMSG"></mapping>
+        <mapping class="com.ebupt.wifibox.databases.GroupMSG"></mapping>
+        <mapping class="com.ebupt.wifibox.databases.VisitorsMSG"></mapping>
+    </list>
 </litepal>

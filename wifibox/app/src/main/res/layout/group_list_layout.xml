@@ -38,6 +38,7 @@
             bootstrapbutton:bb_type="danger"
             ></com.beardedhen.androidbootstrap.BootstrapButton>
         <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/group_list_sign_button"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

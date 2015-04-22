@@ -17,6 +17,7 @@
             android:layout_marginLeft="20dp"
             android:text="团        名"
             android:textSize="18sp"
+            android:textColor="#363636"
             />
         <com.beardedhen.androidbootstrap.BootstrapEditText
             android:id="@+id/add_group_name"
@@ -42,6 +43,7 @@
             android:layout_marginLeft="20dp"
             android:text="出发时间"
             android:textSize="18sp"
+            android:textColor="#363636"
             />
         <ImageView
             android:id="@+id/add_group_calendar_img"
@@ -49,7 +51,7 @@
             android:layout_height="30dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
-            android:src="@drawable/group_add"
+            android:src="@drawable/calendar"
             android:layout_centerVertical="true"
             />
         <com.beardedhen.androidbootstrap.BootstrapEditText
@@ -76,6 +78,7 @@
             android:layout_marginLeft="20dp"
             android:text="参团人数"
             android:textSize="18sp"
+            android:textColor="#363636"
             />
         <com.beardedhen.androidbootstrap.BootstrapEditText
             android:layout_width="170dp"
@@ -92,28 +95,22 @@
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.beardedhen.androidbootstrap.BootstrapButton
+        <Button
             android:id="@+id/add_group_ok"
             android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
-            android:text="添加"
-            android:textSize="18sp"
-            bootstrapbutton:bb_type="danger"
-            bootstrapbutton:bb_roundedCorners="true"
-            ></com.beardedhen.androidbootstrap.BootstrapButton>
-        <com.beardedhen.androidbootstrap.BootstrapButton
+            android:background="@drawable/btn_add_background"
+            ></Button>
+        <Button
             android:id="@+id/add_group_cancel"
             android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
-            android:text="取消"
-            android:textSize="18sp"
-            bootstrapbutton:bb_type="default_red_rounded"
-            bootstrapbutton:bb_roundedCorners="true"
-            ></com.beardedhen.androidbootstrap.BootstrapButton>
+            android:background="@drawable/btn_cancel_background"
+            ></Button>
 
         </RelativeLayout>
 </LinearLayout>

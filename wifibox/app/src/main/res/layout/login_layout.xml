@@ -8,10 +8,10 @@
         android:id="@+id/login_icon"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="60dp"
         android:layout_width="200dp"
         android:layout_height="100dp"
-        android:src="@drawable/test2"
+        android:src="@drawable/logo"
         />
 
     <com.beardedhen.androidbootstrap.BootstrapEditText
@@ -20,8 +20,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/login_icon"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:hint="用户名"
+        android:layout_marginTop="40dp"
+        android:hint="手机号"
+        android:textColorHint="#363636"
+        android:textColor="#363636"
+        android:drawableLeft="@drawable/ico_user"
+        android:drawablePadding="15dp"
         android:gravity="center_vertical"
         bootstrapbutton:be_roundedCorners="true"
         bootstrapbutton:be_state="default"
@@ -35,43 +39,69 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:hint="密码"
+        android:textColorHint="#363636"
+        android:textColor="#363636"
+        android:drawableLeft="@drawable/ico_key"
+        android:drawablePadding="15dp"
         android:inputType="textPassword"
         bootstrapbutton:be_roundedCorners="true"
         android:gravity="center"
         bootstrapbutton:be_state="default"
         />
 
-    <com.beardedhen.androidbootstrap.BootstrapButton
+    <Button
         android:id="@+id/login_button"
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
         android:layout_below="@id/login_edit_passwd"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="登录"
-        android:textSize="17sp"
-        bootstrapbutton:bb_type="danger"
-        bootstrapbutton:bb_roundedCorners="true"
-        ></com.beardedhen.androidbootstrap.BootstrapButton>
-
-    <CheckBox
-        android:id="@+id/login_memory"
-        android:layout_below="@id/login_button"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="60dp"
-        android:text="记住账号"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:src="@drawable/btn_login"
+        android:background="@drawable/btn_login_background"
         />
 
-    <CheckBox
-        android:id="@+id/login_auto"
+
+    <ImageView
+        android:id="@+id/login_memory"
+        android:clickable="true"
         android:layout_below="@id/login_button"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="60dp"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/unselect"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/login_memory"
+        android:text="记住账号"
+        android:textColor="#363636"
+        android:layout_below="@id/login_button"
+        android:layout_marginTop="18dp"
+        />
+    <TextView
+        android:id="@+id/login_auto_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="自动登录"
+        android:textColor="#363636"
+        android:layout_below="@id/login_button"
         android:layout_alignParentRight="true"
         android:layout_marginRight="60dp"
+        android:layout_marginTop="18dp"
+        />
+
+    <ImageView
+        android:id="@+id/login_auto"
+        android:clickable="true"
+        android:layout_below="@id/login_button"
+        android:layout_toLeftOf="@id/login_auto_text"
+        android:layout_marginTop="5dp"
         android:text="自动登录"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/unselect"
+        />
 </RelativeLayout>

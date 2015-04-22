@@ -9,27 +9,23 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.databases.GroupMSG;
-import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
 import com.ebupt.wifibox.settings.SettingsFragment;
 
-import org.litepal.crud.DataSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,9 +41,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private View devicelayout;
     private View settingslayout;
 
-    private TextView grouptext;
-    private TextView devicetext;
-    private TextView settingstext;
+    private ImageView tab_group;
+    private ImageView tab_device;
+    private ImageView tab_settings;
+
 
     private FragmentManager fragmentManager;
 
@@ -82,9 +79,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         devicelayout = findViewById(R.id.device_layout);
         settingslayout = findViewById(R.id.settings_layout);
 
-        grouptext = (TextView) findViewById(R.id.group_text);
-        devicetext = (TextView) findViewById(R.id.device_text);
-        settingstext = (TextView) findViewById(R.id.settings_text);
+        tab_group = (ImageView) findViewById(R.id.group_image);
+        tab_device = (ImageView) findViewById(R.id.device_image);
+        tab_settings = (ImageView) findViewById(R.id.settings_image);
 
         grouplayout.setOnClickListener(this);
         devicelayout.setOnClickListener(this);
@@ -109,9 +106,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
     }
 
     private void clearSelection() {
-        grouptext.setTextColor(Color.parseColor("#000000"));
-        devicetext.setTextColor(Color.parseColor("#000000"));
-        settingstext.setTextColor(Color.parseColor("#000000"));
+        tab_group.setImageResource(R.drawable.tab_group);
+        tab_device.setImageResource(R.drawable.tab_device);
+        tab_settings.setImageResource(R.drawable.tab_settings);
     }
 
     private void setTabSelection(int index) {
@@ -120,7 +117,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         hideFragment(transaction);
         switch (index) {
             case 0:
-                grouptext.setTextColor(Color.parseColor("#50B1DB"));
+                tab_group.setImageResource(R.drawable.tab_group_hot);
                 if (groupFragment == null) {
                     groupFragment = new GroupFragment();
                     transaction.add(R.id.content, groupFragment);
@@ -138,7 +135,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 });
                 break;
             case 1:
-                devicetext.setTextColor(Color.parseColor("#50B1DB"));
+                tab_device.setImageResource(R.drawable.tab_device_hot);
                 if (deviceFragment == null) {
                     deviceFragment = new DeviceFragment();
                     transaction.add(R.id.content, deviceFragment);
@@ -150,7 +147,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 break;
             case 2:
             default:
-                settingstext.setTextColor(Color.parseColor("#50B1DB"));
+                tab_settings.setImageResource(R.drawable.tab_settings_hot);
                 if (settingsFragment == null) {
                     settingsFragment = new SettingsFragment();
                     transaction.add(R.id.content, settingsFragment);
@@ -188,7 +185,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
         final BootstrapEditText groupName = (BootstrapEditText) layout.findViewById(R.id.add_group_name);
         final BootstrapEditText groupDate = (BootstrapEditText) layout.findViewById(R.id.add_group_calendar);
 
-        BootstrapButton groupOk = (BootstrapButton) layout.findViewById(R.id.add_group_ok);
+        Button groupOk = (Button) layout.findViewById(R.id.add_group_ok);
         groupOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -222,7 +219,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
         });
 
-        BootstrapButton groupCancel = (BootstrapButton) layout.findViewById(R.id.add_group_cancel);
+        Button groupCancel = (Button) layout.findViewById(R.id.add_group_cancel);
         groupCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

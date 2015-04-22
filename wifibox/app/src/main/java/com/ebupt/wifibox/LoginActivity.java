@@ -3,13 +3,12 @@ package com.ebupt.wifibox;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.Window;
-import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.Toast;
 
-import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.networks.Networks;
@@ -22,11 +21,11 @@ import java.util.List;
  * Created by zhaoqin on 4/21/15.
  */
 public class LoginActivity extends Activity{
-    private BootstrapButton login_button;
+    private Button login_button;
     private BootstrapEditText login_name;
     private BootstrapEditText login_passwd;
-    private CheckBox login_memory;
-    private CheckBox login_auto;
+    private ImageView login_memory;
+    private ImageView login_auto;
     private UserMSG userMSG;
     private MyApp myApp;
     @Override
@@ -43,27 +42,69 @@ public class LoginActivity extends Activity{
         if (list.size() != 0) {
             userMSG = list.get(0);
             if (userMSG.getMemory()) {
-                login_memory.setChecked(true);
                 login_name.setText(userMSG.getPhone());
                 login_passwd.setText(userMSG.getPasswd());
             }
             if (userMSG.getAuto()) {
-                login_auto.setChecked(true);
                 login_name.setText(userMSG.getPhone());
                 login_passwd.setText(userMSG.getPasswd());
                 Networks.login(this, userMSG.getPhone(), userMSG.getPasswd());
             }
+        } else {
+            userMSG = new UserMSG();
+            userMSG.setMemory(false);
+            userMSG.setAuto(false);
         }
+
+        login_memory = (ImageView) findViewById(R.id.login_memory);
+        if (userMSG.getMemory()) {
+            login_memory.setImageResource(R.drawable.selected);
+        } else {
+            login_memory.setImageResource(R.drawable.unselect);
+        }
+        login_memory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (userMSG.getMemory()) {
+                    userMSG.setMemory(false);
+                    login_memory.setImageResource(R.drawable.unselect);
+                    DataSupport.deleteAll(UserMSG.class);
+                } else {
+                    userMSG.setMemory(true);
+                    login_memory.setImageResource(R.drawable.selected);
+                }
+                userMSG.saveThrows();
+            }
+        });
+
+        login_auto = (ImageView) findViewById(R.id.login_auto);
+        if (userMSG.getAuto()) {
+            login_auto.setImageResource(R.drawable.selected);
+        } else {
+            login_auto.setImageResource(R.drawable.unselect);
+        }
+        login_auto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (userMSG.getAuto()) {
+                    userMSG.setAuto(false);
+                    login_auto.setImageResource(R.drawable.unselect);
+                } else {
+                    userMSG.setAuto(true);
+                    userMSG.setMemory(true);
+                    login_memory.setImageResource(R.drawable.selected);
+                    login_auto.setImageResource(R.drawable.selected);
+                }
+                userMSG.saveThrows();
+            }
+        });
     }
 
     private void initViews() {
 
-        login_memory = (CheckBox) findViewById(R.id.login_memory);
-
-        login_auto = (CheckBox) findViewById(R.id.login_auto);
 
 
-        login_button = (BootstrapButton) findViewById(R.id.login_button);
+        login_button = (Button) findViewById(R.id.login_button);
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,17 +121,17 @@ public class LoginActivity extends Activity{
                 }
                 userMSG.setPhone(login_name.getText().toString());
                 userMSG.setPasswd(login_passwd.getText().toString());
-                if (login_memory.isChecked()) {
-                    userMSG.setMemory(true);
-                } else {
-                    userMSG.setMemory(false);
-                    DataSupport.deleteAll(UserMSG.class);
-                }
-                if (login_auto.isChecked()) {
-                    userMSG.setAuto(true);
-                } else {
-                    userMSG.setAuto(false);
-                }
+//                if (userMSG.getMemory()) {
+//                    userMSG.setMemory(true);
+//                } else {
+//                    userMSG.setMemory(false);
+//                    DataSupport.deleteAll(UserMSG.class);
+//                }
+//                if (userMSG.getAuto()) {
+//                    userMSG.setAuto(true);
+//                } else {
+//                    userMSG.setAuto(false);
+//                }
                 userMSG.saveThrows();
                 myApp.phone = login_name.getText().toString();
                 Networks.login(LoginActivity.this, userMSG.getPhone(), userMSG.getPasswd());

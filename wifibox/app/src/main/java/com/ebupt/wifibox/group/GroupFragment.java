@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,14 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.GroupMSG;
-import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.group.list.GroupList;
 
 import org.litepal.crud.DataSupport;
@@ -105,7 +101,7 @@ public class GroupFragment extends Fragment {
         dialog.getWindow().setContentView(layout);
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
-        BootstrapButton yes = (BootstrapButton) layout.findViewById(R.id.delete_group_ok);
+        Button yes = (Button) layout.findViewById(R.id.delete_group_ok);
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,7 +111,7 @@ public class GroupFragment extends Fragment {
             }
         });
 
-        BootstrapButton no = (BootstrapButton) layout.findViewById(R.id.delete_group_cancel);
+        Button no = (Button) layout.findViewById(R.id.delete_group_cancel);
         no.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

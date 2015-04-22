@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="110dp"
     android:background="@drawable/list_item_color"
     >
     <TextView
         android:id="@+id/group_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
         android:layout_centerVertical="true"
         android:text="团名"
-        android:textSize="20sp"
+        android:textSize="21sp"
         />
 
     <TextView
@@ -24,13 +26,15 @@
         android:layout_marginBottom="20dp"
         android:layout_marginRight="20dp"
         android:text="26"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        android:textColor="#797979"
         />
     <ImageView
         android:id="@+id/group_item_count_img"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/group_add"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/number"
+        android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/group_item_count"
         android:layout_centerVertical="true"
         />
@@ -42,12 +46,15 @@
         android:layout_marginRight="20dp"
         android:layout_centerVertical="true"
         android:text="20150421"
+        android:textSize="16sp"
+        android:textColor="#797979"
         />
     <ImageView
         android:id="@+id/group_item_date_img"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/group_add"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/calendar"
+        android:layout_marginRight="5dp"
         android:layout_toLeftOf="@id/group_item_date"
         android:layout_centerVertical="true"
         />

@@ -1,4 +1,4 @@
-package com.ebupt.wifibox.settings;
+package com.ebupt.wifibox.settings.tessocr;
 
 import java.io.File;
 

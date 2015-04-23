@@ -43,10 +43,34 @@ public class ListAdapter extends BaseExpandableListAdapter{
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = View.inflate(context, R.layout.group_list_item_son, null);
-            new ViewHolder(convertView);
+            new ViewHolderSon(convertView);
         }
+        final ViewHolderSon holder = (ViewHolderSon) convertView.getTag();
+        holder.delete_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete();
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete();
+            }
+        });
 
-
+        holder.edit_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edit();
+            }
+        });
+        holder.edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                edit();
+            }
+        });
         return convertView;
     }
 
@@ -72,7 +96,9 @@ public class ListAdapter extends BaseExpandableListAdapter{
             new ViewHolder(convertView);
         }
         final ViewHolder holder = (ViewHolder) convertView.getTag();
-
+        VisitorsMSG visitorsMSG = list.get(groupPosition);
+        holder.name.setText(visitorsMSG.getName());
+        holder.passports.setText(visitorsMSG.getPassports());
         if (isExpanded) {
             holder.img.setImageResource(R.drawable.close);
         } else {
@@ -106,13 +132,26 @@ public class ListAdapter extends BaseExpandableListAdapter{
     }
 
     class ViewHolderSon {
+        ImageView edit_img;
+        ImageView delete_img;
         TextView edit;
         TextView delete;
 
         public ViewHolderSon(View view) {
+            edit_img = (ImageView) view.findViewById(R.id.group_list_item_son_edit_img);
+            delete_img = (ImageView) view.findViewById(R.id.group_list_item_son_delete_img);
+
             edit = (TextView) view.findViewById(R.id.group_list_item_son_edit);
             delete = (TextView) view.findViewById(R.id.group_list_item_son_delete);
             view.setTag(this);
         }
+    }
+
+    private void delete() {
+
+    }
+
+    private void edit() {
+
     }
 }

@@ -70,6 +70,7 @@ public class GroupFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getActivity(), GroupList.class);
                 intent.putExtra("name", datalist.get(position).getGroup_name());
+                intent.putExtra("groupid", datalist.get(position).getGroup_id());
                 startActivity(intent);
             }
         });

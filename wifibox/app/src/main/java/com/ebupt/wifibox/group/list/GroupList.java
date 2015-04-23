@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,14 +21,11 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
-import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 import com.ebupt.wifibox.networks.Networks;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.litepal.crud.DataSupport;
 
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +43,7 @@ public class GroupList extends Activity{
     private MyApp myApp;
     private StringBuffer str1;
     private StringBuffer str2;
+    private Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +52,7 @@ public class GroupList extends Activity{
         setContentView(R.layout.group_list_layout);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.mytitle);
         TextView titletext = (TextView) findViewById(R.id.myTitle);
-        Intent intent = getIntent();
+        intent = getIntent();
         titletext.setText(intent.getStringExtra("name"));
         TextView backtext = (TextView) findViewById(R.id.myBack_text);
         backtext.setVisibility(View.VISIBLE);
@@ -78,23 +77,28 @@ public class GroupList extends Activity{
 
         datalist = new ArrayList<>();
 
-        VisitorsMSG visitorsMSG = null;
-
-        str1 = new StringBuffer("[");
-        for (int i = 0; i < 4; i++) {
-            visitorsMSG = new VisitorsMSG();
-            datalist.add(visitorsMSG);
-            str1.append("{\"name\":");
-            str1.append("\"张三\",");
-            str1.append("\"passport\":");
-            if (i != 3) {
-                str1.append("\"123456\"},");
-            } else {
-                str1.append("\"123456\"}");
+        datalist = DataSupport.findAll(VisitorsMSG.class);
+        if (datalist.size() != 0) {
+            for (VisitorsMSG visitorsMSG : datalist) {
+                datalist.add(0, visitorsMSG);
             }
         }
-        str1.append("]");
-        Log.e("xxx", str1.toString());
+//        VisitorsMSG visitorsMSG = null;
+//        str1 = new StringBuffer("[");
+//        for (int i = 0; i < 4; i++) {
+//            visitorsMSG = new VisitorsMSG();
+//            datalist.add(visitorsMSG);
+//            str1.append("{\"name\":");
+//            str1.append("\"张三\",");
+//            str1.append("\"passport\":");
+//            if (i != 3) {
+//                str1.append("\"123456\"},");
+//            } else {
+//                str1.append("\"123456\"}");
+//            }
+//        }
+//        str1.append("]");
+//        Log.e("xxx", str1.toString());
 
 
         adapter = new ListAdapter(this, datalist);
@@ -156,26 +160,48 @@ public class GroupList extends Activity{
         dialog.getWindow().setContentView(layout);
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
-        BootstrapEditText name = (BootstrapEditText) layout.findViewById(R.id.add_visitor_edit_name);
-        BootstrapEditText passport = (BootstrapEditText) layout.findViewById(R.id.add_visitor_edit_passport);
+        final BootstrapEditText name = (BootstrapEditText) layout.findViewById(R.id.add_visitor_edit_name);
+        final BootstrapEditText passport = (BootstrapEditText) layout.findViewById(R.id.add_visitor_edit_passport);
 
-        BootstrapButton ok = (BootstrapButton) layout.findViewById(R.id.add_visitor_ok);
+        Button ok = (Button) layout.findViewById(R.id.add_visitor_ok);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (name.getText().toString().equals("")) {
+                    Toast.makeText(GroupList.this, "请输入姓名", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (passport.getText().toString().equals("")) {
+                    Toast.makeText(GroupList.this, "请输入护照号", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 VisitorsMSG visitorsMSG = new VisitorsMSG();
-                datalist.add(visitorsMSG);
+                visitorsMSG.setGroupid(intent.getStringExtra("groupid"));
+                visitorsMSG.setName(name.getText().toString());
+                visitorsMSG.setPassports(passport.getText().toString());
+                visitorsMSG.saveThrows();
+                datalist.add(0, visitorsMSG);
                 adapter.notifyDataSetChanged();
                 Toast.makeText(GroupList.this, "添加成功", Toast.LENGTH_SHORT).show();
                 dialog.hide();
             }
         });
 
-        BootstrapButton cancel = (BootstrapButton) layout.findViewById(R.id.add_visitor_cancel);
+        Button cancel = (Button) layout.findViewById(R.id.add_visitor_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.hide();
+            }
+        });
+
+        ImageView passportButton = (ImageView) layout.findViewById(R.id.add_visitor_passport_button);
+        passportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(GroupList.this, "当前不支持护照扫描", Toast.LENGTH_SHORT).show();
+                return;
             }
         });
     }

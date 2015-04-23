@@ -2,23 +2,28 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/list_item_color"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="110dp">
     <TextView
         android:id="@+id/group_list_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
         android:layout_centerVertical="true"
         android:text="游客姓名"
         android:textSize="20sp"
+        android:textColor="#363636"
         />
     <TextView
         android:id="@+id/group_list_item_passport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:layout_toRightOf="@id/group_list_item_name"
+        android:layout_marginLeft="60dp"
         android:text="G21903876"
         android:textSize="16sp"
         />

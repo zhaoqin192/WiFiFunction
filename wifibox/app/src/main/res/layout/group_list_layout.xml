@@ -8,6 +8,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_alignParentTop="true"
+        android:background="#f1f2f6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
@@ -66,6 +67,9 @@
     <ExpandableListView
         android:id="@+id/group_list_expand"
         android:layout_below="@id/group_list_listview_top"
+        android:dividerHeight="1dp"
+        android:divider="#747474"
+        android:childDivider="#747474"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></ExpandableListView>
     <View

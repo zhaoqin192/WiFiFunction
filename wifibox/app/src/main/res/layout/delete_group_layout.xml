@@ -10,12 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
+            android:id="@+id/delete_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:text="是否删除当前团？"
             android:textSize="18sp"
+            android:textColor="#797979"
             />
 
     </RelativeLayout>
@@ -26,20 +28,18 @@
         <Button
             android:id="@+id/delete_group_ok"
             android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
-            android:text="是"
-            android:textSize="18sp"
+            android:background="@drawable/btn_ok_background"
             ></Button>
         <Button
             android:id="@+id/delete_group_cancel"
             android:layout_width="120dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="20dp"
-            android:text="否"
-            android:textSize="18sp"
+            android:background="@drawable/btn_cancel_background"
             ></Button>
 
     </RelativeLayout>

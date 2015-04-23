@@ -21,6 +21,7 @@ import android.widget.ListView;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.group.list.GroupList;
+import com.ebupt.wifibox.group.list.ListActivity;
 
 import org.litepal.crud.DataSupport;
 
@@ -68,7 +69,7 @@ public class GroupFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), GroupList.class);
+                Intent intent = new Intent(getActivity(), ListActivity.class);
                 intent.putExtra("name", datalist.get(position).getGroup_name());
                 intent.putExtra("groupid", datalist.get(position).getGroup_id());
                 startActivity(intent);

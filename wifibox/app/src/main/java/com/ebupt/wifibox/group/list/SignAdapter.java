@@ -17,20 +17,19 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.R;
-import com.ebupt.wifibox.databases.VisitorsMSG;
-
+import com.ebupt.wifibox.databases.DownVisitorMSG;
 
 import java.util.List;
 
 /**
- * Created by zhaoqin on 4/21/15.
+ * Created by zhaoqin on 4/23/15.
  */
-public class ListAdapter extends BaseExpandableListAdapter{
+public class SignAdapter extends BaseExpandableListAdapter{
     private Context context;
-    private List<VisitorsMSG> list;
+    private List<DownVisitorMSG> list;
     private Dialog dialog;
 
-    public ListAdapter(Context context, List<VisitorsMSG> list) {
+    public SignAdapter(Context context, List<DownVisitorMSG> list) {
         this.context = context;
         this.list = list;
     }
@@ -53,11 +52,11 @@ public class ListAdapter extends BaseExpandableListAdapter{
     @Override
     public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.group_list_item_son, null);
+            convertView = View.inflate(context, R.layout.group_list_sign_item_son, null);
             new ViewHolderSon(convertView);
         }
         final ViewHolderSon holder = (ViewHolderSon) convertView.getTag();
-        final VisitorsMSG visitorsMSG = list.get(groupPosition);
+        final DownVisitorMSG downVisitorMSG = list.get(groupPosition);
         holder.delete_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,15 +73,29 @@ public class ListAdapter extends BaseExpandableListAdapter{
         holder.edit_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                edit(visitorsMSG.getName(), visitorsMSG.getPassports(), visitorsMSG);
+                edit(downVisitorMSG.getName(), downVisitorMSG.getPhone(), downVisitorMSG);
             }
         });
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                edit(visitorsMSG.getName(), visitorsMSG.getPassports(), visitorsMSG);
+                edit(downVisitorMSG.getName(), downVisitorMSG.getPhone(), downVisitorMSG);
             }
         });
+
+        holder.phone_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        holder.phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return convertView;
     }
 
@@ -108,9 +121,9 @@ public class ListAdapter extends BaseExpandableListAdapter{
             new ViewHolder(convertView);
         }
         final ViewHolder holder = (ViewHolder) convertView.getTag();
-        VisitorsMSG visitorsMSG = list.get(groupPosition);
-        holder.name.setText(visitorsMSG.getName());
-        holder.passports.setText(visitorsMSG.getPassports());
+        DownVisitorMSG downVisitorMSG = list.get(groupPosition);
+//        holder.name.setText(downVisitorMSG.getName());
+//        holder.passports.setText(downVisitorMSG.getPhone());
         if (isExpanded) {
             holder.img.setImageResource(R.drawable.close);
         } else {
@@ -146,15 +159,20 @@ public class ListAdapter extends BaseExpandableListAdapter{
     class ViewHolderSon {
         ImageView edit_img;
         ImageView delete_img;
+        ImageView phone_img;
         TextView edit;
         TextView delete;
+        TextView phone;
+
 
         public ViewHolderSon(View view) {
-            edit_img = (ImageView) view.findViewById(R.id.group_list_item_son_edit_img);
-            delete_img = (ImageView) view.findViewById(R.id.group_list_item_son_delete_img);
+            edit_img = (ImageView) view.findViewById(R.id.group_list_sign_item_son_edit_img);
+            delete_img = (ImageView) view.findViewById(R.id.group_list_sign_item_son_delete_img);
+            phone_img = (ImageView) view.findViewById(R.id.group_list_sign_item_son_phone_img);
 
-            edit = (TextView) view.findViewById(R.id.group_list_item_son_edit);
-            delete = (TextView) view.findViewById(R.id.group_list_item_son_delete);
+            edit = (TextView) view.findViewById(R.id.group_list_sign_item_son_edit);
+            delete = (TextView) view.findViewById(R.id.group_list_sign_item_son_delete);
+            phone = (TextView) view.findViewById(R.id.group_list_sign_item_son_phone);
             view.setTag(this);
         }
     }
@@ -173,10 +191,11 @@ public class ListAdapter extends BaseExpandableListAdapter{
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VisitorsMSG visitorsMSG = list.get(groupPosition);
-                visitorsMSG.delete();
+                DownVisitorMSG downVisitorMSG = list.get(groupPosition);
+                downVisitorMSG.delete();
                 list.remove(groupPosition);
-                Intent intent = new Intent("deleteVisitor");
+                Toast.makeText(context, "删除成功", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent("deleteDownVisitor");
                 context.sendBroadcast(intent);
                 dialog.hide();
             }
@@ -191,22 +210,20 @@ public class ListAdapter extends BaseExpandableListAdapter{
         });
     }
 
-    private void edit(String namestr, String passportstr, final VisitorsMSG visitorsMSG) {
+    private void edit(String namestr, String phone, final DownVisitorMSG visitorsMSG) {
         LayoutInflater inflaterDI = LayoutInflater.from(context);
-        LinearLayout layout = (LinearLayout) inflaterDI.inflate(R.layout.add_visitor_layout, null);
+        LinearLayout layout = (LinearLayout) inflaterDI.inflate(R.layout.modified_visitor_layout, null);
         dialog = new AlertDialog.Builder(context).create();
         dialog.show();
         dialog.getWindow().setContentView(layout);
         dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
-        final BootstrapEditText name = (BootstrapEditText) layout.findViewById(R.id.add_visitor_edit_name);
-        final BootstrapEditText passport = (BootstrapEditText) layout.findViewById(R.id.add_visitor_edit_passport);
+        final BootstrapEditText name = (BootstrapEditText) layout.findViewById(R.id.modified_visitor_edit_name);
+        final BootstrapEditText passport = (BootstrapEditText) layout.findViewById(R.id.modified_visitor_edit_phone);
         name.setText(namestr);
-        passport.setText(passportstr);
+        passport.setText(phone);
 
-        Button ok = (Button) layout.findViewById(R.id.add_visitor_ok);
-        ok.setBackgroundResource(R.drawable.btn_ok_background);
-
+        Button ok = (Button) layout.findViewById(R.id.modified_visitor_ok);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,34 +232,26 @@ public class ListAdapter extends BaseExpandableListAdapter{
                     return;
                 }
                 if (passport.getText().toString().equals("")) {
-                    Toast.makeText(context, "请输入护照号", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "请输入手机号", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 visitorsMSG.setName(name.getText().toString());
-                visitorsMSG.setPassports(passport.getText().toString());
+                visitorsMSG.setPhone(passport.getText().toString());
                 visitorsMSG.saveThrows();
-                Intent intent = new Intent("updateVisitor");
+                Intent intent = new Intent("updateDownVisitor");
                 context.sendBroadcast(intent);
 
+                Toast.makeText(context, "修改成功", Toast.LENGTH_SHORT).show();
                 dialog.hide();
             }
         });
 
-        Button cancel = (Button) layout.findViewById(R.id.add_visitor_cancel);
+        Button cancel = (Button) layout.findViewById(R.id.modified_visitor_cancel);
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.hide();
-            }
-        });
-
-        ImageView passportButton = (ImageView) layout.findViewById(R.id.add_visitor_passport_button);
-        passportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context, "当前不支持护照扫描", Toast.LENGTH_SHORT).show();
-                return;
             }
         });
     }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:background="#f1f2f6"
+    >
+
+    <TextView
+        android:id="@+id/group_list_sign_item_son_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删除"
+        android:textSize="18sp"
+        android:textColor="#797979"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:layout_alignParentRight="true"
+        android:clickable="true"
+        />
+
+    <ImageView
+        android:id="@+id/group_list_sign_item_son_delete_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/delete"
+        android:layout_toLeftOf="@id/group_list_sign_item_son_delete"
+        android:layout_marginRight="5dp"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        />
+
+    <TextView
+        android:id="@+id/group_list_sign_item_son_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="编辑"
+        android:textSize="18sp"
+        android:textColor="#797979"
+        android:layout_toLeftOf="@id/group_list_sign_item_son_delete_img"
+        android:layout_marginRight="30dp"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        />
+
+    <ImageView
+        android:id="@+id/group_list_sign_item_son_edit_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/edit"
+        android:layout_toLeftOf="@id/group_list_sign_item_son_edit"
+        android:layout_marginRight="5dp"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        />
+
+    <TextView
+        android:id="@+id/group_list_sign_item_son_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="联系"
+        android:textSize="18sp"
+        android:textColor="#797979"
+        android:layout_toLeftOf="@id/group_list_sign_item_son_edit_img"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="30dp"
+        android:clickable="true"
+        />
+
+    <ImageView
+        android:id="@+id/group_list_sign_item_son_phone_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/phone"
+        android:layout_toLeftOf="@id/group_list_sign_item_son_phone"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
+        android:clickable="true"
+        />
+
+</RelativeLayout>

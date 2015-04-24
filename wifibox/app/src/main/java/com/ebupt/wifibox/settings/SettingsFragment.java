@@ -25,7 +25,7 @@ import java.util.TimerTask;
  */
 public class SettingsFragment extends Fragment{
     private View contactslayout;
-    private Button passport;
+//    private Button passport;
     private WifiAdmin wifiAdmin;
     private WifiManager wifiManager;
     private WifiInfo wifiInfo;
@@ -36,14 +36,14 @@ public class SettingsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactslayout = inflater.inflate(R.layout.settings_layout, container, false);
-        passport = (Button) contactslayout.findViewById(R.id.settings_passport);
-        passport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), OCRActivity.class);
-                startActivity(intent);
-            }
-        });
+//        passport = (Button) contactslayout.findViewById(R.id.settings_passport);
+//        passport.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), OCRActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         wifiAdmin = new WifiAdmin(getActivity());
         wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);

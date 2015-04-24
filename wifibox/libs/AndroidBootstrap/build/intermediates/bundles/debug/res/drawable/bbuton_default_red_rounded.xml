@@ -12,7 +12,7 @@
     <item android:state_enabled="false">
         <shape>
             <solid android:color="@color/bbutton_default_disabled" />
-            <stroke android:width="1dp" android:color="@color/bbutton_default_disabled_edge" />
+            <stroke android:width="1dp" android:color="@color/bbutton_danger_pressed" />
             <corners android:radius="@dimen/bbuton_rounded_corner_radius" />
         </shape>
     </item>
@@ -21,7 +21,7 @@
     <item>
         <shape>
             <solid android:color="@color/bbutton_default" />
-            <stroke android:width="1dp" android:color="@color/bbutton_default_edge" />
+            <stroke android:width="1dp" android:color="@color/bbutton_danger_pressed" />
             <corners android:radius="@dimen/bbuton_rounded_corner_radius" />
         </shape>
     </item>

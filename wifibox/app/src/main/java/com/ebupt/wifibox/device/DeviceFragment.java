@@ -27,11 +27,10 @@ public class DeviceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactslayout = inflater.inflate(R.layout.device_layout, container, false);
 
-
-        fragmentManager = getFragmentManager();
         initViews(contactslayout);
+        fragmentManager = getFragmentManager();
 
-
+        setTabSelection(0);
         return contactslayout;
     }
 
@@ -83,6 +82,7 @@ public class DeviceFragment extends Fragment {
                 }
                 break;
         }
+        transaction.commit();
     }
 
     private void hideFragments(FragmentTransaction transaction) {

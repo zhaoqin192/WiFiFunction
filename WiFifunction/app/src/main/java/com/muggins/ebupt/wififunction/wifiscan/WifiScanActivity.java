@@ -1,4 +1,4 @@
-package com.muggins.ebupt.wififunction.wifiscan;
+dpackage com.muggins.ebupt.wififunction.wifiscan;
 
 import android.app.Activity;
 import android.app.AlertDialog;

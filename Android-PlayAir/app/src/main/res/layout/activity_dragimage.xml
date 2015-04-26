@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:background="#f0743e"
+    >
+<ImageView
+    android:id="@+id/closeDrawImage"
+    android:onClick="onClick"
+    android:layout_width="35dp"
+    android:layout_height="35dp"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:layout_marginRight="7dp"
+    android:background="@drawable/close"
+    android:layout_marginTop="7dp"
+    android:layout_marginBottom="4dp"/>
+    <com.ebupt.android_playair.widget.JellyViewPager
+        android:id="@+id/myViewPager1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/closeDrawImage"
+        >
+        
+    </com.ebupt.android_playair.widget.JellyViewPager>
+
+</RelativeLayout>

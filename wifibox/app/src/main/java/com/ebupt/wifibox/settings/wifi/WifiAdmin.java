@@ -24,10 +24,12 @@ public class WifiAdmin {
 
 
     // 构造器
-    public WifiAdmin(Context context) {
+    public WifiAdmin(WifiManager wifiManager) {
         // 取得WifiManager对象
-        mWifiManager = (WifiManager) context
-                .getSystemService(Context.WIFI_SERVICE);
+//        mWifiManager = (WifiManager) context
+//                .getSystemService(Context.WIFI_SERVICE);
+
+        this.mWifiManager = wifiManager;
         // 取得WifiInfo对象
         mWifiInfo = mWifiManager.getConnectionInfo();
     }
@@ -139,10 +141,19 @@ public class WifiAdmin {
 
     // 添加一个网络并连接
     public void addNetwork(WifiConfiguration wcg) {
-        int wcgID = mWifiManager.addNetwork(wcg);
-        boolean b =  mWifiManager.enableNetwork(wcgID, true);
-        System.out.println("a--" + wcgID);
-        System.out.println("b--" + b);
+//        int wcgID = mWifiManager.addNetwork(wcg);
+        int temp = mWifiManager.addNetwork(wcg);
+//        int wcgID = wcg.networkId;
+//        Log.e("addnetwork", temp + "");
+//        Log.e("mac", wcg.SSID);
+//        Log.e("wcgID", wcgID + "");
+//        mWifiManager.disconnect();
+        boolean b = mWifiManager.enableNetwork(temp, false);
+        mWifiManager.saveConfiguration();
+        mWifiManager.reconnect();
+//        Log.e("tttt", "a--" + wcgID);
+        Log.e("tttt", wcg.SSID + "   " + wcg.preSharedKey);
+        Log.e("tttt", "b--" + b);
     }
 
     // 断开指定ID的网络
@@ -155,13 +166,15 @@ public class WifiAdmin {
 
     public WifiConfiguration CreateWifiInfo(String SSID, String Password, int Type)
     {
+        mWifiManager.disconnect();
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();
         config.allowedKeyManagement.clear();
         config.allowedPairwiseCiphers.clear();
         config.allowedProtocols.clear();
-        config.SSID = "\"" + SSID + "\"";
+//        config.SSID = "\"" + SSID + "\"";
+        config.SSID = SSID;
         WifiConfiguration tempConfig = this.IsExsits(SSID);
         if(tempConfig != null) {
             mWifiManager.removeNetwork(tempConfig.networkId);
@@ -169,9 +182,9 @@ public class WifiAdmin {
 
         if(Type == 1) //WIFICIPHER_NOPASS
         {
-            config.wepKeys[0] = "";
+//            config.wepKeys[0] = "";
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-            config.wepTxKeyIndex = 0;
+//            config.wepTxKeyIndex = 0;
         }
         if(Type == 2) //WIFICIPHER_WEP
         {
@@ -187,17 +200,20 @@ public class WifiAdmin {
         }
         if(Type == 3) //WIFICIPHER_WPA
         {
-            config.preSharedKey = "\""+Password+"\"";
+//            config.preSharedKey = "\""+Password+"\"";
+            config.preSharedKey = Password;
             config.hiddenSSID = true;
             config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
             config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
             config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-            //config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+//            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+//            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
             config.status = WifiConfiguration.Status.ENABLED;
         }
+
+        Log.e("ttttt", config.SSID + "  " + config.preSharedKey);
         return config;
     }
 

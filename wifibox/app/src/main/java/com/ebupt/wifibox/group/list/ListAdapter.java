@@ -120,6 +120,8 @@ public class ListAdapter extends BaseExpandableListAdapter{
         return convertView;
     }
 
+
+
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;

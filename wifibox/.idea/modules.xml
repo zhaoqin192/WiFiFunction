@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/libs/AndroidBootstrap/AndroidBootstrap.iml" filepath="$PROJECT_DIR$/libs/AndroidBootstrap/AndroidBootstrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/StickyListHeaders/StickyListHeaders.iml" filepath="$PROJECT_DIR$/libs/StickyListHeaders/StickyListHeaders.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/wifibox.iml" filepath="$PROJECT_DIR$/wifibox.iml" />
     </modules>

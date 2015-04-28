@@ -84,4 +84,11 @@ public class UploadFragment extends Fragment {
             listView.setSelection(0);
         }
     };
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
 }

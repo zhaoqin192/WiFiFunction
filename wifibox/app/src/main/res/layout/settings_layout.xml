@@ -82,7 +82,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_width="80dp"
                 android:layout_height="30dp"
-                android:background="@drawable/btn_unlink_background"
+                android:background="@drawable/btn_link_background"
                 />
         </RelativeLayout>
     </LinearLayout>

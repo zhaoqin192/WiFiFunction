@@ -148,7 +148,7 @@ public class WifiAdmin {
 //        Log.e("mac", wcg.SSID);
 //        Log.e("wcgID", wcgID + "");
 //        mWifiManager.disconnect();
-        boolean b = mWifiManager.enableNetwork(temp, false);
+        boolean b = mWifiManager.enableNetwork(temp, true);
         mWifiManager.saveConfiguration();
         mWifiManager.reconnect();
 //        Log.e("tttt", "a--" + wcgID);
@@ -173,8 +173,8 @@ public class WifiAdmin {
         config.allowedKeyManagement.clear();
         config.allowedPairwiseCiphers.clear();
         config.allowedProtocols.clear();
-//        config.SSID = "\"" + SSID + "\"";
-        config.SSID = SSID;
+        config.SSID = "\"" + SSID + "\"";
+//        config.SSID = SSID;
         WifiConfiguration tempConfig = this.IsExsits(SSID);
         if(tempConfig != null) {
             mWifiManager.removeNetwork(tempConfig.networkId);
@@ -200,16 +200,16 @@ public class WifiAdmin {
         }
         if(Type == 3) //WIFICIPHER_WPA
         {
-//            config.preSharedKey = "\""+Password+"\"";
-            config.preSharedKey = Password;
+            config.preSharedKey = "\""+Password+"\"";
+//            config.preSharedKey = Password;
             config.hiddenSSID = true;
             config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
             config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
             config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
             config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
-//            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
-//            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+//            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
             config.status = WifiConfiguration.Status.ENABLED;
         }
 

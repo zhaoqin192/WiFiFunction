@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.ebupt.wifibox"
-        minSdkVersion 18
+        minSdkVersion 17
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
@@ -25,6 +25,7 @@ dependencies {
     compile files('/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/classes.jar')
     compile files('libs/classes.jar')
     compile project(':AndroidBootstrap')
+    compile project(':StickyListHeaders')
     compile files('libs/volley.jar')
     compile files('libs/litepal-1.1.1-src.jar')
 }

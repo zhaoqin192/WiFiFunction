@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.ebupt.wifibox.settings.wifi.WifiAdmin;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,6 +49,7 @@ public class SettingsFragment extends Fragment{
     private TextView wifi_text;
     private boolean flag;
     private ProgressDialog progressDialog;
+    private Timer timer;
 
 
     @Nullable
@@ -95,7 +98,9 @@ public class SettingsFragment extends Fragment{
                     Log.e("zzzz", deviceMSG.getPasswd());
                     wifiAdmin.openWifi();
 //                    wifiAdmin.acquireWifiLock();
-                    wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(deviceMSG.getMacAddress(), deviceMSG.getPasswd(), 1));
+//                    wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(deviceMSG.getMacAddress(), deviceMSG.getPasswd(), 3));
+
+                    connection();
                     showDialog("正在连接设备...");
                     flag = true;
                 }
@@ -106,38 +111,7 @@ public class SettingsFragment extends Fragment{
         wifiAdmin = new WifiAdmin(wifiManager);
 
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                wifiInfo = wifiManager.getConnectionInfo();
-                wifi_name = wifiInfo.getSSID();
-                wifi_mac = wifiInfo.getBSSID();
-                if (wifi_mac != null) {
-                    Log.e("xxx", wifi_mac);
-                    if (wifi_mac.equals(deviceMSG.getMacAddress())) {
-                        Message message = new Message();
-                        message.what = 0;
-                        handler.sendMessage(message);
-                        deviceMSG.setLinkflag(true);
-                        deviceMSG.saveThrows();
-                    } else {
-                        Message message = new Message();
-                        message.what = 1;
-                        handler.sendMessage(message);
-                        deviceMSG.setLinkflag(false);
-                        deviceMSG.saveThrows();
-                    }
-                } else {
-                    Message message = new Message();
-                    message.what = 1;
-                    handler.sendMessage(message);
-                    deviceMSG.setLinkflag(false);
-                    deviceMSG.saveThrows();
-                }
 
-            }
-        }, 1000, 5000);
 
         handler = new Handler() {
             @Override
@@ -146,7 +120,8 @@ public class SettingsFragment extends Fragment{
                 switch (msg.what) {
                     case 0:
                         link.setBackgroundResource(R.drawable.btn_unlink_background);
-                        wifi_text.setText(wifi_name.replaceAll("\"", ""));
+//                        wifi_text.setText(wifi_name.replaceAll("\"", ""));
+                        wifi_text.setText(wifi_name);
                         if (flag) {
                             progressDialog.hide();
                             flag = false;
@@ -191,5 +166,76 @@ public class SettingsFragment extends Fragment{
         progressDialog.show();
     }
 
+    private void connection() {
+        String networkSSID = "66:51:7e:38:e9:80";
+        String networkPW = "1082325588";
 
+        WifiConfiguration conf = new WifiConfiguration();
+        conf.SSID = "\"" + networkSSID + "\"";
+        conf.preSharedKey = "\"" + networkPW + "\"";
+        conf.wepTxKeyIndex = 0;
+        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+//        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+
+        int temp = wifiManager.addNetwork(conf);
+        Log.e("addNetwork", temp + "");
+
+        List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
+        for( WifiConfiguration i : list ) {
+            if(i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
+                Log.e("xxx", "connect");
+                wifiManager.disconnect();
+                wifiManager.enableNetwork(temp, true);
+                Log.e("networkId", i.networkId + "");
+//                wifiManager.saveConfiguration();
+                wifiManager.reconnect();
+                break;
+            }
+        }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                wifiInfo = wifiManager.getConnectionInfo();
+                wifi_name = wifiInfo.getSSID();
+                wifi_mac = wifiInfo.getBSSID();
+                if (wifi_mac != null) {
+                    Log.e("xxx", wifi_mac);
+                    if (wifi_mac.equals(deviceMSG.getMacAddress())) {
+                        Message message = new Message();
+                        message.what = 0;
+                        handler.sendMessage(message);
+                        deviceMSG.setLinkflag(true);
+                        deviceMSG.saveThrows();
+                    } else {
+                        Message message = new Message();
+                        message.what = 1;
+                        handler.sendMessage(message);
+                        deviceMSG.setLinkflag(false);
+                        deviceMSG.saveThrows();
+                    }
+                } else {
+                    Message message = new Message();
+                    message.what = 1;
+                    handler.sendMessage(message);
+                    deviceMSG.setLinkflag(false);
+                    deviceMSG.saveThrows();
+                }
+
+            }
+        }, 1000, 5000);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        timer.cancel();
+    }
 }

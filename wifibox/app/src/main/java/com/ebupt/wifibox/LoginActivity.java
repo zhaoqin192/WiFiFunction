@@ -107,17 +107,16 @@ public class LoginActivity extends Activity{
         }
 //            deviceMSG.setMacAddress("64:51:7e:3a:e5:14");
 //            deviceMSG.setMacAddress("66:51:7e:38:e9:80");
-            deviceMSG.setMacAddress("00:1f:64:ec:4e:6a");//butp3---16
+//            deviceMSG.setMacAddress("00:1f:64:ec:4e:6a");//butp3---16
 //            deviceMSG.setMacAddress("6a:43:7c:0a:e8:40");//Zhao的iPhone---17
 //        deviceMSG.setMacAddress("00:1f:64:eb:4d:4d");//Cert_Download---18
-        deviceMSG.setPasswd("x3v49jb6muq49");
+        deviceMSG.setMacAddress("66:51:7e:38:e9:80");//EBUPT-INNER-WIFI
+        deviceMSG.setPasswd("1082325588");
             deviceMSG.setLinkflag(false);
             deviceMSG.saveThrows();
     }
 
     private void initViews() {
-
-
 
         login_button = (Button) findViewById(R.id.login_button);
         login_button.setOnClickListener(new View.OnClickListener() {

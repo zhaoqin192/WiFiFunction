@@ -1,2 +1,3 @@
-include ':app', ':AndroidBootstrap'
+include ':app', ':AndroidBootstrap', ':StickyListHeaders'
 project(':AndroidBootstrap').projectDir = new File('libs/AndroidBootstrap')
+project(':StickyListHeaders').projectDir = new File('libs/StickyListHeaders')

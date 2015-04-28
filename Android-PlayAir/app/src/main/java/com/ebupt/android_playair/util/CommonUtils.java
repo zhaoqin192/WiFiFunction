@@ -46,8 +46,9 @@ public class CommonUtils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        CommunicationService.mSocket.emit("new message", obj);
-        Log.e("test","发送了："+obj);
+//        CommunicationService.mSocket.emit("new message", obj);
+        CommunicationService.mSocket.emit(key, message);
+        Log.e("test", "事件:" + key + " 发送了:" + message);
     }
 
     public static int getStatusBarHeight(Context context){

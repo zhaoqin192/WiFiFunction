@@ -24,6 +24,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.UnknownFormatConversionException;
 
 /**
  * Created by Administrator on 2015/4/16.
@@ -52,42 +53,48 @@ public class DrawPathActivity extends Activity {
             @Override
             public void onDrawPath(int x, int y,int action) {
                 CommonUtils.sendMessage("message","ZYKDemo:DrawPathActivity:Position."+((float)x)/width+","+((float)y)/height+","+action);
+//                CommonUtils.sendMessage("note footprint", );
             }
         });
 
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.e("test", "收到了" + intent.getExtras().getString("message"));
-                String message = intent.getExtras().getString("message");
-                if(message.equals("clearPath")){
-                    if(guaGuaKa!=null)
-                        guaGuaKa.clearPath();
-                }else if(message.equals("finishDrawPathActivity")){
-                    finishAcitvity();
-                }else if(message.startsWith("Position.")){
-                    String positionMessage = message.substring(9);
-                    String positions[] = positionMessage.split(",");
-                    String newX = positions[0];
-                    String newY = positions[1];
-                    String action = positions[2];
-                    if(guaGuaKa!=null) {
-                        if(Integer.parseInt(action) == MotionEvent.ACTION_MOVE) {
-                            guaGuaKa.move((int)(Float.parseFloat(newX)*width), (int)(Float.parseFloat(newY)*height));
-                        }else if(Integer.parseInt(action) == MotionEvent.ACTION_DOWN) {
-                            guaGuaKa.down((int)(Float.parseFloat(newX)*width), (int)(Float.parseFloat(newY)*height));
-                        }
-                    }
-                    Log.e("test", positions[0] + "," + positions[1]);
-                }
-            }
-        },new IntentFilter("DrawPathActivity"));
+
+        IntentFilter intentFilter = new IntentFilter("DrawPathActivity");
+        registerReceiver(broadcastReceiver, intentFilter);
 
     }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("test", "收到了" + intent.getExtras().getString("message"));
+            String message = intent.getExtras().getString("message");
+            if (message.equals("clearPath")) {
+                if (guaGuaKa != null)
+                    guaGuaKa.clearPath();
+            } else if (message.equals("finishDrawPathActivity")) {
+                finishAcitvity();
+            } else if (message.startsWith("Position.")) {
+                String positionMessage = message.substring(9);
+                String positions[] = positionMessage.split(",");
+                String newX = positions[0];
+                String newY = positions[1];
+                String action = positions[2];
+                if (guaGuaKa != null) {
+                    if (Integer.parseInt(action) == MotionEvent.ACTION_MOVE) {
+                        guaGuaKa.move((int) (Float.parseFloat(newX) * width), (int) (Float.parseFloat(newY) * height));
+                    } else if (Integer.parseInt(action) == MotionEvent.ACTION_DOWN) {
+                        guaGuaKa.down((int) (Float.parseFloat(newX) * width), (int) (Float.parseFloat(newY) * height));
+                    }
+                }
+                Log.e("test", positions[0] + "," + positions[1]);
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 
     public void onClick(View view) {
@@ -95,7 +102,8 @@ public class DrawPathActivity extends Activity {
         switch (id) {
             case R.id.closeDrawPath:
                 finishAcitvity();
-                CommonUtils.sendMessage("message", "ZYKDemo:DrawPathActivity:finishDrawPathActivity");
+//                CommonUtils.sendMessage("message", "ZYKDemo:DrawPathActivity:finishDrawPathActivity");
+                CommonUtils.sendMessage("exit", "note");
                 break;
             case R.id.buttonClear:
                 guaGuaKa.clearPath();
@@ -117,8 +125,10 @@ public class DrawPathActivity extends Activity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode== KeyEvent.KEYCODE_BACK){
             finishAcitvity();
-            CommonUtils.sendMessage("message","ZYKDemo:DrawPathActivity:finishDrawPathActivity");
+//            CommonUtils.sendMessage("message","ZYKDemo:DrawPathActivity:finishDrawPathActivity");
+            CommonUtils.sendMessage("exit", "note");
             return true;
+
         }
         return super.onKeyDown(keyCode, event);
     }

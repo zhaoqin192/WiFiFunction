@@ -36,19 +36,23 @@ public class CommunicationService extends Service {
             new Thread( new Runnable() {
                 @Override
                 public void run() {
-                    JSONObject data = (JSONObject) args[0];
-                    try {
-                        JSONObject obj = new JSONObject(data.getString("message"));
-                        String completeMessage = obj.getString("message");
-                        String messages[] = completeMessage.split(":");
-                        if(messages[0].equals("ZYKDemo")){
-                            intent = new Intent(messages[1]);
-                            intent.putExtra("message",messages[2]);
-                            sendBroadcast(intent);
-                        }
-                    } catch (JSONException e) {
-                        return;
-                    }
+//                    JSONObject data = (JSONObject) args[0];
+//                    try {
+//                        JSONObject obj = new JSONObject(data.getString("message"));
+//                        String completeMessage = obj.getString("message");
+//                        String messages[] = completeMessage.split(":");
+//                        if(messages[0].equals("ZYKDemo")){
+//                            intent = new Intent(messages[1]);
+//                            intent.putExtra("message",messages[2]);
+//                            sendBroadcast(intent);
+//                        }
+//                    } catch (JSONException e) {
+//                        return;
+//                    }
+                    String data = (String) args[0];
+                    intent = new Intent("socketIO");
+                    intent.putExtra("action", data);
+                    sendBroadcast(intent);
                 }
             }).start();
         }

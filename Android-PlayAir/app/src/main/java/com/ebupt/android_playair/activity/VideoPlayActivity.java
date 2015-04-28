@@ -89,64 +89,9 @@ public class VideoPlayActivity extends Activity {
         initDanmuView();
         initData();
 
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.e("test", "收到了" + intent.getExtras().getString("message"));
-                if(intent.getExtras().getString("message").equals("play")){
-                    if(isPlay==false) {
-                        playVideo();
-                        playbutton.setImageResource(R.drawable.pause);
-                        isPlay=true;
-                    }
-                }
-                else if(intent.getExtras().getString("message").equals("pause")){
-                    if (mediaPlayer != null) {
-                        mediaPlayer.pause();
-                        if (!(mDanmakuView == null || !mDanmakuView.isPrepared()))
-                            mDanmakuView.pause();
-                        playbutton.setImageResource(R.drawable.play);
-                        isPlay=false;
-                    }
-                }
-                else if(intent.getExtras().getString("message").equals("quickbackward")){
-                    if (mediaPlayer != null) {
-                        int progress = mediaPlayer.getCurrentPosition();
-                        progress = progress-mediaPlayer.getDuration()/10;
-                        seekbar.setProgress(progress);
-                        mediaPlayer.seekTo(progress);
-                    }
-                }
-                else if(intent.getExtras().getString("message").equals("quickforward")){
-                    if (mediaPlayer != null) {
-                        int progress = mediaPlayer.getCurrentPosition();
-                        progress = progress+mediaPlayer.getDuration()/10;
-                        seekbar.setProgress(progress);
-                        mediaPlayer.seekTo(progress);
-                    }
-                }
-                else if(intent.getExtras().getString("message").equals("hide")){
-                    if (!(mDanmakuView == null || !mDanmakuView.isPrepared())){
-                        mDanmakuView.hide();
-                        check.setImageResource(R.drawable.uncheck);
-                        isShowDanmu = false;
-                    }
-                }
-               else if(intent.getExtras().getString("message").equals("show")){
-                    if (!(mDanmakuView == null || !mDanmakuView.isPrepared())) {
-                        mDanmakuView.show();
-                        check.setImageResource(R.drawable.check);
-                        isShowDanmu=true;
-                    }
-                }
-                else if(intent.getExtras().getString("message").equals("finishVideoPlayActivity")){
-                    finishActivity();
-                }
-                else if(intent.getExtras().getString("message").startsWith("danmu.")){
-                    sendDanmu(intent.getExtras().getString("message").substring(6));
-                }
-            }
-        },new IntentFilter("VideoPlayActivity"));
+
+        IntentFilter intentFilter = new IntentFilter("VideoPlayActivity");
+        registerReceiver(broadcastReceiver, intentFilter);
 
         handler = new Handler() {
             public void handleMessage(Message msg) {
@@ -275,7 +220,8 @@ public class VideoPlayActivity extends Activity {
                 if(isPlay==false) {
                     playVideo();
                     playbutton.setImageResource(R.drawable.pause);
-                    CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:play");
+//                    CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:play");
+                    CommonUtils.sendMessage("video play", "");
                     isPlay=true;
                 }
                 else {
@@ -284,7 +230,8 @@ public class VideoPlayActivity extends Activity {
                         if (!(mDanmakuView == null || !mDanmakuView.isPrepared()))
                             mDanmakuView.pause();
                         playbutton.setImageResource(R.drawable.play);
-                        CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:pause");
+//                        CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:pause");
+                        CommonUtils.sendMessage("video pause", "");
                         isPlay=false;
                     }
                 }
@@ -331,12 +278,14 @@ public class VideoPlayActivity extends Activity {
                 if(et.getText()==null||et.getText().equals(""))
                     return;
                 sendDanmu(et.getText().toString());
-                CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:danmu." + et.getText().toString());
+//                CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:danmu." + et.getText().toString());
+                CommonUtils.sendMessage("video barrage", et.getText().toString());
                 et.setText("");
                 break;
             case R.id.close:
                 finishActivity();
-                CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:finishVideoPlayActivity");
+//                CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:finishVideoPlayActivity");
+                CommonUtils.sendMessage("exit", "video");
                 break;
             default:
                 break;
@@ -470,6 +419,7 @@ public class VideoPlayActivity extends Activity {
             mediaPlayer.release();
         }
         super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -477,10 +427,70 @@ public class VideoPlayActivity extends Activity {
         if(keyCode== KeyEvent.KEYCODE_BACK){
 
             finishActivity();
-            CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:finishVideoPlayActivity");
+//            CommonUtils.sendMessage("message", "ZYKDemo:VideoPlayActivity:finishVideoPlayActivity");
+            CommonUtils.sendMessage("exit", "video");
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("test", "收到了" + intent.getExtras().getString("message"));
+            if(intent.getExtras().getString("message").equals("play")){
+                if(isPlay==false) {
+                    playVideo();
+                    playbutton.setImageResource(R.drawable.pause);
+                    isPlay=true;
+                }
+            }
+            else if(intent.getExtras().getString("message").equals("pause")){
+                if (mediaPlayer != null) {
+                    mediaPlayer.pause();
+                    if (!(mDanmakuView == null || !mDanmakuView.isPrepared()))
+                        mDanmakuView.pause();
+                    playbutton.setImageResource(R.drawable.play);
+                    isPlay=false;
+                }
+            }
+            else if(intent.getExtras().getString("message").equals("quickbackward")){
+                if (mediaPlayer != null) {
+                    int progress = mediaPlayer.getCurrentPosition();
+                    progress = progress-mediaPlayer.getDuration()/10;
+                    seekbar.setProgress(progress);
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+            else if(intent.getExtras().getString("message").equals("quickforward")){
+                if (mediaPlayer != null) {
+                    int progress = mediaPlayer.getCurrentPosition();
+                    progress = progress+mediaPlayer.getDuration()/10;
+                    seekbar.setProgress(progress);
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+            else if(intent.getExtras().getString("message").equals("hide")){
+                if (!(mDanmakuView == null || !mDanmakuView.isPrepared())){
+                    mDanmakuView.hide();
+                    check.setImageResource(R.drawable.uncheck);
+                    isShowDanmu = false;
+                }
+            }
+            else if(intent.getExtras().getString("message").equals("show")){
+                if (!(mDanmakuView == null || !mDanmakuView.isPrepared())) {
+                    mDanmakuView.show();
+                    check.setImageResource(R.drawable.check);
+                    isShowDanmu=true;
+                }
+            }
+            else if(intent.getExtras().getString("message").equals("finishVideoPlayActivity")){
+                finishActivity();
+            }
+            else if(intent.getExtras().getString("message").startsWith("danmu.")){
+                sendDanmu(intent.getExtras().getString("message").substring(6));
+            }
+        }
+    };
 }
 

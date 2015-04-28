@@ -112,7 +112,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity1");
+//                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity1");
+                CommonUtils.sendMessage("enter", "picture");
                 startActivity1();
             }
         });
@@ -121,7 +122,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity2");
+//                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity2");
+                CommonUtils.sendMessage("enter", "video");
                 startActivity2();
             }
         });
@@ -130,7 +132,8 @@ public class MainActivity extends Activity {
 
             @Override
             public void onClick(View v) {
-                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity3");
+//                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity3");
+                CommonUtils.sendMessage("enter", "note");
                 startActivity3();
             }
         });
@@ -140,8 +143,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
 
-                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity4");
-                startActivity4();
+//                CommonUtils.sendMessage("message","ZYKDemo:MainActivity:startActivity4");
+//                startActivity4();
             }
         });
     }

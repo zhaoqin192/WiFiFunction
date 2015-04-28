@@ -60,34 +60,39 @@ public class DragImageActivity extends FragmentActivity {
         pager.setScrollPageToSendMessageListener(new JellyViewPager.ScrollPageToSendMessageListener() {
             @Override
             public void sendMessage(String message) {
-                CommonUtils.sendMessage("message", "ZYKDemo:DragImageActivity:" + message);
+//                CommonUtils.sendMessage("message", "ZYKDemo:DragImageActivity:" + message);
+                CommonUtils.sendMessage("picture sliding", "");
             }
         });
+        IntentFilter intentFilter = new IntentFilter("socketIO");
+        registerReceiver(broadcastReceiver, intentFilter);
+    }
 
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.e("test", "收到了" + intent.getExtras().getString("message"));
-                String message = intent.getExtras().getString("message");
-                if(message.equals("up")){
-                    if (pager != null)
-                        pager.showPre(true);
-                }else if(message.equals("down")){
-                    if (pager != null)
-                        pager.showNext(true);
-                }else if(message.equals("finishDragImageActivity")){
-                    finishAcitvity();
-                }
-            }
-        },new IntentFilter("DragImageActivity"));
-	}
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            Log.e("test", "收到了" + intent.getExtras().getString("message"));
+//            String message = intent.getExtras().getString("message");
+//            if(message.equals("up")){
+//                if (pager != null)
+//                    pager.showPre(true);
+//            }else if(message.equals("down")){
+//                if (pager != null)
+//                    pager.showNext(true);
+//            }else if(message.equals("finishDragImageActivity")){
+//                finishAcitvity();
+//            }
+//            if(intent.getExtras().equals(""))
+        }
+    };
 
     public void onClick(View view) {
         int id = view.getId();
         switch (id) {
             case R.id.closeDrawImage:
                 finishAcitvity();
-                CommonUtils.sendMessage("message", "ZYKDemo:DragImageActivity:finishDragImageActivity");
+//                CommonUtils.sendMessage("message", "ZYKDemo:DragImageActivity:finishDragImageActivity");
+                CommonUtils.sendMessage("exit", "picture");
                 break;
             default:
                 break;
@@ -105,10 +110,16 @@ public class DragImageActivity extends FragmentActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode== KeyEvent.KEYCODE_BACK){
             finishAcitvity();
-            CommonUtils.sendMessage("message","ZYKDemo:DragImageActivity:finishDragImageActivity");
+//            CommonUtils.sendMessage("message","ZYKDemo:DragImageActivity:finishDragImageActivity");
+            CommonUtils.sendMessage("exit", "picture");
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
 }

@@ -92,16 +92,18 @@ public class SettingsFragment extends Fragment{
                     int wcgID = wifiInfo.getNetworkId();
                     wifiAdmin.disconnectWifi(wcgID);
                     flag = true;
-                    showDialog("正在断开连接...");
+//                    showDialog("正在断开连接...");
                 } else {
-                    Log.e("zzzz", deviceMSG.getMacAddress());
-                    Log.e("zzzz", deviceMSG.getPasswd());
-                    wifiAdmin.openWifi();
+//                    Log.e("zzzz", deviceMSG.getMacAddress());
+//                    Log.e("zzzz", deviceMSG.getPasswd());
+//                    wifiAdmin.openWifi();
 //                    wifiAdmin.acquireWifiLock();
 //                    wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(deviceMSG.getMacAddress(), deviceMSG.getPasswd(), 3));
 
-                    connection();
-                    showDialog("正在连接设备...");
+//                    connection();
+//                    showDialog("正在连接设备...");
+                    Intent intent = new Intent("android.settings.WIFI_SETTINGS");
+                    startActivity(intent);
                     flag = true;
                 }
             }
@@ -123,7 +125,7 @@ public class SettingsFragment extends Fragment{
 //                        wifi_text.setText(wifi_name.replaceAll("\"", ""));
                         wifi_text.setText(wifi_name);
                         if (flag) {
-                            progressDialog.hide();
+//                            progressDialog.hide();
                             flag = false;
                         }
                         break;
@@ -131,7 +133,7 @@ public class SettingsFragment extends Fragment{
                         link.setBackgroundResource(R.drawable.btn_link_background);
                         wifi_text.setText("未连接指定设备");
                         if (flag) {
-                            progressDialog.hide();
+//                            progressDialog.hide();
                             flag = false;
                         }
                         break;

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.databases.GroupMSG;
+import com.ebupt.wifibox.databases.RecordMSG;
 import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
 import com.ebupt.wifibox.settings.SettingsFragment;
@@ -234,6 +235,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 Intent intent = new Intent("addGroup");
                 sendBroadcast(intent);
                 dialog.hide();
+
+                RecordMSG recordMSG = new RecordMSG();
+                recordMSG.setDownload_sign(0);
+                recordMSG.setUpload_sign(0);
+                recordMSG.setNo_upload_passports(0);
+                recordMSG.setUpload_passports(0);
+                recordMSG.setGroup_id(str.toString());
+                recordMSG.saveThrows();
             }
         });
 

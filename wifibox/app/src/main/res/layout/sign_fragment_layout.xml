@@ -3,10 +3,32 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <View
+    <RelativeLayout
+        android:id="@+id/sign_fragment_top"
+        android:layout_below="@id/group_list_top"
+        android:background="#797979"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#747474" />
+        android:layout_height="20dp">
+        <TextView
+            android:id="@+id/sign_fragment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已下载签到"
+            android:textColor="#FFFFFF"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            />
+        <TextView
+            android:id="@+id/sign_fragment_text_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已上传签到"
+            android:textColor="#FFFFFF"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            />
+    </RelativeLayout>
     <ExpandableListView
         android:id="@+id/sign_listview"
         android:layout_width="match_parent"

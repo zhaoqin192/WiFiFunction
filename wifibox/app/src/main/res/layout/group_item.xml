@@ -9,8 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginTop="40dp"
         android:layout_centerVertical="true"
         android:text="团名"
         android:textSize="21sp"
@@ -58,5 +57,21 @@
         android:layout_toLeftOf="@id/group_item_date"
         android:layout_centerVertical="true"
         />
-
+    <TextView
+        android:id="@+id/group_item_passport_count"
+        android:layout_below="@id/group_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="已上传护照"
+        android:layout_marginLeft="20dp"
+        />
+    <TextView
+        android:id="@+id/group_item_list_count"
+        android:layout_toRightOf="@id/group_item_passport_count"
+        android:layout_below="@id/group_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="已上传列表"
+        android:layout_marginLeft="20dp"
+        />
 </RelativeLayout>

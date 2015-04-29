@@ -22,6 +22,9 @@ import com.ebupt.wifibox.databases.VisitorsMSG;
 
 import java.util.List;
 
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
+
 /**
  * Created by zhaoqin on 4/21/15.
  */

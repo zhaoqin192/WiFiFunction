@@ -142,6 +142,10 @@ public class WifiAdmin {
     // 添加一个网络并连接
     public void addNetwork(WifiConfiguration wcg) {
 //        int wcgID = mWifiManager.addNetwork(wcg);
+
+
+
+
         int temp = mWifiManager.addNetwork(wcg);
 //        int wcgID = wcg.networkId;
 //        Log.e("addnetwork", temp + "");
@@ -166,7 +170,7 @@ public class WifiAdmin {
 
     public WifiConfiguration CreateWifiInfo(String SSID, String Password, int Type)
     {
-        mWifiManager.disconnect();
+//        mWifiManager.disconnect();
         WifiConfiguration config = new WifiConfiguration();
         config.allowedAuthAlgorithms.clear();
         config.allowedGroupCiphers.clear();
@@ -200,20 +204,28 @@ public class WifiAdmin {
         }
         if(Type == 3) //WIFICIPHER_WPA
         {
-            config.preSharedKey = "\""+Password+"\"";
-//            config.preSharedKey = Password;
+            config.preSharedKey = "\"" + Password + "\"";
             config.hiddenSSID = true;
+
             config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+
             config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
-            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
-            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
-//            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
             config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+
+            config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
             config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+
+            config.allowedProtocols.set(WifiConfiguration.Protocol.WPA);
+            config.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
+
             config.status = WifiConfiguration.Status.ENABLED;
         }
 
         Log.e("ttttt", config.SSID + "  " + config.preSharedKey);
+
+
         return config;
     }
 

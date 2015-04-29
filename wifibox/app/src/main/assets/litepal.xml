@@ -8,5 +8,6 @@
         <mapping class="com.ebupt.wifibox.databases.VisitorsMSG"></mapping>
         <mapping class="com.ebupt.wifibox.databases.DownVisitorMSG"></mapping>
         <mapping class="com.ebupt.wifibox.databases.DeviceMSG"></mapping>
+        <mapping class="com.ebupt.wifibox.databases.RecordMSG"></mapping>
     </list>
 </litepal>

@@ -27,7 +27,7 @@ public class TestFragment extends Fragment {
 		final View tv2 = root.findViewById(R.id.textView2);
 		ImageView iv = (ImageView) root.findViewById(R.id.imageView1);
 		Bundle bundle = getArguments();
-		int res = bundle.getInt(Constant.KEY, R.drawable.a);
+		int res = bundle.getInt(Constant.KEY, R.drawable.image1);
 		iv.setImageResource(res);
 		iv.setOnClickListener(new OnClickListener() {
 			@Override

@@ -3,6 +3,7 @@ package com.ebupt.wifibox;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -149,6 +150,7 @@ public class LoginActivity extends Activity{
                 userMSG.saveThrows();
                 myApp.phone = login_name.getText().toString();
                 Networks.login(LoginActivity.this, userMSG.getPhone(), userMSG.getPasswd());
+                uploadpassports();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -158,5 +160,27 @@ public class LoginActivity extends Activity{
         login_name = (BootstrapEditText) findViewById(R.id.login_edit_name);
 
         login_passwd = (BootstrapEditText) findViewById(R.id.login_edit_passwd);
+    }
+
+    public void uploadpassports() {
+        Log.e("passports", "uploadpassports");
+        StringBuffer str2 = new StringBuffer("[");
+        for (int i = 0; i < 4; i++) {
+            str2.append("{\"names\":");
+            str2.append("\"张三\",");
+            str2.append("\"phone\":");
+            str2.append("\"123456\",");
+            str2.append("\"mac\":");
+
+            if (i != 3) {
+                str2.append("\"123456\"},");
+            } else {
+                str2.append("\"123456\"}");
+            }
+        }
+        str2.append("]");
+        Networks.userInfos(LoginActivity.this, myApp.phone, "mac", "tourid", "gs", str2.toString());
+        Networks.passports(LoginActivity.this, myApp.phone, "mac", "tourid", "gs", str2.toString());
+        Networks.getrebates(LoginActivity.this, "tourid");
     }
 }

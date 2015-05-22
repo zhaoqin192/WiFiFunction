@@ -24,10 +24,15 @@ import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 import com.ebupt.wifibox.networks.Networks;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhaoqin on 4/21/15.
@@ -44,6 +49,7 @@ public class GroupList extends Activity{
     private StringBuffer str1;
     private StringBuffer str2;
     private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -207,5 +213,34 @@ public class GroupList extends Activity{
                 return;
             }
         });
+    }
+
+    public void uploadpassports(View view) {
+        Log.e("passports", "uploadpassports");
+        str2 = new StringBuffer("[");
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < 4; i++) {
+//            str2.append("{\"names\":");
+//            str2.append("\"张三\",");
+//            str2.append("\"phone\":");
+//            str2.append("\"123456\",");
+//            str2.append("\"mac\":");
+//
+//            if (i != 3) {
+//                str2.append("\"123456\"},");
+//            } else {
+//                str2.append("\"123456\"}");
+//            }
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("phone", "123");
+                jsonObject.put("passport", "345");
+                jsonArray.put(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        str2.append("]");
+        Networks.passports(GroupList.this, myApp.phone, "mac", "tourid", "gs", str2.toString());
     }
 }

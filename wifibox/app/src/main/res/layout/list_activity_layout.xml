@@ -17,6 +17,7 @@
             android:src="@drawable/upload"
             android:layout_centerVertical="true"
             android:layout_margin="20dp"
+            android:onClick="uploadpassports"
             />
         <ImageView
             android:id="@+id/group_list_add"

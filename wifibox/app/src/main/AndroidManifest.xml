@@ -50,6 +50,8 @@
         <activity
             android:name=".group.list.ListActivity"
             android:screenOrientation="portrait" />
+
+        <service android:name=".PollService" />
     </application>
 
 </manifest>

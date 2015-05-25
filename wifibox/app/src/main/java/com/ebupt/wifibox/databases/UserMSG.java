@@ -10,6 +10,7 @@ public class UserMSG extends DataSupport{
     private String passwd;
     private Boolean memory;
     private Boolean auto;
+    private String noticetime;
 
     public String getPasswd() {
         return passwd;
@@ -41,5 +42,13 @@ public class UserMSG extends DataSupport{
 
     public void setAuto(Boolean auto) {
         this.auto = auto;
+    }
+
+    public void setNoticetime(String noticetime) {
+        this.noticetime = noticetime;
+    }
+
+    public String getNoticetime() {
+        return noticetime;
     }
 }

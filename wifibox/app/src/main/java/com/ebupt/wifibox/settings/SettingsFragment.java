@@ -1,5 +1,7 @@
 package com.ebupt.wifibox.settings;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,15 +17,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.LoginActivity;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.DeviceMSG;
 import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.settings.wifi.WifiAdmin;
 
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
 import java.util.List;
@@ -50,6 +59,10 @@ public class SettingsFragment extends Fragment{
     private boolean flag;
     private ProgressDialog progressDialog;
     private Timer timer;
+    private Dialog dialog;
+    private TextView timetext;
+    private Button timebutton;
+
 
 
     @Nullable
@@ -68,6 +81,16 @@ public class SettingsFragment extends Fragment{
         deviceMSG = DataSupport.findFirst(DeviceMSG.class);
 
         login_text = (TextView) contactslayout.findViewById(R.id.settings_login_text);
+
+        timetext = (TextView) contactslayout.findViewById(R.id.settings_notice_time);
+        timebutton = (Button) contactslayout.findViewById(R.id.settings_notice_button);
+        timebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showdialog();
+                UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
+            }
+        });
 
         UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
         login_text.setText(userMSG.getPhone());
@@ -239,5 +262,41 @@ public class SettingsFragment extends Fragment{
     public void onPause() {
         super.onPause();
         timer.cancel();
+    }
+
+    private void showdialog() {
+        LayoutInflater inflaterDI = LayoutInflater.from(getActivity());
+        LinearLayout layout = (LinearLayout) inflaterDI.inflate(R.layout.dialog_changetime_layout, null);
+        dialog = new AlertDialog.Builder(getActivity()).create();
+        dialog.show();
+        dialog.getWindow().setContentView(layout);
+        dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+        final BootstrapEditText edit = (BootstrapEditText) layout.findViewById(R.id.changetime_edit);
+
+        Button yes = (Button) layout.findViewById(R.id.changetime_group_ok);
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!edit.getText().equals("")) {
+                    UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
+                    userMSG.setNoticetime(edit.getText().toString());
+                    userMSG.saveThrows();
+                    timetext.setText(userMSG.getNoticetime() + "分钟");
+                    Intent intent = new Intent("updateTime");
+                    getActivity().sendBroadcast(intent);
+                }
+                dialog.hide();
+            }
+        });
+
+        Button no = (Button) layout.findViewById(R.id.changetime_group_cancel);
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.hide();
+            }
+        });
+
     }
 }

@@ -63,6 +63,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private ImageView titleright;
     private Dialog dialog;
     private MyApp myApp;
+    private Intent startIntent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,11 @@ public class MainActivity extends Activity implements View.OnClickListener{
         initViews();
         fragmentManager = getFragmentManager();
         setTabSelection(0);
+
+        if (myApp.pollService == null) {
+            startIntent = new Intent(this, PollService.class);
+            startService(startIntent);
+        }
 
 
         IntentFilter login_success = new IntentFilter("login_success");
@@ -329,6 +335,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
+        stopService(startIntent);
     }
 
     private class BtnOnClickListener implements View.OnClickListener {

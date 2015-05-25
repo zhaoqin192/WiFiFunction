@@ -87,8 +87,60 @@
         </RelativeLayout>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/settings_about"
+        android:id="@+id/settings_notice"
         android:layout_below="@id/settings_wifi"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:background="#cccccc"
+            android:layout_width="match_parent"
+            android:layout_height="30dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="18dp"
+                android:layout_centerVertical="true"
+                android:text="脱团提醒设置"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/settings_notice_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="脱团间隔时间："
+                android:textSize="18sp"
+                android:textColor="#747474"
+                android:layout_marginLeft="30sp"
+                android:layout_centerVertical="true"
+                />
+            <TextView
+                android:id="@+id/settings_notice_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="30分钟"
+                android:textSize="18sp"
+                android:textColor="#747474"
+                android:layout_toRightOf="@id/settings_notice_text"
+                android:layout_centerVertical="true"
+                />
+            <Button
+                android:id="@+id/settings_notice_button"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_width="80dp"
+                android:layout_height="30dp"
+                android:background="@drawable/btn_changetime_background"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/settings_about"
+        android:layout_below="@id/settings_notice"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

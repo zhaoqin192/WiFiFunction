@@ -45,6 +45,7 @@ public class ListActivity extends Activity{
         TextView titletext = (TextView) findViewById(R.id.myTitle);
         intent = getIntent();
         titletext.setText(intent.getStringExtra("name"));
+
         TextView backtext = (TextView) findViewById(R.id.myBack_text);
         backtext.setVisibility(View.VISIBLE);
         backtext.setText("团管理");
@@ -165,7 +166,10 @@ public class ListActivity extends Activity{
             case 0:
                 tabupload.setImageResource(R.drawable.tab_upload_hot);
                 if (uploadFragment == null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("groupid", intent.getStringExtra("groupid"));
                     uploadFragment = new UploadFragment();
+                    uploadFragment.setArguments(bundle);
                     transaction.add(R.id.group_list_fragment, uploadFragment);
                 } else {
                     transaction.show(uploadFragment);
@@ -204,6 +208,7 @@ public class ListActivity extends Activity{
         if (signFragment != null) {
             transaction.hide(signFragment);
         }
-
     }
+
+
 }

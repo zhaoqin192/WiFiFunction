@@ -12,12 +12,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.ebupt.wifibox.MyApp;
+import com.ebupt.wifibox.databases.GroupMSG;
+import com.ebupt.wifibox.databases.UserMSG;
+import com.ebupt.wifibox.databases.VisitorsMSG;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zhaoqin on 4/20/15.
@@ -35,26 +40,6 @@ public class Networks {
         HashMap<String, String> params = new HashMap<>();
         params.put("phoneNum", phone);
         params.put("password", passwd);
-//        JSONObject params = new JSONObject();
-//        params.put("phoneNum", phone);
-//        params.put("password", passwd);
-
-//        try {
-//            JSONArray params2 = new JSONArray();
-//            JSONObject param3 = new JSONObject();
-//            param3.put("phone", "13411111111");
-//            param3.put("passport", "123231x");
-//            params2.add(param3);
-//            param3.put("phone", "13411111112");
-//            param3.put("passport", "123232x");
-//            params2.add(param3);
-//            params.put("passports", params2);
-//
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
-
-
 
         JSONObject jsonObject = new JSONObject(params);
         JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url.toString(), jsonObject,
@@ -207,7 +192,7 @@ public class Networks {
         requestQueue.add(jsonRequest);
     }
 
-    public static void getTours(Context context) {
+    public static void getTours(final Context context) {
         final String TAG = "getTours";
         requestQueue = Volley.newRequestQueue(context);
         myApp = (MyApp) context.getApplicationContext();
@@ -221,6 +206,24 @@ public class Networks {
                         @Override
                         public void onResponse(JSONObject jsonObject) {
                             Log.e(TAG, jsonObject.toString());
+                            try {
+                                JSONArray array = jsonObject.getJSONArray("tours");
+                                int size = array.length();
+                                for (int i = 0; i < size; i++) {
+                                    JSONObject object = (JSONObject) array.get(i);
+                                    GroupMSG groupMSG = new GroupMSG();
+                                    groupMSG.setGroup_name(object.getString("tourname"));
+                                    groupMSG.setGroup_id(object.getString("tourid"));
+                                    groupMSG.setGroup_date("none");
+                                    groupMSG.setGroup_count("none");
+                                    List<GroupMSG> list = DataSupport.where("group_id = ?", object.getString("tourid")).find(GroupMSG.class);
+                                    if (list.size() == 0) {
+                                        groupMSG.saveThrows();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -229,6 +232,8 @@ public class Networks {
                 }
             });
             requestQueue.add(jsonRequest);
+            Intent intent = new Intent("updateGroup");
+            context.sendBroadcast(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -288,5 +293,81 @@ public class Networks {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void pollGroup(Context context) {
+        final String TAG = "pollGroup";
+        requestQueue = Volley.newRequestQueue(context);
+        myApp = (MyApp) context.getApplicationContext();
+        String url = "http://10.1.29.254:28080/AppInterface/getTours";
+
+        try {
+            UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("guide", userMSG.getPhone());
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getPassports(Context context, final String tourid) {
+        final String TAG = "getPassports";
+        requestQueue = Volley.newRequestQueue(context);
+        String url = "http://10.1.29.254:28080/AppInterface/getPassports";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("tourid", tourid);
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                            try {
+                                JSONArray array = jsonObject.getJSONArray("passports");
+                                int size = array.length();
+                                for (int i = 0; i < size; i++) {
+                                    JSONObject object = (JSONObject) array.get(i);
+                                    VisitorsMSG visitor = new VisitorsMSG();
+                                    visitor.setGroupid(tourid);
+                                    visitor.setName(object.getString("name"));
+                                    visitor.setPassports("passport");
+                                    visitor.setBrokerage("rebate");
+                                    List<VisitorsMSG> list = DataSupport.where("tourid = ? and passport = ?", tourid, object.getString("passport"))
+                                            .find(VisitorsMSG.class);
+                                    if (list.size() == 0) {
+                                        visitor.saveThrows();
+                                    }
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+            Intent intent = new Intent("getVisitors");
+            context.sendBroadcast(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

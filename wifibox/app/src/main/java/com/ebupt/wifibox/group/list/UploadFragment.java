@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.VisitorsMSG;
+import com.ebupt.wifibox.networks.Networks;
 
 import org.litepal.crud.DataSupport;
 
@@ -30,6 +31,9 @@ public class UploadFragment extends Fragment {
     private ExpandableListView listView;
     private ListAdapter adapter;
     private List<VisitorsMSG> datalist;
+    private String groupid;
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,12 +44,8 @@ public class UploadFragment extends Fragment {
 
         datalist = new ArrayList<>();
 
-        List<VisitorsMSG> temp = DataSupport.findAll(VisitorsMSG.class);
-        if (temp.size() != 0) {
-            for (VisitorsMSG visitorsMSG : temp) {
-                datalist.add(0, visitorsMSG);
-            }
-        }
+
+        groupid = getArguments().getString("groupid");
 
         adapter = new ListAdapter(getActivity(), datalist);
         listView.setAdapter(adapter);
@@ -54,9 +54,13 @@ public class UploadFragment extends Fragment {
         IntentFilter addVisitor = new IntentFilter("addVisitor");
         IntentFilter deleteVisitor = new IntentFilter("deleteVisitor");
         IntentFilter updateVisitor = new IntentFilter("updateVisitor");
+        IntentFilter getVistors = new IntentFilter("getVisitors");
+        getActivity().registerReceiver(broadcastReceiver, getVistors);
         getActivity().registerReceiver(broadcastReceiver, addVisitor);
         getActivity().registerReceiver(broadcastReceiver, deleteVisitor);
         getActivity().registerReceiver(broadcastReceiver, updateVisitor);
+
+        Networks.getPassports(getActivity(), groupid);
         return contactsLayout;
     }
 
@@ -72,6 +76,14 @@ public class UploadFragment extends Fragment {
             }
             if (intent.getAction().equals("updateVisitor")) {
                 Toast.makeText(getActivity(), "修改成功", Toast.LENGTH_SHORT).show();
+            }
+            if (intent.getAction().equals("getVisitors")) {
+                List<VisitorsMSG> temp = DataSupport.where("groupid = ?", groupid).find(VisitorsMSG.class);
+                if (temp.size() != 0) {
+                    for (VisitorsMSG visitorsMSG : temp) {
+                        datalist.add(0, visitorsMSG);
+                    }
+                }
             }
             adapter.notifyDataSetChanged();
             int count = adapter.getGroupCount();

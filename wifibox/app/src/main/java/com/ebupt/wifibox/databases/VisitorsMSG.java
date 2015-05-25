@@ -9,16 +9,15 @@ public class VisitorsMSG extends DataSupport{
     private String name;
     private String passports;
     private String groupid;
+    private String brokerage;
 
-//    public VisitorsMSG(String name, String passports) {
-//        super();
-//        this.name = name;
-//        this.passports = passports;
-//    }
-//
-//    public VisitorsMSG() {
-//
-//    }
+    public void setBrokerage(String brokerage) {
+        this.brokerage = brokerage;
+    }
+
+    public String getBrokerage() {
+        return brokerage;
+    }
 
     public void setName(String name) {
         this.name = name;

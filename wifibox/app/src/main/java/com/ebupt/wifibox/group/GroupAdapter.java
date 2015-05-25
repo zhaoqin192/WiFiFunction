@@ -55,9 +55,14 @@ public class GroupAdapter extends BaseAdapter{
         holder.item_count.setText(groupMSG.getGroup_count());
 
         List<RecordMSG> record = DataSupport.where("group_id = ?", groupMSG.getGroup_id()).find(RecordMSG.class);
-        RecordMSG recordMSG = record.get(0);
-        holder.item_passport.setText("已上传护照:" + recordMSG.getUpload_passports());
-        holder.item_list.setText("已上传列表:" + recordMSG.getNo_upload_passports());
+        if (record.size() != 0) {
+            RecordMSG recordMSG = record.get(0);
+            holder.item_passport.setText("已上传护照:" + recordMSG.getUpload_passports());
+            holder.item_list.setText("已上传列表:" + recordMSG.getNo_upload_passports());
+        } else {
+            holder.item_passport.setText("已上传护照:" + 0);
+            holder.item_list.setText("已上传列表:" + 0);
+        }
 
         return convertView;
     }

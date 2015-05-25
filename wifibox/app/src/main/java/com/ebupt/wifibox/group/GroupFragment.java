@@ -22,6 +22,7 @@ import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.group.list.GroupList;
 import com.ebupt.wifibox.group.list.ListActivity;
+import com.ebupt.wifibox.networks.Networks;
 
 import org.litepal.crud.DataSupport;
 
@@ -48,22 +49,6 @@ public class GroupFragment extends Fragment {
 
         datalist = new ArrayList<>();
 
-
-        List<GroupMSG> temp = DataSupport.findAll(GroupMSG.class);
-        if (temp.size() != 0) {
-            for (GroupMSG groupMSG : temp) {
-                datalist.add(0, groupMSG);
-            }
-        }
-//        GroupMSG groupMSG = null;
-//        for (int i = 0; i < 4; i++) {
-//            groupMSG = new GroupMSG();
-//            groupMSG.setGroup_name("1");
-//            groupMSG.setGroup_date("1");
-//            groupMSG.setGroup_count("1");
-//            datalist.add(groupMSG);
-//        }
-
         adapter = new GroupAdapter(getActivity(), datalist);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -85,7 +70,11 @@ public class GroupFragment extends Fragment {
         });
 
         IntentFilter addGroup = new IntentFilter("addGroup");
+        IntentFilter updateGroup = new IntentFilter("updateGroup");
         getActivity().registerReceiver(broadcastReceiver, addGroup);
+        getActivity().registerReceiver(broadcastReceiver, updateGroup);
+
+        Networks.getTours(getActivity());
 
         return contactsLayout;
     }
@@ -97,6 +86,16 @@ public class GroupFragment extends Fragment {
                 Log.e(TAG, "addGroup");
                 GroupMSG groupMSG = DataSupport.findLast(GroupMSG.class);
                 datalist.add(0, groupMSG);
+                adapter.notifyDataSetChanged();
+            }
+            if (intent.getAction().equals("updateGroup")) {
+                Log.e(TAG, "updateGroup");
+                List<GroupMSG> list = DataSupport.findAll(GroupMSG.class);
+                int size = list.size();
+                Log.e(TAG, size + "");
+                for (int i = 0; i < size; i++) {
+                    datalist.add(list.get(i));
+                }
                 adapter.notifyDataSetChanged();
             }
         }

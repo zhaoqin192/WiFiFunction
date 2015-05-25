@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="@drawable/list_item_color"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="110dp">
     <TextView
         android:id="@+id/group_list_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="10dp"
         android:text="游客姓名"
         android:textSize="20sp"
         android:textColor="#363636"
@@ -23,17 +23,6 @@
         android:text="G21903876"
         android:textSize="16sp"
         />
-    <TextView
-        android:id="@+id/group_list_item_brokerage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/group_list_item_name"
-        android:text="返现金额:200"
-        android:textSize="20sp"
-        android:textColor="#C8483B"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="40dp"
-        />
     <ImageView
         android:id="@+id/group_list_item_img"
         android:layout_width="30dp"
@@ -42,5 +31,16 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="20dp"
+        />
+    <TextView
+        android:id="@+id/group_list_item_brokerage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/group_list_item_img"
+        android:layout_marginRight="50dp"
+        android:text="返现金额:200"
+        android:textSize="20sp"
+        android:textColor="#C8483B"
+        android:layout_centerVertical="true"
         />
 </RelativeLayout>

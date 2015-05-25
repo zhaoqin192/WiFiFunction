@@ -114,7 +114,7 @@ public class ListAdapter extends BaseExpandableListAdapter{
         VisitorsMSG visitorsMSG = list.get(groupPosition);
         holder.name.setText(visitorsMSG.getName());
         holder.passports.setText(visitorsMSG.getPassports());
-        holder.passports.setText(visitorsMSG.getBrokerage());
+        holder.brokerage.setText("返现金额:" + visitorsMSG.getBrokerage());
         if (isExpanded) {
             holder.img.setImageResource(R.drawable.close);
         } else {

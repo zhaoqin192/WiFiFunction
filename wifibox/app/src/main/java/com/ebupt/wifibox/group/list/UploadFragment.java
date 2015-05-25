@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,7 @@ public class UploadFragment extends Fragment {
                 Toast.makeText(getActivity(), "修改成功", Toast.LENGTH_SHORT).show();
             }
             if (intent.getAction().equals("getVisitors")) {
+                Log.e("upload", "get");
                 List<VisitorsMSG> temp = DataSupport.where("groupid = ?", groupid).find(VisitorsMSG.class);
                 if (temp.size() != 0) {
                     for (VisitorsMSG visitorsMSG : temp) {

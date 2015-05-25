@@ -114,6 +114,7 @@ public class ListAdapter extends BaseExpandableListAdapter{
         VisitorsMSG visitorsMSG = list.get(groupPosition);
         holder.name.setText(visitorsMSG.getName());
         holder.passports.setText(visitorsMSG.getPassports());
+        holder.passports.setText(visitorsMSG.getBrokerage());
         if (isExpanded) {
             holder.img.setImageResource(R.drawable.close);
         } else {
@@ -139,11 +140,13 @@ public class ListAdapter extends BaseExpandableListAdapter{
         TextView name;
         TextView passports;
         ImageView img;
+        TextView brokerage;
 
         public ViewHolder(View view) {
             name = (TextView) view.findViewById(R.id.group_list_item_name);
             passports = (TextView) view.findViewById(R.id.group_list_item_passport);
             img = (ImageView) view.findViewById(R.id.group_list_item_img);
+            brokerage = (TextView) view.findViewById(R.id.group_list_item_brokerage);
             view.setTag(this);
         }
     }

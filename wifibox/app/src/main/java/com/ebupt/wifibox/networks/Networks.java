@@ -344,9 +344,9 @@ public class Networks {
                                     VisitorsMSG visitor = new VisitorsMSG();
                                     visitor.setGroupid(tourid);
                                     visitor.setName(object.getString("name"));
-                                    visitor.setPassports("passport");
-                                    visitor.setBrokerage("rebate");
-                                    List<VisitorsMSG> list = DataSupport.where("tourid = ? and passport = ?", tourid, object.getString("passport"))
+                                    visitor.setPassports(object.getString("passport"));
+                                    visitor.setBrokerage(object.getString("rebate"));
+                                    List<VisitorsMSG> list = DataSupport.where("gourid = ?", tourid).where("passports = ?", object.getString("passport"))
                                             .find(VisitorsMSG.class);
                                     if (list.size() == 0) {
                                         visitor.saveThrows();

@@ -46,9 +46,12 @@ public class UploadFragment extends Fragment {
         datalist = new ArrayList<>();
 
 
+
         groupid = getArguments().getString("groupid");
 
         adapter = new ListAdapter(getActivity(), datalist);
+
+        listView.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.listview_head, null));
         listView.setAdapter(adapter);
 
 
@@ -84,6 +87,11 @@ public class UploadFragment extends Fragment {
                 if (temp.size() != 0) {
                     for (VisitorsMSG visitorsMSG : temp) {
                         datalist.add(0, visitorsMSG);
+                        datalist.add(0, visitorsMSG);
+                        datalist.add(0, visitorsMSG);
+                        datalist.add(0, visitorsMSG);
+                        datalist.add(0, visitorsMSG);
+
                     }
                 }
             }

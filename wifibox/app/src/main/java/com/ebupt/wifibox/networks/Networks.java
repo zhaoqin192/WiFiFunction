@@ -3,7 +3,6 @@ package com.ebupt.wifibox.networks;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -12,19 +11,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
-import com.ebupt.wifibox.databases.UserMSG;
+import com.ebupt.wifibox.MyApp;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.litepal.crud.DataSupport;
 
 import java.util.HashMap;
 
@@ -33,6 +24,7 @@ import java.util.HashMap;
  */
 public class Networks {
     private static RequestQueue requestQueue;
+    private static MyApp myApp;
 
 
     public static void login(final Context context, String phone, String passwd) {
@@ -215,124 +207,86 @@ public class Networks {
         requestQueue.add(jsonRequest);
     }
 
-//    public static JSONObject doPost(String url,JSONObject json){
-//        DefaultHttpClient client = new DefaultHttpClient();
-//        HttpPost post = new HttpPost(url);
-//        JSONObject response = null;
-//        try {
-//            //º”√‹
-//            //StringEntity s = new StringEntity(encode(json.toString()));
-//            StringEntity s = new StringEntity(json.toString());
-//            System.out.println("************************º”√‹«∞µƒrequest£∫"+json.toString());
-//            System.out.println("************************º”√‹∫Ûµƒrequest£∫"+s);
-//            s.setContentEncoding("UTF-8");
-//            s.setContentType("application/json");//∑¢ÀÕjson ˝æ›–Ë“™…Ë÷√contentType
-//            post.setEntity(s);
-//            HttpResponse res = client.execute(post);
-//            if(res.getStatusLine().getStatusCode() == HttpStatus.SC_OK){
-//                HttpEntity entity = res.getEntity();
-//                //String result = EntityUtils.toString(res.getEntity());// ∑µªÿjson∏Ò Ω£∫
-//                //String result = decode(EntityUtils.toString(res.getEntity()));//
-//                String result = EntityUtils.toString(res.getEntity());//
-//                //Ω‚√‹
-//                System.out.println("************************Ω‚√‹«∞µƒresponse£∫"+res.getEntity());
-//                System.out.println("************************Ω‚√‹∫Ûµƒresponse£∫"+result);
-//                response = JSONObject.fromObject(result);
-//            }
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        return response;
-//    }
+    public static void getTours(Context context) {
+        final String TAG = "getTours";
+        requestQueue = Volley.newRequestQueue(context);
+        myApp = (MyApp) context.getApplicationContext();
+        String url = "http://10.1.29.254:28080/AppInterface/getTours";
 
-//    public static String encode(String str){
-//        System.out.println("************************º”√‹∫Ûµƒstr£∫"+ConvertUtil.getEncodeKey(str));
-//        return ConvertUtil.getEncodeKey(str);
-//    }
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("guide", myApp.phone);
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
-//    public static String decode(String str){
-//        return ConvertUtil.getDecodeKey(str);
-//    }
+    public static void addTour(Context context, String tourid, String tourname) {
+        final String TAG = "addTour";
+        requestQueue = Volley.newRequestQueue(context);
+        myApp = (MyApp) context.getApplicationContext();
+        String url = "http://10.1.29.254:28080/AppInterface/addTour";
 
-//    public static JSONObject login(){
-//        String url = targetIp + "/login";
-//        String phoneNum = "13661022851";
-//        String password = "12345678";
-//        JSONObject params = new JSONObject();
-//        params.put("phoneNum", phoneNum);
-//        params.put("password", password);
-////		    params.put("TENANT_ID", "123");
-////		    params.put("NM", "’≈»˝");
-////		    params.put("BRTH_DT", "1983-01-20");
-////		    params.put("GND_CODE", "1");
-////		    JSONArray params2 = new JSONArray();
-////		    JSONObject param3 = new JSONObject();
-////		    param3.put("DOC_TP_CODE", "10100");
-////		    param3.put("DOC_NBR", "100200198301202210");
-////		    param3.put("DOC_CUST_NM", "test");
-////		    params2.add(param3);
-////		    params.put("DOCS", params2);
-//
-//        System.out.println(params);
-//        JSONObject result = doPost(url, params);
-//        return result;
-//    }
-//
-//    public static JSONObject userInfos(){
-//        String url = targetIp + "/userInfos";
-//
-//        JSONObject params = new JSONObject();
-//        params.put("guide", "13111111111");
-//        params.put("mac", "MACSXF");
-//        params.put("tourid", "1377");
-//
-//        JSONArray params2 = new JSONArray();
-//        JSONObject param3 = new JSONObject();
-//        param3.put("name", "’≈»˝");
-//        param3.put("phone", "13411111111");
-//        param3.put("mac", "123321");
-//        params2.add(param3);
-//        param3.put("name", "¿ÓÀƒ");
-//        param3.put("phone", "13411111112");
-//        param3.put("mac", "123322");
-//        params2.add(param3);
-//        params.put("userInfos", params2);
-//
-//        System.out.println(params);
-//        JSONObject result = doPost(url, params);
-//        return result;
-//    }
-//
-//    public static JSONObject passports(){
-//        String url = targetIp + "/passports";
-//
-//        JSONObject params = new JSONObject();
-//        params.put("guide", "13111111111");
-//        params.put("mac", "MACSXF");
-//        params.put("tourid", "1377");
-//
-//        JSONArray params2 = new JSONArray();
-//        JSONObject param3 = new JSONObject();
-//        param3.put("phone", "13411111111");
-//        param3.put("passport", "123231x");
-//
-//        params2.add(param3);
-//        param3.put("phone", "13411111112");
-//        param3.put("passport", "123232x");
-//        params2.add(param3);
-//        params.put("passports", params2);
-//
-//        System.out.println(params);
-//        JSONObject result = doPost(url, params);
-//        return result;
-//    }
-//
-//    public static JSONObject getRebates(){
-//        String url = targetIp + "/getRebates";
-//
-//        JSONObject params = new JSONObject();
-//        params.put("tourid", "1377");
-//        JSONObject result = doPost(url, params);
-//        return result;
-//    }
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("tourid", tourid);
+            jsonObject.put("tourname", tourname);
+            jsonObject.put("guide", myApp.phone);
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void delTour(Context context, String tourid) {
+        final String TAG = "delTour";
+        requestQueue = Volley.newRequestQueue(context);
+        myApp = (MyApp) context.getApplicationContext();
+        String url = "http://10.1.29.254:28080/AppInterface/delTour";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("tourid", tourid);
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

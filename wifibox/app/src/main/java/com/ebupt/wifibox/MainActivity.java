@@ -28,6 +28,7 @@ import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.RecordMSG;
 import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
+import com.ebupt.wifibox.message.MessageFragment;
 import com.ebupt.wifibox.settings.SettingsFragment;
 
 
@@ -39,14 +40,17 @@ import java.util.Random;
 public class MainActivity extends Activity implements View.OnClickListener{
 
     private GroupFragment groupFragment;
+    private MessageFragment messageFragment;
     private DeviceFragment deviceFragment;
     private SettingsFragment settingsFragment;
 
     private View grouplayout;
+    private View messagelayout;
     private View devicelayout;
     private View settingslayout;
 
     private ImageView tab_group;
+    private ImageView tab_message;
     private ImageView tab_device;
     private ImageView tab_settings;
 
@@ -83,14 +87,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void initViews() {
         grouplayout = findViewById(R.id.group_layout);
+        messagelayout = findViewById(R.id.message_layout);
         devicelayout = findViewById(R.id.device_layout);
         settingslayout = findViewById(R.id.settings_layout);
 
         tab_group = (ImageView) findViewById(R.id.group_image);
+        tab_message = (ImageView) findViewById(R.id.message_image);
         tab_device = (ImageView) findViewById(R.id.device_image);
         tab_settings = (ImageView) findViewById(R.id.settings_image);
 
         grouplayout.setOnClickListener(this);
+        messagelayout.setOnClickListener(this);
         devicelayout.setOnClickListener(this);
         settingslayout.setOnClickListener(this);
     }
@@ -101,11 +108,14 @@ public class MainActivity extends Activity implements View.OnClickListener{
             case R.id.group_layout:
                 setTabSelection(0);
                 break;
-            case R.id.device_layout:
+            case R.id.message_layout:
                 setTabSelection(1);
                 break;
-            case R.id.settings_layout:
+            case R.id.device_layout:
                 setTabSelection(2);
+                break;
+            case R.id.settings_layout:
+                setTabSelection(3);
                 break;
             default:
                 break;
@@ -114,6 +124,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
 
     private void clearSelection() {
         tab_group.setImageResource(R.drawable.tab_group);
+        tab_message.setImageResource(R.drawable.tab_message);
         tab_device.setImageResource(R.drawable.tab_device);
         tab_settings.setImageResource(R.drawable.tab_settings);
     }
@@ -142,6 +153,17 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 });
                 break;
             case 1:
+                tab_message.setImageResource(R.drawable.tab_message_hot);
+                if (messageFragment == null) {
+                    messageFragment = new MessageFragment();
+                    transaction.add(R.id.content, messageFragment);
+                } else {
+                    transaction.show(messageFragment);
+                }
+                titletext.setText("消息");
+                titleright.setVisibility(View.GONE);
+                break;
+            case 2:
                 tab_device.setImageResource(R.drawable.tab_device_hot);
                 if (deviceFragment == null) {
                     deviceFragment = new DeviceFragment();
@@ -152,7 +174,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 titleright.setVisibility(View.GONE);
                 titletext.setText("设备");
                 break;
-            case 2:
+            case 3:
             default:
                 tab_settings.setImageResource(R.drawable.tab_settings_hot);
                 if (settingsFragment == null) {

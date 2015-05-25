@@ -1,0 +1,13 @@
+-classpath '/Users/zhaoqin/Library/Android/sdk/platforms/android-21/android.jar'
+-d '/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/build/docs/javadoc'
+-doctitle 'AndroidBootstrap API'
+-quiet 
+-windowtitle 'AndroidBootstrap API'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/BootstrapButton.java'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/BootstrapCircleThumbnail.java'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/BootstrapEditText.java'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/BootstrapThumbnail.java'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/FontAwesome.java'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/FontAwesomeText.java'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/utils/AutoResizeTextView.java'
+'/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/wifibox/libs/AndroidBootstrap/src/com/beardedhen/androidbootstrap/utils/ImageUtils.java'

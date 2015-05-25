@@ -1,5 +1,25 @@
 apply plugin: 'com.android.application'
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        // replace with the current version of the Android plugin
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        // replace with the current version of the android-apt plugin
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+apply plugin: 'android-apt'
+def AAVersion = '3.3.1'
+
 android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
@@ -28,4 +48,17 @@ dependencies {
     compile project(':StickyListHeaders')
     compile files('libs/volley.jar')
     compile files('libs/litepal-1.1.1-src.jar')
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+        // if you have multiple outputs (when using splits), you may want to have other index than 0
+
+        // You can set optional annotation processing options here, like these commented options:
+        // logLevel 'INFO'
+        // logFile '/var/log/aa.log'
+    }
 }

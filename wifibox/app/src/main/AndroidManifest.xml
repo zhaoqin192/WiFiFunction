@@ -45,9 +45,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".group.list.GroupList"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".group.list.ListActivity"
             android:screenOrientation="portrait" />
 

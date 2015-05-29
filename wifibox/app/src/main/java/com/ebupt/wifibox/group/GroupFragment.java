@@ -20,7 +20,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.GroupMSG;
-import com.ebupt.wifibox.group.list.GroupList;
 import com.ebupt.wifibox.group.list.ListActivity;
 import com.ebupt.wifibox.networks.Networks;
 
@@ -74,7 +73,9 @@ public class GroupFragment extends Fragment {
         getActivity().registerReceiver(broadcastReceiver, addGroup);
         getActivity().registerReceiver(broadcastReceiver, updateGroup);
 
+        updateUI();
         Networks.getTours(getActivity());
+
 
         return contactsLayout;
     }
@@ -89,14 +90,7 @@ public class GroupFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
             if (intent.getAction().equals("updateGroup")) {
-                Log.e(TAG, "updateGroup");
-                List<GroupMSG> list = DataSupport.findAll(GroupMSG.class);
-                int size = list.size();
-                Log.e(TAG, size + "");
-                for (int i = 0; i < size; i++) {
-                    datalist.add(list.get(i));
-                }
-                adapter.notifyDataSetChanged();
+                updateUI();
             }
         }
     };
@@ -124,5 +118,15 @@ public class GroupFragment extends Fragment {
                 dialog.hide();
             }
         });
+    }
+
+    private void updateUI() {
+        List<GroupMSG> list = DataSupport.findAll(GroupMSG.class);
+        datalist.clear();
+        for (GroupMSG groupMSG : list) {
+            Log.e(TAG, "updateGroup");
+            datalist.add(groupMSG);
+        }
+        adapter.notifyDataSetChanged();
     }
 }

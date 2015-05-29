@@ -19,7 +19,12 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.R;
-import com.ebupt.wifibox.databases.VisitorsMSG;
+import com.ebupt.wifibox.databases.UnVisitorsMSG;
+import com.ebupt.wifibox.networks.Networks;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by zhaoqin on 4/23/15.
@@ -36,11 +41,18 @@ public class ListActivity extends Activity{
     private ImageView addVisitor;
     private Dialog dialog;
 
+    @InjectView(R.id.group_list_upload) ImageView uploadPassport;
+
+    @OnClick(R.id.group_list_upload)
+    void uploadpassport() {
+        Networks.uploadPassports(this, intent.getStringExtra("groupid"));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.list_activity_layout);
+        ButterKnife.inject(this);
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.mytitle);
         TextView titletext = (TextView) findViewById(R.id.myTitle);
         intent = getIntent();
@@ -125,14 +137,12 @@ public class ListActivity extends Activity{
                     return;
                 }
 
-                VisitorsMSG visitorsMSG = new VisitorsMSG();
+                UnVisitorsMSG visitorsMSG = new UnVisitorsMSG();
                 visitorsMSG.setGroupid(intent.getStringExtra("groupid"));
                 visitorsMSG.setName(name.getText().toString());
                 visitorsMSG.setPassports(passport.getText().toString());
+                visitorsMSG.setBrokerage("0");
                 visitorsMSG.saveThrows();
-//                datalist.add(0, visitorsMSG);
-//                adapter.notifyDataSetChanged();
-//                Toast.makeText(ListActivity.this, "添加成功", Toast.LENGTH_SHORT).show();
                 Intent add = new Intent("addVisitor");
                 sendBroadcast(add);
                 dialog.hide();
@@ -164,7 +174,7 @@ public class ListActivity extends Activity{
 
         switch (index) {
             case 0:
-                tabupload.setImageResource(R.drawable.tab_upload_hot);
+                tabupload.setImageResource(R.drawable.tab_manager_hot);
                 if (uploadFragment == null) {
                     Bundle bundle = new Bundle();
                     bundle.putString("groupid", intent.getStringExtra("groupid"));
@@ -194,7 +204,7 @@ public class ListActivity extends Activity{
     }
 
     private void clearSelection() {
-        tabupload.setImageResource(R.drawable.tab_upload);
+        tabupload.setImageResource(R.drawable.tab_manager);
         tabsign.setImageResource(R.drawable.tab_sign);
         download.setVisibility(View.GONE);
         groupadd.setVisibility(View.VISIBLE);

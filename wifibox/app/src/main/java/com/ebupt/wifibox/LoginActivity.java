@@ -106,15 +106,10 @@ public class LoginActivity extends Activity{
         if (deviceMSG == null) {
             deviceMSG = new DeviceMSG();
         }
-//            deviceMSG.setMacAddress("64:51:7e:3a:e5:14");
-//            deviceMSG.setMacAddress("66:51:7e:38:e9:80");
-//            deviceMSG.setMacAddress("00:1f:64:ec:4e:6a");//butp3---16
-//            deviceMSG.setMacAddress("6a:43:7c:0a:e8:40");//Zhao的iPhone---17
-//        deviceMSG.setMacAddress("00:1f:64:eb:4d:4d");//Cert_Download---18
         deviceMSG.setMacAddress("66:51:7e:38:e9:80");//EBUPT-INNER-WIFI
         deviceMSG.setPasswd("1082325588");
-            deviceMSG.setLinkflag(false);
-            deviceMSG.saveThrows();
+        deviceMSG.setLinkflag(false);
+        deviceMSG.saveThrows();
     }
 
     private void initViews() {
@@ -136,21 +131,9 @@ public class LoginActivity extends Activity{
                 }
                 userMSG.setPhone(login_name.getText().toString());
                 userMSG.setPasswd(login_passwd.getText().toString());
-//                if (userMSG.getMemory()) {
-//                    userMSG.setMemory(true);
-//                } else {
-//                    userMSG.setMemory(false);
-//                    DataSupport.deleteAll(UserMSG.class);
-//                }
-//                if (userMSG.getAuto()) {
-//                    userMSG.setAuto(true);
-//                } else {
-//                    userMSG.setAuto(false);
-//                }
                 userMSG.saveThrows();
                 myApp.phone = login_name.getText().toString();
                 Networks.login(LoginActivity.this, userMSG.getPhone(), userMSG.getPasswd());
-                uploadpassports();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

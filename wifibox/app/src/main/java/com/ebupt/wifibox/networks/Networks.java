@@ -13,6 +13,7 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.databases.GroupMSG;
+import com.ebupt.wifibox.databases.UnVisitorsMSG;
 import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 
@@ -35,6 +36,7 @@ public class Networks {
     public static void login(final Context context, String phone, String passwd) {
         final String TAG = "login";
         requestQueue = Volley.newRequestQueue(context);
+        myApp = (MyApp) context.getApplicationContext();
         StringBuffer url = new StringBuffer("http://10.1.29.254:28080/AppInterface/login");
 
         HashMap<String, String> params = new HashMap<>();
@@ -214,11 +216,13 @@ public class Networks {
                                     GroupMSG groupMSG = new GroupMSG();
                                     groupMSG.setGroup_name(object.getString("tourname"));
                                     groupMSG.setGroup_id(object.getString("tourid"));
-                                    groupMSG.setGroup_date("none");
-                                    groupMSG.setGroup_count("none");
+                                    groupMSG.setGroup_date(object.getString("createtime"));
+                                    groupMSG.setGroup_count(object.getString("count"));
                                     List<GroupMSG> list = DataSupport.where("group_id = ?", object.getString("tourid")).find(GroupMSG.class);
                                     if (list.size() == 0) {
                                         groupMSG.saveThrows();
+                                        Intent intent = new Intent("updateGroup");
+                                        context.sendBroadcast(intent);
                                     }
                                 }
                             } catch (JSONException e) {
@@ -232,8 +236,7 @@ public class Networks {
                 }
             });
             requestQueue.add(jsonRequest);
-            Intent intent = new Intent("updateGroup");
-            context.sendBroadcast(intent);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -323,7 +326,7 @@ public class Networks {
         }
     }
 
-    public static void getPassports(Context context, final String tourid) {
+    public static void getPassports(final Context context, final String tourid) {
         final String TAG = "getPassports";
         requestQueue = Volley.newRequestQueue(context);
         String url = "http://10.1.29.254:28080/AppInterface/getPassports";
@@ -350,6 +353,8 @@ public class Networks {
                                             .find(VisitorsMSG.class);
                                     if (list.size() == 0) {
                                         visitor.saveThrows();
+                                        Intent intent = new Intent("getVisitors");
+                                        context.sendBroadcast(intent);
                                     }
                                 }
                             } catch (JSONException e) {
@@ -363,11 +368,75 @@ public class Networks {
                 }
             });
             requestQueue.add(jsonRequest);
-            Intent intent = new Intent("getVisitors");
-            context.sendBroadcast(intent);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
+    public static void uploadPassports(final Context context, final String groupid) {
+        final String TAG = "uploadPassports";
+        requestQueue = Volley.newRequestQueue(context);
+        myApp = (MyApp) context.getApplicationContext();
+        String url = "http://10.1.29.254:28080/AppInterface/uploadPassports";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("guide", myApp.phone);
+            jsonObject.put("tourid", groupid);
+            jsonObject.put("mac", "12345678");
+            final List<UnVisitorsMSG> list = DataSupport.findAll(UnVisitorsMSG.class);
+            final int size = list.size();
+            JSONArray array = new JSONArray();
+            if (size != 0) {
+                for (int i = 0; i < size; i++) {
+                    JSONObject object = new JSONObject();
+                    UnVisitorsMSG unVisitorsMSG = list.get(i);
+                    object.put("name", unVisitorsMSG.getName());
+                    object.put("passport", unVisitorsMSG.getPassports());
+                    array.put(object);
+                }
+            }
+            jsonObject.put("passports", array);
+
+            final JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                            try {
+                                if (jsonObject.getBoolean("status")) {
+                                    if (size != 0) {
+                                        for (int i = 0; i < size; i++) {
+                                            VisitorsMSG visitorsMSG = new VisitorsMSG();
+                                            UnVisitorsMSG unVisitorsMSG = list.get(i);
+                                            visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
+                                            visitorsMSG.setGroupid(unVisitorsMSG.getGroupid());
+                                            visitorsMSG.setPassports(unVisitorsMSG.getPassports());
+                                            visitorsMSG.setName(unVisitorsMSG.getName());
+                                            visitorsMSG.saveThrows();
+                                        }
+                                        DataSupport.deleteAll(UnVisitorsMSG.class, "groupid = ?", groupid);
+                                    }
+                                    Intent intent = new Intent("updateList");
+                                    context.sendBroadcast(intent);
+                                } else {
+                                    Intent intent = new Intent("error");
+                                    context.sendBroadcast(intent);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

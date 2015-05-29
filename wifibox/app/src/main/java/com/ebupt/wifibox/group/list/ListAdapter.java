@@ -12,6 +12,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,9 @@ import com.ebupt.wifibox.databases.VisitorsMSG;
 
 
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
 /**
@@ -59,6 +63,9 @@ public class ListAdapter extends BaseExpandableListAdapter{
         }
         final ViewHolderSon holder = (ViewHolderSon) convertView.getTag();
         final VisitorsMSG visitorsMSG = list.get(groupPosition);
+        if (visitorsMSG.getGroupid().equals("head")) {
+            return null;
+        }
         holder.delete_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,16 +116,23 @@ public class ListAdapter extends BaseExpandableListAdapter{
             new ViewHolder(convertView);
         }
         final ViewHolder holder = (ViewHolder) convertView.getTag();
-        VisitorsMSG visitorsMSG = list.get(groupPosition);
-        holder.name.setText(visitorsMSG.getName());
-        holder.passports.setText(visitorsMSG.getPassports());
-        holder.brokerage.setText("返现金额:" + visitorsMSG.getBrokerage());
-        if (isExpanded) {
-            holder.img.setImageResource(R.drawable.close);
-        } else {
-            holder.img.setImageResource(R.drawable.open);
-        }
 
+        VisitorsMSG visitorsMSG = list.get(groupPosition);
+        if (visitorsMSG.getGroupid().equals("head")) {
+            holder.head.setVisibility(View.VISIBLE);
+            holder.content.setVisibility(View.GONE);
+        } else {
+            holder.head.setVisibility(View.GONE);
+            holder.content.setVisibility(View.VISIBLE);
+            holder.name.setText(visitorsMSG.getName());
+            holder.passports.setText(visitorsMSG.getPassports());
+            holder.brokerage.setText("返现金额:" + visitorsMSG.getBrokerage());
+            if (isExpanded) {
+                holder.img.setImageResource(R.drawable.close);
+            } else {
+                holder.img.setImageResource(R.drawable.open);
+            }
+        }
         return convertView;
     }
 
@@ -139,8 +153,13 @@ public class ListAdapter extends BaseExpandableListAdapter{
         TextView passports;
         ImageView img;
         TextView brokerage;
+        @InjectView(R.id.list_head)
+        RelativeLayout head;
+        @InjectView(R.id.list_content)
+        RelativeLayout content;
 
         public ViewHolder(View view) {
+            ButterKnife.inject(this, view);
             name = (TextView) view.findViewById(R.id.group_list_item_name);
             passports = (TextView) view.findViewById(R.id.group_list_item_passport);
             img = (ImageView) view.findViewById(R.id.group_list_item_img);

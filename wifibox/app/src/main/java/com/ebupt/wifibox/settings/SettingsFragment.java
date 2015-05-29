@@ -18,11 +18,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.LoginActivity;
@@ -31,8 +29,6 @@ import com.ebupt.wifibox.databases.DeviceMSG;
 import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.settings.wifi.WifiAdmin;
 
-import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.ViewById;
 import org.litepal.crud.DataSupport;
 
 import java.util.List;

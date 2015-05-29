@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.ebupt.wifibox.R;
+import com.ebupt.wifibox.databases.UnVisitorsMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 import com.ebupt.wifibox.networks.Networks;
 
@@ -44,10 +44,14 @@ public class UploadFragment extends Fragment {
         listView.setGroupIndicator(null);
 
         datalist = new ArrayList<>();
-
-
-
         groupid = getArguments().getString("groupid");
+
+
+
+
+        updateUI();
+
+
 
         adapter = new ListAdapter(getActivity(), datalist);
 
@@ -59,12 +63,17 @@ public class UploadFragment extends Fragment {
         IntentFilter deleteVisitor = new IntentFilter("deleteVisitor");
         IntentFilter updateVisitor = new IntentFilter("updateVisitor");
         IntentFilter getVistors = new IntentFilter("getVisitors");
+        IntentFilter updatelist = new IntentFilter("updateList");
+        IntentFilter error = new IntentFilter("error");
+        getActivity().registerReceiver(broadcastReceiver, updatelist);
+        getActivity().registerReceiver(broadcastReceiver, error);
         getActivity().registerReceiver(broadcastReceiver, getVistors);
         getActivity().registerReceiver(broadcastReceiver, addVisitor);
         getActivity().registerReceiver(broadcastReceiver, deleteVisitor);
         getActivity().registerReceiver(broadcastReceiver, updateVisitor);
 
         Networks.getPassports(getActivity(), groupid);
+
         return contactsLayout;
     }
 
@@ -72,7 +81,14 @@ public class UploadFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("addVisitor")) {
-                datalist.add(0, DataSupport.findLast(VisitorsMSG.class));
+                UnVisitorsMSG unVisitorsMSG = DataSupport.findFirst(UnVisitorsMSG.class);
+                VisitorsMSG visitorsMSG = new VisitorsMSG();
+                visitorsMSG.setName(unVisitorsMSG.getName());
+                visitorsMSG.setPassports(unVisitorsMSG.getPassports());
+                visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
+                visitorsMSG.setGroupid(unVisitorsMSG.getGroupid());
+
+                datalist.add(visitorsMSG);
                 Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_SHORT).show();
             }
             if (intent.getAction().equals("deleteVisitor")) {
@@ -82,19 +98,16 @@ public class UploadFragment extends Fragment {
                 Toast.makeText(getActivity(), "修改成功", Toast.LENGTH_SHORT).show();
             }
             if (intent.getAction().equals("getVisitors")) {
-                Log.e("upload", "get");
-                List<VisitorsMSG> temp = DataSupport.where("groupid = ?", groupid).find(VisitorsMSG.class);
-                if (temp.size() != 0) {
-                    for (VisitorsMSG visitorsMSG : temp) {
-                        datalist.add(0, visitorsMSG);
-                        datalist.add(0, visitorsMSG);
-                        datalist.add(0, visitorsMSG);
-                        datalist.add(0, visitorsMSG);
-                        datalist.add(0, visitorsMSG);
-
-                    }
-                }
+                updateUI();
             }
+            if (intent.getAction().equals("error")) {
+                Toast.makeText(context, "上传失败", Toast.LENGTH_LONG).show();
+            }
+            if (intent.getAction().equals("updateList")) {
+                updateUI();
+                Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
+            }
+
             adapter.notifyDataSetChanged();
             int count = adapter.getGroupCount();
             for (int i = 0; i < count; i++) {
@@ -107,6 +120,36 @@ public class UploadFragment extends Fragment {
         }
     };
 
+    private void updateUI() {
+        datalist.clear();
+
+        VisitorsMSG head = new VisitorsMSG();
+        String str = "head";
+        head.setGroupid(str);
+        head.setName(str);
+        head.setPassports(str);
+        head.setBrokerage(str);
+        datalist.add(head);
+
+        List<VisitorsMSG> temp = DataSupport.where("groupid = ?", groupid).find(VisitorsMSG.class);
+        if (temp.size() != 0) {
+            for (VisitorsMSG visitorsMSG : temp) {
+                datalist.add(0, visitorsMSG);
+            }
+        }
+        List<UnVisitorsMSG> untemp = DataSupport.where("groupid = ?", groupid).find(UnVisitorsMSG.class);
+        int size = untemp.size();
+        if (size != 0) {
+            for (UnVisitorsMSG unVisitorsMSG : untemp) {
+                VisitorsMSG visitorsMSG = new VisitorsMSG();
+                visitorsMSG.setGroupid(unVisitorsMSG.getGroupid());
+                visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
+                visitorsMSG.setPassports(unVisitorsMSG.getPassports());
+                visitorsMSG.setName(unVisitorsMSG.getName());
+                datalist.add(visitorsMSG);
+            }
+        }
+    }
 
     @Override
     public void onDestroy() {

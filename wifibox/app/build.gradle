@@ -29,5 +29,6 @@ dependencies {
     compile files('libs/volley.jar')
     compile files('libs/litepal-1.1.1-src.jar')
     compile 'com.jakewharton:butterknife:6.1.0'
+    compile files('libs/commons-net-2.2.jar')
 }
 

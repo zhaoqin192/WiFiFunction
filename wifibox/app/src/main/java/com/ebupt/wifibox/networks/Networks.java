@@ -12,6 +12,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.ebupt.wifibox.MyApp;
+import com.ebupt.wifibox.databases.DownVisitorMSG;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
 import com.ebupt.wifibox.databases.UserMSG;
@@ -122,52 +123,48 @@ public class Networks {
         requestQueue.add(jsonRequest);
     }
 
-    public static void userInfos(Context context, String phone, String mac, String tourid, String gs, String array) {
+    public static void userInfos(Context context, String phone, String mac, String tourid) {
         final String TAG = "userInfos";
         requestQueue = Volley.newRequestQueue(context);
         StringBuffer url = new StringBuffer("http://10.1.29.254:28080/AppInterface/userInfos");
 
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("guide", phone);
-        params.put("mac", mac);
-        params.put("tourid", tourid);
-//        params.put("gs", gs);//201504177080808
-//        params.put("userInfos", array);
-        JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < 4; i++) {
-            JSONObject object = new JSONObject();
-            try {
-                object.put("name", "123");
-                object.put("phone", "123");
-                object.put("mac", "789");
-                jsonArray.put(object);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //[{names:“张三”,phone:”13411111111”,mac:”123321”},{names:“张三”,phone:”13411111111”,mac:”123321”}]
-
-        JSONObject jsonObject = new JSONObject(params);
         try {
-            jsonObject.put("userInfos", jsonArray);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("guide", phone);
+            jsonObject.put("mac", mac);
+            jsonObject.put("tourid", tourid);
+
+            JSONArray array = new JSONArray();
+            List<DownVisitorMSG> list = DataSupport.findAll(DownVisitorMSG.class);
+            int size = list.size();
+            if (size != 0) {
+                for (int i = 0; i < size; i++) {
+                    DownVisitorMSG downVisitorMSG = list.get(i);
+                    JSONObject object = new JSONObject();
+                    object.put("name", downVisitorMSG.getName());
+                    object.put("phone", downVisitorMSG.getPhone());
+                    object.put("mac", downVisitorMSG.getMac());
+                    array.put(object);
+                }
+            }
+            jsonObject.put("userInfos", array);
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url.toString(), jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url.toString(), jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        Log.e(TAG, jsonObject.toString());
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e(TAG, volleyError.toString());
-            }
-        });
-        requestQueue.add(jsonRequest);
+
     }
 
     public static void getrebates(Context context, String tourid) {

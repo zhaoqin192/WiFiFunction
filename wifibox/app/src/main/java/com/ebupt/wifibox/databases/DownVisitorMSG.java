@@ -8,14 +8,14 @@ import org.litepal.crud.DataSupport;
 public class DownVisitorMSG extends DataSupport {
     private String name;
     private String phone;
-    private String group_id;
+    private String mac;
 
-    public String getGroup_id() {
-        return group_id;
+    public String getMac() {
+        return mac;
     }
 
-    public void setGroup_id(String group_id) {
-        this.group_id = group_id;
+    public void setMac(String mac) {
+        this.mac = mac;
     }
 
     public String getName() {

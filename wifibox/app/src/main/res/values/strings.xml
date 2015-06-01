@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="ftp_ip">10.0.15.1</string>
+    <string name="ftp_user">root</string>
+    <string name="ftp_password">eb82325588</string>
+    <string name="db_path">/jffs/www/qiandao45/qiandao.db</string>
 </resources>

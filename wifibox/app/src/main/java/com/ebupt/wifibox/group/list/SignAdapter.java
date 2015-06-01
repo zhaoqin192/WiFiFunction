@@ -21,6 +21,9 @@ import com.ebupt.wifibox.databases.DownVisitorMSG;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Created by zhaoqin on 4/23/15.
  */
@@ -122,8 +125,9 @@ public class SignAdapter extends BaseExpandableListAdapter{
         }
         final ViewHolder holder = (ViewHolder) convertView.getTag();
         DownVisitorMSG downVisitorMSG = list.get(groupPosition);
-//        holder.name.setText(downVisitorMSG.getName());
-//        holder.passports.setText(downVisitorMSG.getPhone());
+        holder.name.setText(downVisitorMSG.getName());
+        holder.phone.setText(downVisitorMSG.getPhone());
+        holder.status.setText("不在线");
         if (isExpanded) {
             holder.img.setImageResource(R.drawable.close);
         } else {
@@ -144,14 +148,12 @@ public class SignAdapter extends BaseExpandableListAdapter{
     }
 
     class ViewHolder {
-        TextView name;
-        TextView passports;
-        ImageView img;
-
+        @InjectView(R.id.group_list_item_name) TextView name;
+        @InjectView(R.id.group_list_item_passport) TextView phone;
+        @InjectView(R.id.group_list_item_brokerage) TextView status;
+        @InjectView(R.id.group_list_item_img) ImageView img;
         public ViewHolder(View view) {
-            name = (TextView) view.findViewById(R.id.group_list_item_name);
-            passports = (TextView) view.findViewById(R.id.group_list_item_passport);
-            img = (ImageView) view.findViewById(R.id.group_list_item_img);
+            ButterKnife.inject(this, view);
             view.setTag(this);
         }
     }

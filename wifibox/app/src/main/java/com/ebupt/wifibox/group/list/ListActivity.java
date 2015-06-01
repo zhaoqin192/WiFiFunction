@@ -7,6 +7,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -20,7 +21,13 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
+import com.ebupt.wifibox.databases.UserMSG;
+import com.ebupt.wifibox.ftp.FTPUtils;
 import com.ebupt.wifibox.networks.Networks;
+
+import org.litepal.crud.DataSupport;
+
+import java.io.File;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,10 +49,27 @@ public class ListActivity extends Activity{
     private Dialog dialog;
 
     @InjectView(R.id.group_list_upload) ImageView uploadPassport;
-
     @OnClick(R.id.group_list_upload)
     void uploadpassport() {
-        Networks.uploadPassports(this, intent.getStringExtra("groupid"));
+        if (downList.getVisibility() == View.VISIBLE) {
+            UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
+            Networks.userInfos(this, userMSG.getPhone(), "mac", intent.getStringExtra("groupid"));
+        } else {
+            Networks.uploadPassports(this, intent.getStringExtra("groupid"));
+        }
+    }
+
+    @InjectView(R.id.group_list_down) ImageView downList;
+    @OnClick(R.id.group_list_down)
+    void downList() {
+        String ServerPath = getResources().getString(R.string.db_path);
+        String fileName = "qiandao.db";
+        String dataPath = "/mnt/sdcard/" + this.getPackageName() + "/qiandao.db";
+        if (isExists(dataPath)) {
+            deleteFiles(dataPath);
+        }
+        FTPUtils.downloadFileFromFTP(this, ServerPath, fileName);
+        Toast.makeText(this, "签到列表已下载", Toast.LENGTH_LONG).show();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,5 +244,26 @@ public class ListActivity extends Activity{
         }
     }
 
+    /**
+     * 文件是否存在
+     *
+     * @param nativePath
+     * @return
+     */
+    public static boolean isExists(String nativePath) {
+        File file = new File(nativePath);
+        return file.exists();
+    }
+
+    /**
+     * 删除指定文件
+     *
+     * @param fileNames
+     */
+    public static void deleteFiles(String fileNames) {
+        File file = new File(fileNames);
+        if (file.exists())
+            file.delete();
+    }
 
 }

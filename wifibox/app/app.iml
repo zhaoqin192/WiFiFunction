@@ -92,6 +92,8 @@
     <orderEntry type="library" exported="" name="classes" level="project" />
     <orderEntry type="library" exported="" name="1_classes" level="project" />
     <orderEntry type="library" exported="" name="litepal-1.1.1-src" level="project" />
+    <orderEntry type="library" exported="" name="sun.misc.BASE64Decoder" level="project" />
+    <orderEntry type="library" exported="" name="commons-net-2.2" level="project" />
     <orderEntry type="library" exported="" name="support-v4-22.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.0.0" level="project" />
     <orderEntry type="module" module-name="StickyListHeaders" exported="" />

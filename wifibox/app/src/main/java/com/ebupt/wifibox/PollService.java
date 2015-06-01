@@ -71,7 +71,6 @@ public class PollService extends Service{
                 Message message = new Message();
                 message.what = 0;
                 handler.sendMessage(message);
-
             }
         }
     };

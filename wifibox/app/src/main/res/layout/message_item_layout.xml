@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/message_item_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2015-6-1 15:37"
+        android:textColor="#797979"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:id="@+id/message_item_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="content"
+        android:textColor="#363636"
+        android:layout_below="@id/message_item_time"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="15dp"
+        />
+    <TextView
+        android:id="@+id/message_item_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NEW"
+        android:textColor="#C8483B"
+        android:layout_alignParentRight="true"
+        android:layout_margin="15dp"
+        />
+</RelativeLayout>

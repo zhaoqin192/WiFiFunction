@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <litepal>
     <dbname value="wifibox"></dbname>
-    <version value="6"></version>
+    <version value="7"></version>
     <list>
         <mapping class="com.ebupt.wifibox.databases.UserMSG"></mapping>
         <mapping class="com.ebupt.wifibox.databases.GroupMSG"></mapping>
@@ -10,5 +10,6 @@
         <mapping class="com.ebupt.wifibox.databases.DeviceMSG"></mapping>
         <mapping class="com.ebupt.wifibox.databases.RecordMSG"></mapping>
         <mapping class="com.ebupt.wifibox.databases.UnVisitorsMSG"></mapping>
+        <mapping class="com.ebupt.wifibox.databases.MessageTable"></mapping>
     </list>
 </litepal>

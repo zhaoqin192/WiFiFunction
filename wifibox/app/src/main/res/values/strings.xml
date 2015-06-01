@@ -7,4 +7,5 @@
     <string name="ftp_user">root</string>
     <string name="ftp_password">eb82325588</string>
     <string name="db_path">/jffs/www/qiandao45/qiandao.db</string>
+    <string name="brokerage">您有新的返佣信息</string>
 </resources>

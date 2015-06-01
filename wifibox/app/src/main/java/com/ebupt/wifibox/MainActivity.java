@@ -30,6 +30,7 @@ import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
 import com.ebupt.wifibox.message.MessageFragment;
 import com.ebupt.wifibox.settings.SettingsFragment;
+import com.ebupt.wifibox.viewpage.BadgeView;
 
 
 import java.util.Arrays;
@@ -64,6 +65,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private Dialog dialog;
     private MyApp myApp;
     private Intent startIntent;
+    private BadgeView badgeView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +91,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         registerReceiver(broadcastReceiver, login_success);
         IntentFilter login_error = new IntentFilter("login_error");
         registerReceiver(broadcastReceiver, login_error);
+        IntentFilter brokerage = new IntentFilter("newBrokerage");
+        registerReceiver(broadcastReceiver, brokerage);
     }
 
     private void initViews() {
@@ -106,6 +110,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         messagelayout.setOnClickListener(this);
         devicelayout.setOnClickListener(this);
         settingslayout.setOnClickListener(this);
+
+        badgeView = new BadgeView(this, tab_message);
+        badgeView.hide();
     }
 
     @Override
@@ -293,6 +300,10 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
             if (intent.getAction().equals("login_error")) {
                 Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
+            }
+            if (intent.getAction().equals("newBrokerage")) {
+                badgeView.show();
+                badgeView.setText(myApp.viewCount);
             }
         }
     };

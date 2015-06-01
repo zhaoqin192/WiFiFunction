@@ -145,25 +145,4 @@ public class LoginActivity extends Activity{
         login_passwd = (BootstrapEditText) findViewById(R.id.login_edit_passwd);
     }
 
-    public void uploadpassports() {
-        Log.e("passports", "uploadpassports");
-        StringBuffer str2 = new StringBuffer("[");
-        for (int i = 0; i < 4; i++) {
-            str2.append("{\"names\":");
-            str2.append("\"张三\",");
-            str2.append("\"phone\":");
-            str2.append("\"123456\",");
-            str2.append("\"mac\":");
-
-            if (i != 3) {
-                str2.append("\"123456\"},");
-            } else {
-                str2.append("\"123456\"}");
-            }
-        }
-        str2.append("]");
-        Networks.userInfos(LoginActivity.this, myApp.phone, "mac", "tourid", "gs", str2.toString());
-        Networks.passports(LoginActivity.this, myApp.phone, "mac", "tourid", "gs", str2.toString());
-        Networks.getrebates(LoginActivity.this, "tourid");
-    }
 }

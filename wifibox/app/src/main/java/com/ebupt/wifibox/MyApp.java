@@ -8,4 +8,5 @@ import org.litepal.LitePalApplication;
 public class MyApp extends LitePalApplication{
     public String phone;
     public PollService pollService;
+    public int viewCount = 0;
 }

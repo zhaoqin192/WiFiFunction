@@ -12,8 +12,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.ebupt.wifibox.MyApp;
+import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.DownVisitorMSG;
 import com.ebupt.wifibox.databases.GroupMSG;
+import com.ebupt.wifibox.databases.MessageTable;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
 import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
@@ -23,8 +25,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Created by zhaoqin on 4/20/15.
@@ -83,8 +88,6 @@ public class Networks {
         params.put("guide", phone);
         params.put("mac", mac);
         params.put("tourid", tourid);
-//        params.put("gs", gs);
-//        params.put("passport", array);
 
         JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < 4; i++) {
@@ -98,9 +101,6 @@ public class Networks {
             }
 
         }
-
-        //[{name:”张三”，passport:“123231”},{name:”李四”,passport”12312312”}]
-
 
         JSONObject jsstring = new JSONObject(params);
         try {
@@ -295,7 +295,7 @@ public class Networks {
         }
     }
 
-    public static void pollGroup(Context context) {
+    public static void pollGroup(final Context context) {
         final String TAG = "pollGroup";
         requestQueue = Volley.newRequestQueue(context);
         myApp = (MyApp) context.getApplicationContext();
@@ -310,6 +310,27 @@ public class Networks {
                         @Override
                         public void onResponse(JSONObject jsonObject) {
                             Log.e(TAG, jsonObject.toString());
+                            try {
+                                JSONArray array = jsonObject.getJSONArray("changetourids");
+                                int size = array.length();
+                                if (size != 0) {
+                                    myApp.viewCount = size;
+                                    for (int i = 0; i < size; i++) {
+                                        MessageTable message = new MessageTable();
+                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                        Date curDate = new Date(System.currentTimeMillis());
+                                        String time = formatter.format(curDate);
+                                        message.setTime(time);
+                                        message.setContent(context.getResources().getString(R.string.brokerage));
+                                        message.setStatus(true);
+                                        message.saveThrows();
+                                    }
+                                    Intent intent = new Intent("newBrokerage");
+                                    context.sendBroadcast(intent);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }, new Response.ErrorListener() {
                 @Override

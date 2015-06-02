@@ -14,15 +14,18 @@ import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.ftp.FTPUtils;
 import com.ebupt.wifibox.networks.Networks;
 
-import org.apache.commons.net.util.Base64;
 import org.litepal.crud.DataSupport;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Pattern;
+
+import Decoder.BASE64Decoder;
 
 /**
  * Created by zhaoqin on 5/25/15.
@@ -32,6 +35,7 @@ public class PollService extends Service{
     String time = "30";
     Timer timer;
     Handler handler;
+    MyApp myApp;
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -40,6 +44,9 @@ public class PollService extends Service{
     @Override
     public void onCreate() {
         super.onCreate();
+
+        myApp = (MyApp) getApplicationContext();
+
         pollInterface();
         getList();
 
@@ -53,6 +60,7 @@ public class PollService extends Service{
                         UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
                         time = userMSG.getNoticetime();
                         pollInterface();
+                        getList();
                         break;
                 }
             }
@@ -61,11 +69,18 @@ public class PollService extends Service{
         IntentFilter intentFilter = new IntentFilter("updateTime");
         IntentFilter beacon = new IntentFilter("beaconmaclist.log");
         IntentFilter assoc = new IntentFilter("assocmaclist.log");
-        IntentFilter temp = new IntentFilter("temp.macdetectlog");
-        registerReceiver(broadcastReceiver, temp);
+        IntentFilter getfileList = new IntentFilter("getfileList");
+        IntentFilter macdetect1 = new IntentFilter("macdetect1");
+        IntentFilter macdetect2 = new IntentFilter("macdetect2");
+        IntentFilter macdetect3 = new IntentFilter("macdetect3");
+        registerReceiver(broadcastReceiver, macdetect3);
+        registerReceiver(broadcastReceiver, macdetect2);
+        registerReceiver(broadcastReceiver, macdetect1);
+        registerReceiver(broadcastReceiver, getfileList);
         registerReceiver(broadcastReceiver, assoc);
         registerReceiver(broadcastReceiver, beacon);
         registerReceiver(broadcastReceiver, intentFilter);
+
     }
 
     private void pollInterface() {
@@ -80,14 +95,6 @@ public class PollService extends Service{
     }
 
     private void getList() {
-//        String ServerPath = getResources().getString(R.string.db_path);
-//        String fileName = "qiandao.db";
-//        String dataPath = "/mnt/sdcard/" + this.getPackageName() + "/qiandao.db";
-//        if (FTPUtils.isExists(dataPath)) {
-//            FTPUtils.deleteFiles(dataPath);
-//        }
-//        FTPUtils.downloadFileFromFTP(this, ServerPath, fileName);
-//        Toast.makeText(this, "签到列表已下载", Toast.LENGTH_LONG).show();
         String ServerPath = "/tmp/beaconmaclist.log";
         String localName = "beaconmaclist.log";
         downloadFile(ServerPath, localName);
@@ -96,43 +103,44 @@ public class PollService extends Service{
         String localName1 = "assocmaclist.log";
         downloadFile(ServerPath1, localName1);
 
-        String ServerPath2 = "/tmp/log/*.macdetectlog";
-        String localName2 = "temp.macdetectlog";
-        downloadFile(ServerPath2, localName2);
+        FTPUtils.downloadFileFromFTPBySuffix(this, "/tmp/log", "macdetectlog");
+
     }
 
     private void downloadFile(String ServerPath, String localName) {
-        Log.e(TAG, "downloadFile");
         String dataPath = "/mnt/sdcard/" + this.getPackageName() + "/" + localName;
         if (FTPUtils.isExists(dataPath)) {
             FTPUtils.deleteFiles(dataPath);
         }
         FTPUtils.downloadFileFromFTP(this, ServerPath, localName);
-        Log.e(TAG, localName + " is download");
     }
 
-
     private void readFile(String fileName) {
-        Log.e(TAG, "readFile");
-        String dataPath = "/mnt/sdcard/" + getApplicationContext().getPackageName() + "/" + fileName;
-        File file = new File(dataPath);
+        BufferedReader is;
+        final boolean[] isExist = new boolean[1];
         try {
-            /* FileInputStream 输入流的对象， */
-            FileInputStream fis = new FileInputStream(file);
-            /* 准备一个字节数组用户装即将读取的数据 */
-            byte[] buffer = new byte[fis.available()];
-             /* 开始进行文件的读取 */
-            fis.read(buffer);
-            /* 关闭流  */
-            fis.close();
-            byte[] valueDecoded= Base64.decodeBase64(buffer);
-            Log.e("EncryptUtil", String.valueOf(valueDecoded.length));
-            Log.e("EncryptUtil", new String(valueDecoded));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            is = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/mnt/sdcard/" + this.getPackageName() + "/" + fileName))));
+            while (is.readLine() != null) {
+                isExist[0] = false;
+                String s = decryptBASE64(is.readLine());
+                Pattern p = Pattern.compile("\\#");
+                if (!s.equals("") && s != null) {
+                    String[] str = p.split(s);
+                    for (int i = 0; i < str.length; i++) {
+                        Log.e("Encry", str[i]);
+                    }
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String decryptBASE64(String key) throws IOException {
+        if (key == null || key.length() < 1) {
+            return "";
+        }
+        return new String(new BASE64Decoder().decodeBuffer(key));
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -149,8 +157,23 @@ public class PollService extends Service{
             if (intent.getAction().equals("assocmaclist.log")) {
                 readFile("assocmaclist.log");
             }
-            if (intent.getAction().equals("temp.macdetectlog")) {
-                readFile("temp.macdetectlog");
+            if (intent.getAction().equals("getfileList")) {
+                int size = myApp.fileList.size();
+                for (int i = 0; i < size; i++) {
+                    Log.e(TAG, myApp.fileList.get(i));
+                    String ServerPath = "/tmp/log/" + myApp.fileList.get(i);
+                    String localName = "macdetect" + i;
+                    downloadFile(ServerPath, localName);
+                }
+            }
+            if (intent.getAction().equals("macdetect1")) {
+                readFile("macdetect1");
+            }
+            if (intent.getAction().equals("macdetect2")) {
+                readFile("macdetect2");
+            }
+            if (intent.getAction().equals("macdetect3")) {
+                readFile("macdetect3");
             }
         }
     };

@@ -9,9 +9,6 @@ import android.util.Log;
 import com.ebupt.wifibox.databases.DownVisitorMSG;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
 
 /**
  * Created by Administrator on 2015/5/15.
@@ -91,5 +88,32 @@ public class FTPUtils {
         File file = new File(fileNames);
         if (file.exists())
             file.delete();
+    }
+
+    public static void downloadFileFromFTPBySuffix(final Context context, final String filePath, final String suffix) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final String path = "/mnt/sdcard/" + context.getPackageName() + "/";
+                    new FTP(context).downloadFileEndWith(filePath, path, suffix, new FTP.DownLoadProgressListener() {
+                        @Override
+                        public void onDownLoadProgress(String currentStep, long downProcess, File file) {
+                            Log.d("FTPUtils", currentStep);
+                            if (currentStep.equals(FTPLogConstants.FTP_DOWN_SUCCESS))
+                                Log.d("FTPUtils", "-----xiazai--successful");
+                            else if (currentStep.equals(FTPLogConstants.FTP_DOWN_LOADING))
+                                Log.d("FTPUtils", "-----xiazai---" + downProcess + "%");
+                        }
+                    });
+                    Log.e("FTPUtils", "下载完成");
+                } catch (Exception e) {
+                    Log.e("FTPUtils", "下载失败");
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent("getfileList");
+                context.sendBroadcast(intent);
+            }
+        }).start();
     }
 }

@@ -1,7 +1,9 @@
 package com.ebupt.wifibox.ftp;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
 
 import java.io.File;
@@ -10,7 +12,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
@@ -413,4 +418,108 @@ public class FTP {
 		public void onDeleteProgress(String currentStep);
 	}
 
+
+	public List<String> downloadFileEndWith(String serverPath, String localPath, String fileNameSuffix, DownLoadProgressListener listener)
+			throws Exception {
+		List<String> fileNameList = new ArrayList<>();
+		MyApp myApp = (MyApp) context.getApplicationContext();
+		// 打开FTP服务
+		try {
+			this.openConnect();
+			listener.onDownLoadProgress(FTPLogConstants.FTP_CONNECT_SUCCESSS, 0, null);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			listener.onDownLoadProgress(FTPLogConstants.FTP_CONNECT_FAIL, 0, null);
+			return null;
+		}
+
+		// 先判断服务器文件是否存在
+		FTPFile[] files = ftpClient.listFiles(serverPath);
+		if (files.length == 0) {
+			listener.onDownLoadProgress(FTPLogConstants.FTP_FILE_NOTEXISTS, 0, null);
+			return null;
+
+		}
+		String temp = null;
+		for (FTPFile ftpFile : files) {
+			if (ftpFile.getName().endsWith(fileNameSuffix)) {
+				Log.e("FTPUtils", "文件名如下：" + ftpFile.getName());
+				myApp.fileList.add(ftpFile.getName());
+				//创建本地文件夹
+				File mkFile = new File(localPath);
+				if (!mkFile.exists()) {
+					mkFile.mkdirs();
+				}
+
+
+//				serverPath = serverPath + "/" + ftpFile.getName();
+//				localPath = localPath + ftpFile.getName();
+//				Log.e("FTPUtils", serverPath);
+//				Log.e("FTPUtils", localPath);
+//				long serverSize = ftpFile.getSize(); // 获取远程文件的长度
+//				File localFile = new File(localPath);
+//				long localSize = 0;
+//				if (localFile.exists()) {
+//					localSize = localFile.length();  // 如果本地文件存在，获取本地文件的长度
+//					if (localSize >= serverSize) {
+//						File file = new File(localPath);
+//						file.delete();
+//					}
+//				}
+				temp = localPath + ftpFile.getName();
+//				localPath = localPath + ftpFile.getName();
+//				Log.e("FTPUtils", temp);
+//				 接着判断下载的文件是否能断点下载
+				long serverSize = ftpFile.getSize(); // 获取远程文件的长度
+				File localFile = new File(temp);
+				long localSize = 0;
+				if (localFile.exists()) {
+					localSize = localFile.length(); // 如果本地文件存在，获取本地文件的长度
+					if (localSize >= serverSize) {
+						File file = new File(temp);
+						file.delete();
+					}
+				}
+
+				// 进度
+				long step = serverSize / 100;
+				long process = 0;
+				long currentSize = 0;
+				// 开始准备下载文件
+				OutputStream out = new FileOutputStream(localFile, true);
+				ftpClient.setRestartOffset(localSize);
+				String str = serverPath + "/" + ftpFile.getName();
+				InputStream input = ftpClient.retrieveFileStream(str);
+				byte[] b = new byte[1024];
+				int length = 0;
+				while ((length = input.read(b)) != -1) {
+					out.write(b, 0, length);
+					currentSize = currentSize + length;
+					if (currentSize / step != process) {
+						process = currentSize / step;
+						if (process % 5 == 0) {  //每隔%5的进度返回一次
+							listener.onDownLoadProgress(FTPLogConstants.FTP_DOWN_LOADING, process, null);
+						}
+					}
+				}
+				fileNameList.add(ftpFile.getName());
+				out.flush();
+				out.close();
+				input.close();
+
+			}
+		}
+		// 此方法是来确保流处理完毕，如果没有此方法，可能会造成现程序死掉
+		if (ftpClient.completePendingCommand()) {
+			listener.onDownLoadProgress(FTPLogConstants.FTP_DOWN_SUCCESS, 0, new File(temp));
+		} else
+			listener.onDownLoadProgress(FTPLogConstants.FTP_DOWN_FAIL, 0, null);
+
+		// 下载完成之后关闭连接
+		this.closeConnect();
+		listener.onDownLoadProgress(FTPLogConstants.FTP_DISCONNECT_SUCCESS, 0, null);
+
+
+		return fileNameList;
+	}
 }

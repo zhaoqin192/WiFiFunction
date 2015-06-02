@@ -36,7 +36,7 @@ public class FTPUtils {
                                     }
                                 }
                             });
-                    Intent intent = new Intent("downloadDBSuccess");
+                    Intent intent = new Intent(filename);
                     context.sendBroadcast(intent);
                 } catch (Exception e) {
                     Log.e(TAG, "下载失败");
@@ -69,5 +69,27 @@ public class FTPUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 文件是否存在
+     *
+     * @param nativePath
+     * @return
+     */
+    public static boolean isExists(String nativePath) {
+        File file = new File(nativePath);
+        return file.exists();
+    }
+
+    /**
+     * 删除指定文件
+     *
+     * @param fileNames
+     */
+    public static void deleteFiles(String fileNames) {
+        File file = new File(fileNames);
+        if (file.exists())
+            file.delete();
     }
 }

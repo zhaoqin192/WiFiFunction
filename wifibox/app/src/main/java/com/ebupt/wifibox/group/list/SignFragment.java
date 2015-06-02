@@ -57,7 +57,7 @@ public class SignFragment extends Fragment{
 
         IntentFilter deleteVisitor = new IntentFilter("deleteDownVisitor");
         IntentFilter updateVisitor = new IntentFilter("updateDownVisitor");
-        IntentFilter downDB = new IntentFilter("downloadDBSuccess");
+        IntentFilter downDB = new IntentFilter("qiandao.db");
         IntentFilter readDB = new IntentFilter("readDBSuccess");
         getActivity().registerReceiver(broadcastReceiver, readDB);
         getActivity().registerReceiver(broadcastReceiver, downDB);
@@ -77,8 +77,7 @@ public class SignFragment extends Fragment{
             if (intent.getAction().equals("updateDownVisitor")) {
                 Toast.makeText(getActivity(), "修改成功", Toast.LENGTH_SHORT).show();
             }
-            if (intent.getAction().equals("downloadDBSuccess")) {
-                Log.e("FTPUtils", "downloadDBSuccess");
+            if (intent.getAction().equals("qiandao.db")) {
                 DataSupport.deleteAll(DownVisitorMSG.class);
                 String dataPath = "/mnt/sdcard/" + getActivity().getPackageName() + "/qiandao.db";
                 FTPUtils.readDownVisitorMSG(getActivity(), dataPath);

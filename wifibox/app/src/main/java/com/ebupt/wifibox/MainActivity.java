@@ -112,6 +112,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
         settingslayout.setOnClickListener(this);
 
         badgeView = new BadgeView(this, tab_message);
+        badgeView.setBadgeMargin(40, 10);
+        badgeView.setTextSize(10);
         badgeView.hide();
     }
 
@@ -303,7 +305,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
             }
             if (intent.getAction().equals("newBrokerage")) {
                 badgeView.show();
-                badgeView.setText(myApp.viewCount);
+                badgeView.setText(String.valueOf(myApp.viewCount));
             }
         }
     };

@@ -24,7 +24,7 @@ public class ManagerFragment extends Fragment{
         contactslayout = inflater.inflate(R.layout.manager_layout, container, false);
 
 
-        String url = "https://www.baidu.com/";
+        String url = "http://a.miniap.cn";
         webView = (WebView) contactslayout.findViewById(R.id.manager_webview);
         webView.getSettings().setAppCacheEnabled(true);
         webView.loadUrl(url);

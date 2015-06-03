@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.R;
+import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
 import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.ftp.FTPUtils;
@@ -26,6 +27,8 @@ import com.ebupt.wifibox.networks.Networks;
 
 import org.litepal.crud.DataSupport;
 
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -60,14 +63,22 @@ public class ListActivity extends Activity{
     @InjectView(R.id.group_list_down) ImageView downList;
     @OnClick(R.id.group_list_down)
     void downList() {
-        String ServerPath = getResources().getString(R.string.db_path);
-        String fileName = "qiandao.db";
-        String dataPath = "/mnt/sdcard/" + this.getPackageName() + "/qiandao.db";
-        if (FTPUtils.isExists(dataPath)) {
-            FTPUtils.deleteFiles(dataPath);
+        List<GroupMSG> grouplist = DataSupport.where("group_id = ?", intent.getStringExtra("groupid")).find(GroupMSG.class);
+        GroupMSG groupMSG = grouplist.get(0);
+        if (groupMSG.getInvalid()) {
+            Toast.makeText(this, "该团已经失效，不能下载签到列表", Toast.LENGTH_SHORT).show();
+        } else {
+            String ServerPath = getResources().getString(R.string.db_path);
+            String fileName = "qiandao.db";
+            String dataPath = "/mnt/sdcard/" + this.getPackageName() + "/qiandao.db";
+            if (FTPUtils.isExists(dataPath)) {
+                FTPUtils.deleteFiles(dataPath);
+            }
+            FTPUtils.downloadFileFromFTP(this, ServerPath, fileName);
+            Toast.makeText(this, "签到列表已下载", Toast.LENGTH_LONG).show();
+            Intent intent = new Intent("downList");
+            sendBroadcast(intent);
         }
-        FTPUtils.downloadFileFromFTP(this, ServerPath, fileName);
-        Toast.makeText(this, "签到列表已下载", Toast.LENGTH_LONG).show();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {

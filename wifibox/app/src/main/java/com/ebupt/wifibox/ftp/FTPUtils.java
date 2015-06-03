@@ -58,7 +58,7 @@ public class FTPUtils {
                         downVisitorMSG.setName(c.getString(c.getColumnIndex("username")));
                         downVisitorMSG.setMac(c.getString(c.getColumnIndex("mac")));
                         downVisitorMSG.setPhone(c.getString(c.getColumnIndex("phone")));
-                        downVisitorMSG.setStatus("unknown");
+                        downVisitorMSG.setStatus("offline");
                         downVisitorMSG.saveThrows();
                     }
                 }

@@ -127,7 +127,14 @@ public class SignAdapter extends BaseExpandableListAdapter{
         DownVisitorMSG downVisitorMSG = list.get(groupPosition);
         holder.name.setText(downVisitorMSG.getName());
         holder.phone.setText(downVisitorMSG.getPhone());
-        holder.status.setText("不在线");
+        if (downVisitorMSG.getStatus().equals("online")) {
+            holder.status.setTextColor(context.getResources().getColor(R.color.green));
+            holder.status.setText("在线");
+        }
+        if (downVisitorMSG.getStatus().equals("offline")) {
+            holder.status.setTextColor(context.getResources().getColor(R.color.red));
+            holder.status.setText("不在线");
+        }
         if (isExpanded) {
             holder.img.setImageResource(R.drawable.close);
         } else {

@@ -12,6 +12,8 @@ import android.util.Log;
 
 import com.ebupt.wifibox.databases.BrokenData;
 import com.ebupt.wifibox.databases.DownVisitorMSG;
+import com.ebupt.wifibox.databases.GroupMSG;
+import com.ebupt.wifibox.databases.MessageTable;
 import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.ftp.FTPUtils;
 import com.ebupt.wifibox.networks.Networks;
@@ -23,7 +25,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,7 +45,7 @@ public class PollService extends Service{
     Handler handler;
     MyApp myApp;
     List<BrokenData> list;
-    List<BrokenData> localList;
+    List<DownVisitorMSG> downList;
     long currentTimeMillis;
     @Override
     public IBinder onBind(Intent intent) {
@@ -53,11 +57,7 @@ public class PollService extends Service{
         super.onCreate();
 
         myApp = (MyApp) getApplicationContext();
-        list = new ArrayList<>();
-        localList = new ArrayList<>();
 
-
-        pollInterface();
         getList();
 
         handler = new Handler(){
@@ -83,6 +83,8 @@ public class PollService extends Service{
         IntentFilter macdetect0 = new IntentFilter("macdetect0");
         IntentFilter macdetect1 = new IntentFilter("macdetect1");
         IntentFilter macdetect2 = new IntentFilter("macdetect2");
+        IntentFilter downList = new IntentFilter("downList");
+        registerReceiver(broadcastReceiver, downList);
         registerReceiver(broadcastReceiver, macdetect2);
         registerReceiver(broadcastReceiver, macdetect1);
         registerReceiver(broadcastReceiver, macdetect0);
@@ -98,38 +100,34 @@ public class PollService extends Service{
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                Networks.pollGroup(PollService.this);
+                Networks.getTours(PollService.this);
             }
         };
         timer.schedule(timerTask, 1000, Integer.parseInt(time) * 60 * 1000);
     }
 
     private void getList() {
+        list = new ArrayList<>();
+        downList = new ArrayList<>();
 
-        currentTimeMillis = System.currentTimeMillis();
+        currentTimeMillis = System.currentTimeMillis() / 1000;
         Log.e("CurrentTimeMils", String.valueOf(currentTimeMillis / 1000));
 
-        List<DownVisitorMSG> downList = DataSupport.findAll(DownVisitorMSG.class);
-        int size = downList.size();
-        if (size != 0) {
-            for (int i = 0; i < size; i++) {
-                BrokenData brokenData = new BrokenData();
-                brokenData.setMac(downList.get(i).getMac());
-                brokenData.setTime(currentTimeMillis / 1000);
-                localList.add(brokenData);
+        downList = DataSupport.findAll(DownVisitorMSG.class);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String ServerPath = "/tmp/beaconmaclist.log";
+                String localName = "beaconmaclist.log";
+                downloadFile(ServerPath, localName);
+
+                FTPUtils.downloadFileFromFTPBySuffix(PollService.this, "/tmp/log", "macdetectlog");
+
+                String ServerPath1 = "/tmp/assocmaclist.log";
+                String localName1 = "assocmaclist.log";
+                downloadFile(ServerPath1, localName1);
             }
-        }
-
-        String ServerPath = "/tmp/beaconmaclist.log";
-        String localName = "beaconmaclist.log";
-        downloadFile(ServerPath, localName);
-
-        String ServerPath1 = "/tmp/assocmaclist.log";
-        String localName1 = "assocmaclist.log";
-        downloadFile(ServerPath1, localName1);
-
-        FTPUtils.downloadFileFromFTPBySuffix(this, "/tmp/log", "macdetectlog");
-
+        }).start();
     }
 
     private void downloadFile(String ServerPath, String localName) {
@@ -140,54 +138,96 @@ public class PollService extends Service{
         FTPUtils.downloadFileFromFTP(this, ServerPath, localName);
     }
 
-    private void readFile(String fileName) {
-        BufferedReader is;
-        try {
-            is = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/mnt/sdcard/" + this.getPackageName() + "/" + fileName))));
-            while (is.readLine() != null) {
-                String s = decryptBASE64(is.readLine());
-                Pattern p = Pattern.compile("\\#");
-                if (!s.equals("") && s != null) {
-                    String[] str = p.split(s);
-                    if (fileName.equals("assocmaclist.log")) {
-                        BrokenData brokenData = new BrokenData();
-                        brokenData.setMac(str[0]);
-                        brokenData.setMac(str[1]);
-                        list.add(brokenData);
-                    } else {
-                        BrokenData brokenData = new BrokenData();
-                        brokenData.setMac(str[0]);
-                        brokenData.setTime(Long.parseLong(str[2]));
-                        list.add(brokenData);
-                    }
-                }
-            }
-            Log.e("ListCount", list.size() + " before");
-            int size = list.size();
-            int outsize = localList.size();
-            List<BrokenData> temp = new ArrayList<>();
-            for (int i = 0; i < outsize; i++) {
-                BrokenData outData = localList.get(i);
-                for (int j = 0; j < size; j++) {
-                    BrokenData data = list.get(j);
-                    if (data.getMac().equals(outData.getMac())) {
-                        if (data.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
-                            temp.add(data);
+    private void readFile(final String fileName) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                BufferedReader is;
+                try {
+                    is = new BufferedReader(new InputStreamReader(new FileInputStream(new File("/mnt/sdcard/" + PollService.this.getPackageName() + "/" + fileName))));
+                    while (is.readLine() != null) {
+                        String s = decryptBASE64(is.readLine());
+                        Pattern p = Pattern.compile("\\#");
+                        if (!s.equals("") && s != null) {
+                            String[] str = p.split(s);
+                            if (fileName.equals("assocmaclist.log")) {
+                                BrokenData brokenData = new BrokenData();
+                                brokenData.setMac(str[0]);
+                                brokenData.setMac(str[1]);
+                                list.add(brokenData);
+                            } else {
+                                BrokenData brokenData = new BrokenData();
+                                brokenData.setMac(str[0]);
+                                brokenData.setTime(Long.parseLong(str[2]));
+                                list.add(brokenData);
+                            }
                         }
                     }
+                    Log.e("ListCount", list.size() + " before");
+                    int size = list.size();
+                    int outsize = downList.size();
+                    List<BrokenData> temp = new ArrayList<>();
+                    for (int i = 0; i < outsize; i++) {
+                        DownVisitorMSG outData = downList.get(i);
+                        for (int j = 0; j < size; j++) {
+                            BrokenData data = list.get(j);
+                            if (data.getMac().equals(outData.getMac())) {
+                                Log.e("PhoneTime", data.getTime() + "");
+                                if (data.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
+                                    temp.add(data);
+                                }
+                            }
+                        }
+                    }
+                    list = temp;
+                    int listSize = list.size();
+                    Log.e("ListCount", list.size() + " after");
+
+                    for (int i = 0; i < outsize; i++) {
+                        DownVisitorMSG outData = downList.get(i);
+                        for (int j = 0; j < listSize; j++) {
+                            BrokenData data = list.get(j);
+                            if (outData.getMac().equals(data.getMac())) {
+                                outData.setStatus("online");
+                            }
+                            outData.saveThrows();
+                        }
+                    }
+
+
+                    if (fileName.equals("assocmaclist.log")) {
+                        if (temp.size() < outsize) {
+                            myApp.viewCount++;
+                            int diff = outsize - temp.size();
+                            MessageTable messageTable = new MessageTable();
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                            messageTable.setTime(simpleDateFormat.format(new Date()));
+                            messageTable.setStatus(true);
+                            StringBuffer str = new StringBuffer("已发现");
+                            str.append(diff);
+                            str.append("个设备连续");
+                            str.append(time);
+                            str.append("分钟不在wifi范围内，该设备可能关闭wifi功能或关机");
+                            messageTable.setContent(str.toString());
+                            List<GroupMSG> groupMSGs = DataSupport.findAll(GroupMSG.class);
+                            int groupSize = groupMSGs.size();
+                            for (int i = 0; i < groupSize; i++) {
+                                if (!groupMSGs.get(i).getInvalid()) {
+                                    messageTable.setGroupid(groupMSGs.get(i).getGroup_id());
+                                    break;
+                                }
+                            }
+                            messageTable.saveThrows();
+                            Intent intent = new Intent("updateBadge");
+                            sendBroadcast(intent);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            list = temp;
-            Log.e("ListCount", list.size() + " after");
+        }).start();
 
-            if (temp.size() < outsize) {
-                Intent intent = new Intent("BrokenMessage");
-                sendBroadcast(intent);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static String decryptBASE64(String key) throws IOException {
@@ -233,6 +273,9 @@ public class PollService extends Service{
             if (intent.getAction().equals("macdetect2")) {
                 Log.e("Count", "macdetect2");
                 readFile("macdetect2");
+            }
+            if (intent.getAction().equals("downList")) {
+                getList();
             }
         }
     };

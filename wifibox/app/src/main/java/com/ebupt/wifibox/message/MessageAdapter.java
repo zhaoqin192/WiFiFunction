@@ -28,7 +28,7 @@ public class MessageAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        return 0;
+        return list.size();
     }
 
     @Override
@@ -52,9 +52,10 @@ public class MessageAdapter extends BaseAdapter{
         holder.time.setText(table.getTime());
         holder.content.setText(table.getContent());
         if (table.getStatus()) {
+            holder.status.setVisibility(View.VISIBLE);
             holder.status.setTextColor(context.getResources().getColor(R.color.red));
         } else {
-            holder.status.setTextColor(context.getResources().getColor(R.color.message_content));
+            holder.status.setVisibility(View.GONE);
         }
         return convertView;
     }

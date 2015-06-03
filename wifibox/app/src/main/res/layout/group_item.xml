@@ -13,6 +13,7 @@
         android:layout_centerVertical="true"
         android:text="团名"
         android:textSize="21sp"
+        android:maxLength="7"
         />
 
     <TextView

@@ -10,6 +10,15 @@ public class GroupMSG extends DataSupport{
     private String group_date;
     private String group_count;
     private String group_id;
+    private Boolean invalid;
+
+    public Boolean getInvalid() {
+        return invalid;
+    }
+
+    public void setInvalid(Boolean invalid) {
+        this.invalid = invalid;
+    }
 
     public void setGroup_count(String group_count) {
         this.group_count = group_count;

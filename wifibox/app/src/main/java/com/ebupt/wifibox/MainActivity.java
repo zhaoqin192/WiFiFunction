@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.databases.GroupMSG;
+import com.ebupt.wifibox.databases.MessageTable;
 import com.ebupt.wifibox.databases.RecordMSG;
 import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
@@ -33,8 +34,11 @@ import com.ebupt.wifibox.settings.SettingsFragment;
 import com.ebupt.wifibox.viewpage.BadgeView;
 
 
+import org.litepal.crud.DataSupport;
+
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 
@@ -91,8 +95,12 @@ public class MainActivity extends Activity implements View.OnClickListener{
         registerReceiver(broadcastReceiver, login_success);
         IntentFilter login_error = new IntentFilter("login_error");
         registerReceiver(broadcastReceiver, login_error);
-        IntentFilter brokerage = new IntentFilter("newBrokerage");
-        registerReceiver(broadcastReceiver, brokerage);
+//        IntentFilter brokerage = new IntentFilter("newBrokerage");
+//        registerReceiver(broadcastReceiver, brokerage);
+//        IntentFilter brokenMessage = new IntentFilter("BrokenMessage");
+//        registerReceiver(broadcastReceiver, brokenMessage);
+        IntentFilter updateBadge = new IntentFilter("updateBadge");
+        registerReceiver(broadcastReceiver, updateBadge);
     }
 
     private void initViews() {
@@ -209,6 +217,9 @@ public class MainActivity extends Activity implements View.OnClickListener{
         if (groupFragment != null) {
             transaction.hide(groupFragment);
         }
+        if (messageFragment != null) {
+            transaction.hide(messageFragment);
+        }
         if (deviceFragment != null) {
             transaction.hide(deviceFragment);
         }
@@ -303,9 +314,31 @@ public class MainActivity extends Activity implements View.OnClickListener{
             if (intent.getAction().equals("login_error")) {
                 Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
             }
-            if (intent.getAction().equals("newBrokerage")) {
-                badgeView.show();
-                badgeView.setText(String.valueOf(myApp.viewCount));
+//            if (intent.getAction().equals("newBrokerage")) {
+//                badgeView.show();
+//                badgeView.setText(String.valueOf(myApp.viewCount));
+//            }
+//            if (intent.getAction().equals("BrokenMessage")) {
+//                badgeView.show();
+//                badgeView.setText(String.valueOf(myApp.viewCount));
+//            }
+            if (intent.getAction().equals("updateBadge")) {
+                List<MessageTable> datalist = DataSupport.findAll(MessageTable.class);
+                myApp.viewCount = 0;
+                int size = datalist.size();
+                if (size != 0) {
+                    for (int i = 0; i < size; i++) {
+                        if (datalist.get(i).getStatus()) {
+                            myApp.viewCount++;
+                        }
+                    }
+                }
+                if (myApp.viewCount == 0) {
+                    badgeView.hide();
+                } else {
+                    badgeView.show();
+                    badgeView.setText(String.valueOf(myApp.viewCount));
+                }
             }
         }
     };

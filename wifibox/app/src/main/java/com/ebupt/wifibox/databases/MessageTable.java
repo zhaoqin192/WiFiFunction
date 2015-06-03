@@ -9,6 +9,15 @@ public class MessageTable extends DataSupport{
     private String time;
     private String content;
     private Boolean status;
+    private String groupid;
+
+    public String getGroupid() {
+        return groupid;
+    }
+
+    public void setGroupid(String groupid) {
+        this.groupid = groupid;
+    }
 
     public String getTime() {
         return time;

@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.SimpleFormatter;
 
 /**
  * Created by zhaoqin on 4/20/15.
@@ -206,6 +205,7 @@ public class Networks {
                         public void onResponse(JSONObject jsonObject) {
                             Log.e(TAG, jsonObject.toString());
                             try {
+                                DataSupport.deleteAll(GroupMSG.class);
                                 JSONArray array = jsonObject.getJSONArray("tours");
                                 int size = array.length();
                                 for (int i = 0; i < size; i++) {
@@ -215,6 +215,11 @@ public class Networks {
                                     groupMSG.setGroup_id(object.getString("tourid"));
                                     groupMSG.setGroup_date(object.getString("createtime"));
                                     groupMSG.setGroup_count(object.getString("count"));
+                                    if (object.getInt("overdue") == 0) {
+                                        groupMSG.setInvalid(false);
+                                    } else {
+                                        groupMSG.setInvalid(true);
+                                    }
                                     List<GroupMSG> list = DataSupport.where("group_id = ?", object.getString("tourid")).find(GroupMSG.class);
                                     if (list.size() == 0) {
                                         groupMSG.saveThrows();
@@ -222,6 +227,24 @@ public class Networks {
                                         context.sendBroadcast(intent);
                                     }
                                 }
+                                JSONArray jsonArray = jsonObject.getJSONArray("changetourids");
+                                size = jsonArray.length();
+                                if (size != 0) {
+                                    for (int i = 0; i < size; i++) {
+                                        MessageTable message = new MessageTable();
+                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                                        Date curDate = new Date(System.currentTimeMillis());
+                                        String time = formatter.format(curDate);
+                                        message.setTime(time);
+                                        message.setContent(context.getResources().getString(R.string.brokerage));
+                                        message.setStatus(true);
+                                        message.setGroupid(jsonArray.get(i).toString());
+                                        message.saveThrows();
+                                    }
+                                    Intent intent = new Intent("updateBadge");
+                                    context.sendBroadcast(intent);
+                                }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -325,8 +348,7 @@ public class Networks {
                                         message.setStatus(true);
                                         message.saveThrows();
                                     }
-                                    Intent intent = new Intent("newBrokerage");
-                                    context.sendBroadcast(intent);
+
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

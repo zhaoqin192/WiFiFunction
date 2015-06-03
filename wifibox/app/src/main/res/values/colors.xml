@@ -6,5 +6,6 @@
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFF</color>
     <color name="red">#C8483B</color>
+    <color name="green">#00CC00</color>
     <color name="message_content">#363636</color>
 </resources>

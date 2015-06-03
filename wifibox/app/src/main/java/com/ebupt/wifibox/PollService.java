@@ -163,7 +163,6 @@ public class PollService extends Service{
                             }
                         }
                     }
-                    Log.e("ListCount", list.size() + " before");
                     int size = list.size();
                     int outsize = downList.size();
                     List<BrokenData> temp = new ArrayList<>();
@@ -180,10 +179,11 @@ public class PollService extends Service{
                     }
                     list = temp;
                     int listSize = list.size();
-                    Log.e("ListCount", list.size() + " after");
                     int count = 0;
                     for (int i = 0; i < outsize; i++) {
                         DownVisitorMSG outData = downList.get(i);
+                        outData.setStatus("offline");
+                        outData.saveThrows();
                         for (int j = 0; j < listSize; j++) {
                             BrokenData data = list.get(j);
                             if (outData.getMac().equals(data.getMac())) {
@@ -195,12 +195,12 @@ public class PollService extends Service{
                         }
                     }
 
-                    Log.e("ListCount", outsize + "");
-                    Log.e("ListCount", count + "");
+                    Log.e("ListCount", "outsize " + outsize);
+                    Log.e("ListCount", "count " + count);
 
                     if (fileName.equals("assocmaclist.log")) {
                         if (count < outsize) {
-                            int diff = outsize - temp.size();
+                            int diff = outsize - count;
                             MessageTable messageTable = new MessageTable();
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
                             messageTable.setTime(simpleDateFormat.format(new Date()));

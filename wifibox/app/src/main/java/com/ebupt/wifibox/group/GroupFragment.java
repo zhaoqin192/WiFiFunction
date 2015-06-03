@@ -38,6 +38,7 @@ public class GroupFragment extends Fragment {
     private List<GroupMSG> datalist;
     private GroupAdapter adapter;
     private Dialog dialog;
+    private String groupid;
 
     @Nullable
     @Override
@@ -63,6 +64,7 @@ public class GroupFragment extends Fragment {
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                groupid = datalist.get(position).getGroup_id();
                 showdialog();
                 return true;
             }
@@ -70,6 +72,8 @@ public class GroupFragment extends Fragment {
 
         IntentFilter addGroup = new IntentFilter("addGroup");
         IntentFilter updateGroup = new IntentFilter("updateGroup");
+        IntentFilter delGroup = new IntentFilter("delTour");
+        getActivity().registerReceiver(broadcastReceiver, delGroup);
         getActivity().registerReceiver(broadcastReceiver, addGroup);
         getActivity().registerReceiver(broadcastReceiver, updateGroup);
 
@@ -92,6 +96,10 @@ public class GroupFragment extends Fragment {
             if (intent.getAction().equals("updateGroup")) {
                 updateUI();
             }
+            if (intent.getAction().equals("delTour")) {
+                DataSupport.deleteAll(GroupMSG.class, "group_id = ?", groupid);
+                updateUI();
+            }
         }
     };
 
@@ -107,6 +115,7 @@ public class GroupFragment extends Fragment {
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Networks.delTour(getActivity(), groupid);
                 dialog.hide();
             }
         });

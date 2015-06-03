@@ -291,7 +291,7 @@ public class Networks {
         }
     }
 
-    public static void delTour(Context context, String tourid) {
+    public static void delTour(final Context context, String tourid) {
         final String TAG = "delTour";
         requestQueue = Volley.newRequestQueue(context);
         myApp = (MyApp) context.getApplicationContext();
@@ -305,6 +305,8 @@ public class Networks {
                         @Override
                         public void onResponse(JSONObject jsonObject) {
                             Log.e(TAG, jsonObject.toString());
+                            Intent intent = new Intent("delTour");
+                            context.sendBroadcast(intent);
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -474,6 +476,42 @@ public class Networks {
                     Log.e(TAG, volleyError.toString());
                 }
             });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getSettingUrl(final Context context, String groupid) {
+        final String TAG = "getSettingUrl";
+        requestQueue = Volley.newRequestQueue(context);
+        String url = "http://10.1.29.254:28080/AppInterface/getFastSetUrl";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("tourid", groupid);
+            jsonObject.put("mac", "mac");
+
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                            try {
+                                Intent intent = new Intent("getURL");
+                                intent.putExtra("url", jsonObject.getString("url"));
+                                context.sendBroadcast(intent);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+
             requestQueue.add(jsonRequest);
         } catch (JSONException e) {
             e.printStackTrace();

@@ -9,6 +9,15 @@ public class DownVisitorMSG extends DataSupport {
     private String name;
     private String phone;
     private String mac;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getMac() {
         return mac;

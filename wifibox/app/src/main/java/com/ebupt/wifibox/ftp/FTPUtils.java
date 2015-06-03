@@ -25,15 +25,16 @@ public class FTPUtils {
                             new FTP.DownLoadProgressListener() {
                                 @Override
                                 public void onDownLoadProgress(String currentStep, long downProcess, File file) {
-                                    Log.e(TAG, currentStep);
+//                                    Log.e(TAG, currentStep);
                                     if (currentStep.equals(FTPLogConstants.FTP_DOWN_SUCCESS)) {
-                                        Log.e(TAG, "successful");
+//                                        Log.e(TAG, "successful");
                                     } else if (currentStep.equals(FTPLogConstants.FTP_DOWN_LOADING)) {
-                                        Log.e(TAG, downProcess + "%");
+//                                        Log.e(TAG, downProcess + "%");
                                     }
                                 }
                             });
                     Intent intent = new Intent(filename);
+                    Log.e(TAG, filename);
                     context.sendBroadcast(intent);
                 } catch (Exception e) {
                     Log.e(TAG, "下载失败");
@@ -57,6 +58,7 @@ public class FTPUtils {
                         downVisitorMSG.setName(c.getString(c.getColumnIndex("username")));
                         downVisitorMSG.setMac(c.getString(c.getColumnIndex("mac")));
                         downVisitorMSG.setPhone(c.getString(c.getColumnIndex("phone")));
+                        downVisitorMSG.setStatus("unknown");
                         downVisitorMSG.saveThrows();
                     }
                 }

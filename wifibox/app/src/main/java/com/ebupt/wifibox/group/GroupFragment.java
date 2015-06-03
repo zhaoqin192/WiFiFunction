@@ -125,7 +125,7 @@ public class GroupFragment extends Fragment {
         datalist.clear();
         for (GroupMSG groupMSG : list) {
             Log.e(TAG, "updateGroup");
-            datalist.add(groupMSG);
+            datalist.add(0, groupMSG);
         }
         adapter.notifyDataSetChanged();
     }

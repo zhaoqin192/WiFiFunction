@@ -172,7 +172,6 @@ public class PollService extends Service{
                         for (int j = 0; j < size; j++) {
                             BrokenData data = list.get(j);
                             if (data.getMac().equals(outData.getMac())) {
-                                Log.e("PhoneTime", data.getTime() + "");
                                 if (data.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
                                     temp.add(data);
                                 }
@@ -182,22 +181,25 @@ public class PollService extends Service{
                     list = temp;
                     int listSize = list.size();
                     Log.e("ListCount", list.size() + " after");
-
+                    int count = 0;
                     for (int i = 0; i < outsize; i++) {
                         DownVisitorMSG outData = downList.get(i);
                         for (int j = 0; j < listSize; j++) {
                             BrokenData data = list.get(j);
                             if (outData.getMac().equals(data.getMac())) {
                                 outData.setStatus("online");
+                                outData.saveThrows();
+                                count++;
+                                break;
                             }
-                            outData.saveThrows();
                         }
                     }
 
+                    Log.e("ListCount", outsize + "");
+                    Log.e("ListCount", count + "");
 
                     if (fileName.equals("assocmaclist.log")) {
-                        if (temp.size() < outsize) {
-                            myApp.viewCount++;
+                        if (count < outsize) {
                             int diff = outsize - temp.size();
                             MessageTable messageTable = new MessageTable();
                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");

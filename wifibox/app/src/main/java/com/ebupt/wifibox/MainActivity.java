@@ -314,14 +314,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
             if (intent.getAction().equals("login_error")) {
                 Toast.makeText(context, "登录失败", Toast.LENGTH_SHORT).show();
             }
-//            if (intent.getAction().equals("newBrokerage")) {
-//                badgeView.show();
-//                badgeView.setText(String.valueOf(myApp.viewCount));
-//            }
-//            if (intent.getAction().equals("BrokenMessage")) {
-//                badgeView.show();
-//                badgeView.setText(String.valueOf(myApp.viewCount));
-//            }
             if (intent.getAction().equals("updateBadge")) {
                 List<MessageTable> datalist = DataSupport.findAll(MessageTable.class);
                 myApp.viewCount = 0;

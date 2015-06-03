@@ -74,8 +74,6 @@ public class MessageFragment extends Fragment {
         adapter = new MessageAdapter(getActivity(), list);
         listView.setAdapter(adapter);
 
-        IntentFilter update = new IntentFilter("updateBadge");
-        getActivity().registerReceiver(broadcastReceiver, update);
 
         return contactsLayout;
     }
@@ -83,14 +81,13 @@ public class MessageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        updateList();
+        updateList();
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     private void updateList() {
@@ -100,7 +97,7 @@ public class MessageFragment extends Fragment {
         int size = datalist.size();
         if (size != 0) {
             for (int i = 0; i < size; i++) {
-                list.add(datalist.get(i));
+                list.add(0, datalist.get(i));
             }
         }
         Intent intent = new Intent("updateBadge");
@@ -108,13 +105,4 @@ public class MessageFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-
-    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("updateBadge")) {
-//                updateList();
-            }
-        }
-    };
 }

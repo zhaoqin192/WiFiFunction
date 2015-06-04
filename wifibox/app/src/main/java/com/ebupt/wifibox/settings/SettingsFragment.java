@@ -40,7 +40,6 @@ import java.util.TimerTask;
  */
 public class SettingsFragment extends Fragment{
     private View contactslayout;
-//    private Button passport;
     private WifiAdmin wifiAdmin;
     private WifiManager wifiManager;
     private WifiInfo wifiInfo;
@@ -65,15 +64,6 @@ public class SettingsFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactslayout = inflater.inflate(R.layout.settings_layout, container, false);
-//        passport = (Button) contactslayout.findViewById(R.id.settings_passport);
-//        passport.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), OCRActivity.class);
-//                startActivity(intent);
-//            }
-//        });
-//        wifiAdmin = new WifiAdmin(getActivity());
         deviceMSG = DataSupport.findFirst(DeviceMSG.class);
 
         login_text = (TextView) contactslayout.findViewById(R.id.settings_login_text);
@@ -107,24 +97,32 @@ public class SettingsFragment extends Fragment{
         link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (deviceMSG.getLinkflag()) {
-                    int wcgID = wifiInfo.getNetworkId();
-                    wifiAdmin.disconnectWifi(wcgID);
-                    flag = true;
+//                if (deviceMSG.getLinkflag()) {
+//                    WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
+//                    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+//                    String TAG = "WIFIinfo";
+//                    Log.e(TAG, "SSID: " + wifiInfo.getSSID());
+//                    Log.e(TAG, "BSSID: " + wifiInfo.getBSSID());
+//                    Log.e(TAG, "MAC: " + wifiInfo.getMacAddress());
+
+//                    int wcgID = wifiInfo.getNetworkId();
+//                    wifiAdmin.disconnectWifi(wcgID);
+//                    flag = true;
 //                    showDialog("正在断开连接...");
-                } else {
+//                } else {
+
 //                    Log.e("zzzz", deviceMSG.getMacAddress());
 //                    Log.e("zzzz", deviceMSG.getPasswd());
 //                    wifiAdmin.openWifi();
 //                    wifiAdmin.acquireWifiLock();
 //                    wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(deviceMSG.getMacAddress(), deviceMSG.getPasswd(), 3));
 
-//                    connection();
+                    connection();
 //                    showDialog("正在连接设备...");
-                    Intent intent = new Intent("android.settings.WIFI_SETTINGS");
-                    startActivity(intent);
-                    flag = true;
-                }
+//                    Intent intent = new Intent("android.settings.WIFI_SETTINGS");
+//                    startActivity(intent);
+//                    flag = true;
+//                }
             }
         });
 
@@ -188,11 +186,12 @@ public class SettingsFragment extends Fragment{
     }
 
     private void connection() {
-        String networkSSID = "66:51:7e:38:e9:80";
+//        String networkSSID = "64:51:7e:3a:e4:1e";//E41E
+        String networkBSSID = "66:51:7e:38:e9:80";
         String networkPW = "1082325588";
 
         WifiConfiguration conf = new WifiConfiguration();
-        conf.SSID = "\"" + networkSSID + "\"";
+        conf.BSSID = "\"" + networkBSSID + "\"";
         conf.preSharedKey = "\"" + networkPW + "\"";
         conf.wepTxKeyIndex = 0;
         conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
@@ -203,8 +202,8 @@ public class SettingsFragment extends Fragment{
         Log.e("addNetwork", temp + "");
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
-        for( WifiConfiguration i : list ) {
-            if(i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
+        for (WifiConfiguration i : list) {
+            if (i.BSSID != null && i.BSSID.equals("\"" + networkBSSID + "\"")) {
                 Log.e("xxx", "connect");
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(temp, true);

@@ -57,6 +57,7 @@ public class ListActivity extends Activity{
             Networks.userInfos(this, userMSG.getPhone(), "mac", intent.getStringExtra("groupid"));
         } else {
             Networks.uploadPassports(this, intent.getStringExtra("groupid"));
+
         }
     }
 
@@ -224,7 +225,10 @@ public class ListActivity extends Activity{
                 groupadd.setVisibility(View.GONE);
                 download.setVisibility(View.VISIBLE);
                 if (signFragment == null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("groupid", intent.getStringExtra("groupid"));
                     signFragment = new SignFragment();
+                    signFragment.setArguments(bundle);
                     transaction.add(R.id.group_list_fragment, signFragment);
                 } else {
                     transaction.show(signFragment);

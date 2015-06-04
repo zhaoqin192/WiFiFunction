@@ -59,7 +59,7 @@
         android:layout_centerVertical="true"
         />
     <TextView
-        android:id="@+id/group_item_passport_count"
+        android:id="@+id/group_item_upload"
         android:layout_below="@id/group_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,12 +67,12 @@
         android:layout_marginLeft="20dp"
         />
     <TextView
-        android:id="@+id/group_item_list_count"
-        android:layout_toRightOf="@id/group_item_passport_count"
+        android:id="@+id/group_item_download"
+        android:layout_toRightOf="@id/group_item_upload"
         android:layout_below="@id/group_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="已上传列表"
+        android:text="已下载签到"
         android:layout_marginLeft="20dp"
         />
 </RelativeLayout>

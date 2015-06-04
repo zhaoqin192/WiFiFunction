@@ -124,6 +124,12 @@ public class GroupFragment extends Fragment {
         }
     };
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
     private void showdialog() {
         LayoutInflater inflaterDI = LayoutInflater.from(getActivity());
         LinearLayout layout = (LinearLayout) inflaterDI.inflate(R.layout.delete_group_layout, null);

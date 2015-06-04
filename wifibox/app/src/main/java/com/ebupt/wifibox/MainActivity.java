@@ -26,10 +26,10 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.MessageTable;
-import com.ebupt.wifibox.databases.RecordMSG;
 import com.ebupt.wifibox.device.DeviceFragment;
 import com.ebupt.wifibox.group.GroupFragment;
 import com.ebupt.wifibox.message.MessageFragment;
+import com.ebupt.wifibox.networks.Networks;
 import com.ebupt.wifibox.settings.SettingsFragment;
 import com.ebupt.wifibox.viewpage.BadgeView;
 
@@ -95,10 +95,6 @@ public class MainActivity extends Activity implements View.OnClickListener{
         registerReceiver(broadcastReceiver, login_success);
         IntentFilter login_error = new IntentFilter("login_error");
         registerReceiver(broadcastReceiver, login_error);
-//        IntentFilter brokerage = new IntentFilter("newBrokerage");
-//        registerReceiver(broadcastReceiver, brokerage);
-//        IntentFilter brokenMessage = new IntentFilter("BrokenMessage");
-//        registerReceiver(broadcastReceiver, brokenMessage);
         IntentFilter updateBadge = new IntentFilter("updateBadge");
         registerReceiver(broadcastReceiver, updateBadge);
     }
@@ -276,6 +272,8 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 str.append(getrandom());
                 Log.e("xxx", str.toString());
                 groupMSG.setGroup_id(str.toString());
+                groupMSG.setDownload("0");
+                groupMSG.setUpload("0");
 
                 groupMSG.saveThrows();
 
@@ -284,13 +282,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 sendBroadcast(intent);
                 dialog.hide();
 
-                RecordMSG recordMSG = new RecordMSG();
-                recordMSG.setDownload_sign(0);
-                recordMSG.setUpload_sign(0);
-                recordMSG.setNo_upload_passports(0);
-                recordMSG.setUpload_passports(0);
-                recordMSG.setGroup_id(str.toString());
-                recordMSG.saveThrows();
+                Networks.addTour(MainActivity.this, str.toString(), groupName.getText().toString());
             }
         });
 

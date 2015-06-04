@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.VisitorsMSG;
+import com.ebupt.wifibox.networks.Networks;
 
 
 import java.util.List;
@@ -199,10 +200,11 @@ public class ListAdapter extends BaseExpandableListAdapter{
             @Override
             public void onClick(View v) {
                 VisitorsMSG visitorsMSG = list.get(groupPosition);
-                visitorsMSG.delete();
                 list.remove(groupPosition);
+                Networks.delPassport(context, visitorsMSG.getGroupid(), visitorsMSG.getPassports());
                 Intent intent = new Intent("deleteVisitor");
                 context.sendBroadcast(intent);
+                visitorsMSG.delete();
                 dialog.hide();
             }
         });
@@ -249,7 +251,7 @@ public class ListAdapter extends BaseExpandableListAdapter{
                 visitorsMSG.saveThrows();
                 Intent intent = new Intent("updateVisitor");
                 context.sendBroadcast(intent);
-
+                Networks.updatePassport(context, visitorsMSG.getPassports_id(), visitorsMSG.getName(), visitorsMSG.getPassports());
                 dialog.hide();
             }
         });

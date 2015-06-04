@@ -16,6 +16,7 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.ebupt.wifibox.R;
+import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 import com.ebupt.wifibox.networks.Networks;
@@ -93,12 +94,14 @@ public class UploadFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("addVisitor")) {
-                UnVisitorsMSG unVisitorsMSG = DataSupport.findFirst(UnVisitorsMSG.class);
+                List<UnVisitorsMSG> list = DataSupport.where("groupid = ?", groupid).find(UnVisitorsMSG.class);
+                UnVisitorsMSG unVisitorsMSG = list.get(0);
                 VisitorsMSG visitorsMSG = new VisitorsMSG();
                 visitorsMSG.setName(unVisitorsMSG.getName());
                 visitorsMSG.setPassports(unVisitorsMSG.getPassports());
                 visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
                 visitorsMSG.setGroupid(unVisitorsMSG.getGroupid());
+                visitorsMSG.saveThrows();
 
                 datalist.add(visitorsMSG);
                 Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_SHORT).show();
@@ -118,6 +121,12 @@ public class UploadFragment extends Fragment {
             if (intent.getAction().equals("updateList")) {
                 updateUI();
                 Toast.makeText(context, "上传成功", Toast.LENGTH_SHORT).show();
+                List<VisitorsMSG> temp = DataSupport.where("groupid = ?", groupid).find(VisitorsMSG.class);
+                List<GroupMSG> list = DataSupport.where("group_id = ?", groupid).find(GroupMSG.class);
+                if (list.size() != 0) {
+                    list.get(0).setUpload(String.valueOf(temp.size()));
+                    list.get(0).saveThrows();
+                }
             }
 
             adapter.notifyDataSetChanged();
@@ -158,6 +167,8 @@ public class UploadFragment extends Fragment {
                 visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
                 visitorsMSG.setPassports(unVisitorsMSG.getPassports());
                 visitorsMSG.setName(unVisitorsMSG.getName());
+                visitorsMSG.setPassports_id("none");
+                visitorsMSG.saveThrows();
                 datalist.add(visitorsMSG);
             }
         }

@@ -12,12 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.DownVisitorMSG;
+import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.ftp.FTPUtils;
 
 import org.litepal.crud.DataSupport;
@@ -36,6 +35,7 @@ public class SignFragment extends Fragment{
     private ExpandableListView listView;
     private List<DownVisitorMSG> datalist;
     private SignAdapter adapter;
+    private String groupid;
 
     @InjectView(R.id.sign_refresh)
     SwipeRefreshLayout refreshLayout;
@@ -59,6 +59,8 @@ public class SignFragment extends Fragment{
         listView.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.sign_listview_head, null));
         listView.setGroupIndicator(null);
 
+        groupid = getArguments().getString("groupid");
+
 
         datalist = new ArrayList<>();
         List<DownVisitorMSG> list = DataSupport.findAll(DownVisitorMSG.class);
@@ -77,6 +79,8 @@ public class SignFragment extends Fragment{
         IntentFilter updateVisitor = new IntentFilter("updateDownVisitor");
         IntentFilter downDB = new IntentFilter("qiandao.db");
         IntentFilter readDB = new IntentFilter("readDBSuccess");
+        IntentFilter uploadUserInfos = new IntentFilter("uploadUserInfos");
+        getActivity().registerReceiver(broadcastReceiver, uploadUserInfos);
         getActivity().registerReceiver(broadcastReceiver, readDB);
         getActivity().registerReceiver(broadcastReceiver, downDB);
         getActivity().registerReceiver(broadcastReceiver, deleteVisitor);
@@ -131,6 +135,14 @@ public class SignFragment extends Fragment{
                         datalist.add(list.get(i));
                     }
                 }
+                List<GroupMSG> temp = DataSupport.where("group_id = ?", groupid).find(GroupMSG.class);
+                if (temp.size() != 0) {
+                    temp.get(0).setDownload(String.valueOf(list.size()));
+                    temp.get(0).saveThrows();
+                }
+            }
+            if (intent.getAction().equals("updateUserInfos")) {
+                Toast.makeText(getActivity(), "上传用户数据成功", Toast.LENGTH_SHORT).show();
             }
             adapter.notifyDataSetChanged();
             int count = adapter.getGroupCount();

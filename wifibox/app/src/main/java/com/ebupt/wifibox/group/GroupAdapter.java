@@ -8,9 +8,6 @@ import android.widget.TextView;
 
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.GroupMSG;
-import com.ebupt.wifibox.databases.RecordMSG;
-
-import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
@@ -53,17 +50,8 @@ public class GroupAdapter extends BaseAdapter{
         holder.item_name.setText(groupMSG.getGroup_name());
         holder.item_date.setText(groupMSG.getGroup_date());
         holder.item_count.setText(groupMSG.getGroup_count());
-
-        List<RecordMSG> record = DataSupport.where("group_id = ?", groupMSG.getGroup_id()).find(RecordMSG.class);
-        if (record.size() != 0) {
-            RecordMSG recordMSG = record.get(0);
-            holder.item_passport.setText("已上传护照:" + recordMSG.getUpload_passports());
-            holder.item_list.setText("已上传列表:" + recordMSG.getNo_upload_passports());
-        } else {
-            holder.item_passport.setText("已上传护照:" + 0);
-            holder.item_list.setText("已上传列表:" + 0);
-        }
-
+        holder.item_upload.setText("已上传护照:" + groupMSG.getUpload());
+        holder.item_download.setText("已下载签到:" + groupMSG.getDownload());
         return convertView;
     }
 
@@ -71,15 +59,15 @@ public class GroupAdapter extends BaseAdapter{
         TextView item_name;
         TextView item_date;
         TextView item_count;
-        TextView item_passport;
-        TextView item_list;
+        TextView item_upload;
+        TextView item_download;
 
         public ViewHolder(View view) {
             item_name = (TextView) view.findViewById(R.id.group_item_name);
             item_date = (TextView) view.findViewById(R.id.group_item_date);
             item_count = (TextView) view.findViewById(R.id.group_item_count);
-            item_passport = (TextView) view.findViewById(R.id.group_item_passport_count);
-            item_list = (TextView) view.findViewById(R.id.group_item_list_count);
+            item_upload = (TextView) view.findViewById(R.id.group_item_upload);
+            item_download = (TextView) view.findViewById(R.id.group_item_download);
             view.setTag(this);
         }
 

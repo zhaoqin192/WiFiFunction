@@ -17,7 +17,6 @@ import com.ebupt.wifibox.databases.DownVisitorMSG;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.MessageTable;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
-import com.ebupt.wifibox.databases.UserMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 
 import org.json.JSONArray;
@@ -77,52 +76,7 @@ public class Networks {
         requestQueue.add(jsonRequest);
     }
 
-    public static void passports(Context context, String phone, String mac, String tourid, String gs, String array) {
-        final String TAG = "passports";
-        requestQueue = Volley.newRequestQueue(context);
-        StringBuffer url = new StringBuffer("http://10.1.29.254:28080/AppInterface/passports");
-
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("guide", phone);
-        params.put("mac", mac);
-        params.put("tourid", tourid);
-
-        JSONArray jsonArray = new JSONArray();
-        for (int i = 0; i < 4; i++) {
-            JSONObject object = new JSONObject();
-            try {
-                object.put("phone", "123");
-                object.put("passport", "456");
-                jsonArray.put(object);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        JSONObject jsstring = new JSONObject(params);
-        try {
-            jsstring.put("passports", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url.toString(), jsstring,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        Log.e(TAG, jsonObject.toString());
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e(TAG, volleyError.toString());
-            }
-        });
-        requestQueue.add(jsonRequest);
-    }
-
-    public static void userInfos(Context context, String phone, String mac, String tourid) {
+    public static void userInfos(final Context context, String phone, String mac, String tourid) {
         final String TAG = "userInfos";
         requestQueue = Volley.newRequestQueue(context);
         StringBuffer url = new StringBuffer("http://10.1.29.254:28080/AppInterface/userInfos");
@@ -152,6 +106,8 @@ public class Networks {
                         @Override
                         public void onResponse(JSONObject jsonObject) {
                             Log.e(TAG, jsonObject.toString());
+                            Intent intent = new Intent("uploadUserInfos");
+                            context.sendBroadcast(intent);
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -164,30 +120,6 @@ public class Networks {
             e.printStackTrace();
         }
 
-    }
-
-    public static void getrebates(Context context, String tourid) {
-        final String TAG = "getrebates";
-        requestQueue = Volley.newRequestQueue(context);
-        StringBuffer url = new StringBuffer("http://10.1.29.254:28080/AppInterface/getRebates");
-
-        HashMap<String, String> params = new HashMap<>();
-        params.put("tourid", tourid);
-
-        JSONObject jsonObject = new JSONObject(params);
-        JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url.toString(), jsonObject,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        Log.e(TAG, jsonObject.toString());
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e(TAG, volleyError.toString());
-            }
-        });
-        requestQueue.add(jsonRequest);
     }
 
     public static void getTours(final Context context) {
@@ -215,6 +147,8 @@ public class Networks {
                                     groupMSG.setGroup_id(object.getString("tourid"));
                                     groupMSG.setGroup_date(object.getString("createtime"));
                                     groupMSG.setGroup_count(object.getString("count"));
+                                    groupMSG.setUpload("0");
+                                    groupMSG.setDownload("0");
                                     if (object.getInt("overdue") == 0) {
                                         groupMSG.setInvalid(false);
                                     } else {
@@ -320,56 +254,9 @@ public class Networks {
         }
     }
 
-    public static void pollGroup(final Context context) {
-        final String TAG = "pollGroup";
-        requestQueue = Volley.newRequestQueue(context);
-        myApp = (MyApp) context.getApplicationContext();
-        String url = "http://10.1.29.254:28080/AppInterface/getTours";
-
-        try {
-            UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("guide", userMSG.getPhone());
-            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject jsonObject) {
-                            Log.e(TAG, jsonObject.toString());
-                            try {
-                                JSONArray array = jsonObject.getJSONArray("changetourids");
-                                int size = array.length();
-                                if (size != 0) {
-                                    myApp.viewCount = size;
-                                    for (int i = 0; i < size; i++) {
-                                        MessageTable message = new MessageTable();
-                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                                        Date curDate = new Date(System.currentTimeMillis());
-                                        String time = formatter.format(curDate);
-                                        message.setTime(time);
-                                        message.setContent(context.getResources().getString(R.string.brokerage));
-                                        message.setStatus(true);
-                                        message.saveThrows();
-                                    }
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
-                    Log.e(TAG, volleyError.toString());
-                }
-            });
-            requestQueue.add(jsonRequest);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void getPassports(final Context context, final String tourid) {
         final String TAG = "getPassports";
+        Log.e(TAG, "getPassports");
         requestQueue = Volley.newRequestQueue(context);
         String url = "http://10.1.29.254:28080/AppInterface/getPassports";
 
@@ -397,7 +284,16 @@ public class Networks {
                                         visitor.saveThrows();
                                         Intent intent = new Intent("getVisitors");
                                         context.sendBroadcast(intent);
+                                    } else {
+                                        visitor.setPassports_id(object.getString("passportid"));
+                                        visitor.saveThrows();
                                     }
+                                }
+                                List<GroupMSG> groupMSGs = DataSupport.where("group_id = ?", tourid).find(GroupMSG.class);
+                                if (groupMSGs.size() != 0) {
+                                    List<VisitorsMSG> temp = DataSupport.where("groupid = ?", tourid).find(VisitorsMSG.class);
+                                    groupMSGs.get(0).setUpload(String.valueOf(temp.size()));
+                                    groupMSGs.get(0).saveThrows();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -516,5 +412,64 @@ public class Networks {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void delPassport(Context context, String groupid, String passport) {
+        final String TAG = "delPassport";
+        requestQueue = Volley.newRequestQueue(context);
+        String url = "http://10.1.29.254:28080/AppInterface/delPassport";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("tourid", groupid);
+            jsonObject.put("passport", passport);
+
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void updatePassport(Context context, String passportid, String name, String passport) {
+        final String TAG = "updatePassport";
+        requestQueue = Volley.newRequestQueue(context);
+        String url = "http://10.1.29.254:28080/AppInterface/updatePassport";
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("passportid", passportid);
+            jsonObject.put("name", name);
+            jsonObject.put("passport", passport);
+
+            JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject jsonObject) {
+                            Log.e(TAG, jsonObject.toString());
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e(TAG, volleyError.toString());
+                }
+            });
+            requestQueue.add(jsonRequest);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 }

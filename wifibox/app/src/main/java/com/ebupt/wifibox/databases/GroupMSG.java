@@ -11,6 +11,24 @@ public class GroupMSG extends DataSupport{
     private String group_count;
     private String group_id;
     private Boolean invalid;
+    private String upload;
+    private String download;
+
+    public String getUpload() {
+        return upload;
+    }
+
+    public void setUpload(String upload) {
+        this.upload = upload;
+    }
+
+    public String getDownload() {
+        return download;
+    }
+
+    public void setDownload(String download) {
+        this.download = download;
+    }
 
     public Boolean getInvalid() {
         return invalid;

@@ -10,6 +10,15 @@ public class VisitorsMSG extends DataSupport{
     private String passports;
     private String groupid;
     private String brokerage;
+    private String passports_id;
+
+    public String getPassports_id() {
+        return passports_id;
+    }
+
+    public void setPassports_id(String passports_id) {
+        this.passports_id = passports_id;
+    }
 
     public void setBrokerage(String brokerage) {
         this.brokerage = brokerage;

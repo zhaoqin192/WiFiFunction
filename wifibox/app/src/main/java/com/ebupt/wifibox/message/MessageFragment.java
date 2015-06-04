@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -60,12 +61,24 @@ public class MessageFragment extends Fragment {
         intent.putExtra("groupid", groupMSG.getGroup_id());
         startActivity(intent);
     }
+
+    @InjectView(R.id.message_refresh)
+    SwipeRefreshLayout refreshLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         contactsLayout = inflater.inflate(R.layout.message_layout, container, false);
         ButterKnife.inject(this, contactsLayout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateList();
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         listView = (ListView) contactsLayout.findViewById(R.id.message_listview);
         myApp = (MyApp) getActivity().getApplicationContext();
@@ -73,7 +86,6 @@ public class MessageFragment extends Fragment {
         list = new ArrayList<>();
         adapter = new MessageAdapter(getActivity(), list);
         listView.setAdapter(adapter);
-
 
         return contactsLayout;
     }
@@ -88,6 +100,15 @@ public class MessageFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        List<MessageTable> list = DataSupport.findAll(MessageTable.class);
+        int size = list.size();
+        if (size != 0) {
+            for (int i = 0; i < size; i++) {
+                if (!list.get(i).getStatus()) {
+                    list.get(i).delete();
+                }
+            }
+        }
     }
 
     private void updateList() {
@@ -103,6 +124,9 @@ public class MessageFragment extends Fragment {
         Intent intent = new Intent("updateBadge");
         getActivity().sendBroadcast(intent);
         adapter.notifyDataSetChanged();
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+        }
     }
 
 }

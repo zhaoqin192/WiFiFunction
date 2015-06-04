@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,9 @@ import android.webkit.WebViewClient;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.networks.Networks;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 
 /**
  * Created by zhaoqin on 4/23/15.
@@ -26,10 +30,27 @@ public class ShortcutFragment extends Fragment{
     private final String TAG = "ShortcutFragment";
     private View contactslayout;
     private WebView webView;
+    private String url = null;
+
+    @InjectView(R.id.shortcut_refresh)
+    SwipeRefreshLayout refreshLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactslayout = inflater.inflate(R.layout.shortcut_layout, container, false);
+        ButterKnife.inject(this, contactslayout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (url != null) {
+                    webView.loadUrl(url);
+                }
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         IntentFilter getURL = new IntentFilter("getURL");
         getActivity().registerReceiver(broadcastReceiver, getURL);
@@ -69,6 +90,9 @@ public class ShortcutFragment extends Fragment{
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                if (refreshLayout != null) {
+                    refreshLayout.setRefreshing(false);
+                }
             }
         });
     }
@@ -77,7 +101,9 @@ public class ShortcutFragment extends Fragment{
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("getURL")) {
-                present(intent.getStringExtra("url"));
+                url = intent.getStringExtra("url");
+                present(url);
+
             }
         }
     };

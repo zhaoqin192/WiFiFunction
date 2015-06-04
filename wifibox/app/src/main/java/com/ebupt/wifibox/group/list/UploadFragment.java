@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,9 @@ import org.litepal.crud.DataSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Created by zhaoqin on 4/23/15.
  */
@@ -35,10 +39,23 @@ public class UploadFragment extends Fragment {
     private String groupid;
 
 
+    @InjectView(R.id.upload_refresh)
+    SwipeRefreshLayout refreshLayout;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactsLayout = inflater.inflate(R.layout.upload_fragment_layout, container, false);
+        ButterKnife.inject(this, contactsLayout);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateUI();
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         listView = (ExpandableListView) contactsLayout.findViewById(R.id.upload_list_expand);
         listView.setGroupIndicator(null);
@@ -46,12 +63,7 @@ public class UploadFragment extends Fragment {
         datalist = new ArrayList<>();
         groupid = getArguments().getString("groupid");
 
-
-
-
         updateUI();
-
-
 
         adapter = new ListAdapter(getActivity(), datalist);
 
@@ -148,6 +160,9 @@ public class UploadFragment extends Fragment {
                 visitorsMSG.setName(unVisitorsMSG.getName());
                 datalist.add(visitorsMSG);
             }
+        }
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
         }
     }
 

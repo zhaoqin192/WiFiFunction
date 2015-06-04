@@ -7,22 +7,26 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.DownVisitorMSG;
 import com.ebupt.wifibox.ftp.FTPUtils;
 
-
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 /**
  * Created by zhaoqin on 4/23/15.
@@ -33,12 +37,26 @@ public class SignFragment extends Fragment{
     private List<DownVisitorMSG> datalist;
     private SignAdapter adapter;
 
+    @InjectView(R.id.sign_refresh)
+    SwipeRefreshLayout refreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactsLayout = inflater.inflate(R.layout.sign_fragment_layout, container, false);
+        ButterKnife.inject(this, contactsLayout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                updateUI();
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         listView = (ExpandableListView) contactsLayout.findViewById(R.id.sign_listview);
+        listView.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.sign_listview_head, null));
         listView.setGroupIndicator(null);
 
 
@@ -67,6 +85,28 @@ public class SignFragment extends Fragment{
         return contactsLayout;
     }
 
+    private void updateUI() {
+        datalist.clear();
+        List<DownVisitorMSG> list = DataSupport.findAll(DownVisitorMSG.class);
+        int size = list.size();
+        if (size != 0) {
+            for (int i = 0; i < size; i++) {
+                datalist.add(list.get(i));
+            }
+        }
+        adapter.notifyDataSetChanged();
+        int count = adapter.getGroupCount();
+        for (int i = 0; i < count; i++) {
+            if (listView.isGroupExpanded(i)) {
+                listView.collapseGroup(i);
+            }
+        }
+        listView.requestFocusFromTouch();
+        listView.setSelection(0);
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+        }
+    }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -91,7 +131,6 @@ public class SignFragment extends Fragment{
                         datalist.add(list.get(i));
                     }
                 }
-
             }
             adapter.notifyDataSetChanged();
             int count = adapter.getGroupCount();

@@ -2,17 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ExpandableListView
-        android:id="@+id/upload_list_expand"
-        android:dividerHeight="1dp"
-        android:divider="#747474"
-        android:childDivider="#747474"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/upload_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ExpandableListView>
-    <View
-        android:layout_below="@id/upload_list_expand"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#747474" />
+        android:layout_height="match_parent">
+        <ExpandableListView
+            android:id="@+id/upload_list_expand"
+            android:dividerHeight="1dp"
+            android:divider="#747474"
+            android:childDivider="#747474"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></ExpandableListView>
+        <View
+            android:layout_below="@id/upload_list_expand"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#747474" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

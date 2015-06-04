@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,9 @@ import org.litepal.crud.DataSupport;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * Created by zhaoqin on 4/21/15.
  */
@@ -40,10 +45,23 @@ public class GroupFragment extends Fragment {
     private Dialog dialog;
     private String groupid;
 
+    @InjectView(R.id.group_refresh)
+    SwipeRefreshLayout refreshLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactsLayout = inflater.inflate(R.layout.group_layout, container, false);
+        ButterKnife.inject(this, contactsLayout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Networks.getTours(getActivity());
+            }
+        });
+        refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light, android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         listView = (ListView) contactsLayout.findViewById(R.id.group_list);
 
@@ -94,6 +112,9 @@ public class GroupFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
             if (intent.getAction().equals("updateGroup")) {
+                if (refreshLayout != null) {
+                    refreshLayout.setRefreshing(false);
+                }
                 updateUI();
             }
             if (intent.getAction().equals("delTour")) {

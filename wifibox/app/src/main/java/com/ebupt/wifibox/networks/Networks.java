@@ -137,7 +137,6 @@ public class Networks {
                         public void onResponse(JSONObject jsonObject) {
                             Log.e(TAG, jsonObject.toString());
                             try {
-                                DataSupport.deleteAll(GroupMSG.class);
                                 JSONArray array = jsonObject.getJSONArray("tours");
                                 int size = array.length();
                                 for (int i = 0; i < size; i++) {
@@ -147,8 +146,6 @@ public class Networks {
                                     groupMSG.setGroup_id(object.getString("tourid"));
                                     groupMSG.setGroup_date(object.getString("createtime"));
                                     groupMSG.setGroup_count(object.getString("count"));
-                                    groupMSG.setUpload("0");
-                                    groupMSG.setDownload("0");
                                     if (object.getInt("overdue") == 0) {
                                         groupMSG.setInvalid(false);
                                     } else {
@@ -156,6 +153,8 @@ public class Networks {
                                     }
                                     List<GroupMSG> list = DataSupport.where("group_id = ?", object.getString("tourid")).find(GroupMSG.class);
                                     if (list.size() == 0) {
+                                        groupMSG.setUpload("0");
+                                        groupMSG.setDownload("0");
                                         groupMSG.saveThrows();
                                         Intent intent = new Intent("updateGroup");
                                         context.sendBroadcast(intent);
@@ -278,15 +277,13 @@ public class Networks {
                                     visitor.setName(object.getString("name"));
                                     visitor.setPassports(object.getString("passport"));
                                     visitor.setBrokerage(object.getString("rebate"));
-                                    List<VisitorsMSG> list = DataSupport.where("gourid = ?", tourid).where("passports = ?", object.getString("passport"))
+                                    visitor.setPassports_id(object.getString("passportid"));
+                                    List<VisitorsMSG> list = DataSupport.where("gourid = ?", tourid).where("passports_id = ?", object.getString("passportid"))
                                             .find(VisitorsMSG.class);
                                     if (list.size() == 0) {
                                         visitor.saveThrows();
                                         Intent intent = new Intent("getVisitors");
                                         context.sendBroadcast(intent);
-                                    } else {
-                                        visitor.setPassports_id(object.getString("passportid"));
-                                        visitor.saveThrows();
                                     }
                                 }
                                 List<GroupMSG> groupMSGs = DataSupport.where("group_id = ?", tourid).find(GroupMSG.class);
@@ -352,6 +349,7 @@ public class Networks {
                                             visitorsMSG.setGroupid(unVisitorsMSG.getGroupid());
                                             visitorsMSG.setPassports(unVisitorsMSG.getPassports());
                                             visitorsMSG.setName(unVisitorsMSG.getName());
+                                            visitorsMSG.setPassports_id(unVisitorsMSG.getPassportsid());
                                             visitorsMSG.saveThrows();
                                         }
                                         DataSupport.deleteAll(UnVisitorsMSG.class, "groupid = ?", groupid);

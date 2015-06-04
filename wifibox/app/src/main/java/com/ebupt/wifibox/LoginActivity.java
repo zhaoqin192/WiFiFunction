@@ -3,7 +3,6 @@ package com.ebupt.wifibox;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -51,6 +50,9 @@ public class LoginActivity extends Activity{
                 login_name.setText(userMSG.getPhone());
                 login_passwd.setText(userMSG.getPasswd());
                 Networks.login(this, userMSG.getPhone(), userMSG.getPasswd());
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         } else {
             userMSG = new UserMSG();

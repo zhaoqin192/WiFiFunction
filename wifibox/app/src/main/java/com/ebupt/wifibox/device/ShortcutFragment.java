@@ -1,6 +1,7 @@
 package com.ebupt.wifibox.device;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ public class ShortcutFragment extends Fragment{
     private View contactslayout;
     private WebView webView;
     private String url = null;
+    private ProgressDialog dialog;
 
     @InjectView(R.id.shortcut_refresh)
     SwipeRefreshLayout refreshLayout;
@@ -52,6 +54,10 @@ public class ShortcutFragment extends Fragment{
                 android.R.color.holo_green_light, android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        dialog = ProgressDialog.show(getActivity(), null, "页面加载中，请稍后...");
+        Networks.getSettingUrl(getActivity(), "none");
+
+
         IntentFilter getURL = new IntentFilter("getURL");
         getActivity().registerReceiver(broadcastReceiver, getURL);
         return contactslayout;
@@ -60,7 +66,7 @@ public class ShortcutFragment extends Fragment{
     @Override
     public void onResume() {
         super.onResume();
-        Networks.getSettingUrl(getActivity(), "none");
+
     }
 
     @Override
@@ -92,6 +98,9 @@ public class ShortcutFragment extends Fragment{
             public void onPageFinished(WebView view, String url) {
                 if (refreshLayout != null) {
                     refreshLayout.setRefreshing(false);
+                }
+                if (dialog != null) {
+                    dialog.dismiss();
                 }
             }
         });

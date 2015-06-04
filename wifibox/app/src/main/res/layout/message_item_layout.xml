@@ -3,7 +3,7 @@
     android:background="@drawable/list_item_color"
     android:minHeight="@dimen/item_height"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="110dp">
 
     <TextView
         android:id="@+id/message_item_time"

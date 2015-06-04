@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,13 +91,13 @@ public class SignAdapter extends BaseExpandableListAdapter{
         holder.phone_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                contact(downVisitorMSG.getPhone());
             }
         });
         holder.phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                contact(downVisitorMSG.getPhone());
             }
         });
 
@@ -263,5 +265,11 @@ public class SignAdapter extends BaseExpandableListAdapter{
                 dialog.hide();
             }
         });
+    }
+
+    private void contact(String phone) {
+        Uri uri = Uri.parse("tel:" + phone);
+        Intent intent = new Intent(Intent.ACTION_DIAL, uri);
+        context.startActivity(intent);
     }
 }

@@ -83,8 +83,8 @@ public class PollService extends Service{
         IntentFilter macdetect0 = new IntentFilter("macdetect0");
         IntentFilter macdetect1 = new IntentFilter("macdetect1");
         IntentFilter macdetect2 = new IntentFilter("macdetect2");
-        IntentFilter downList = new IntentFilter("downList");
-        registerReceiver(broadcastReceiver, downList);
+        IntentFilter check = new IntentFilter("check");
+        registerReceiver(broadcastReceiver, check);
         registerReceiver(broadcastReceiver, macdetect2);
         registerReceiver(broadcastReceiver, macdetect1);
         registerReceiver(broadcastReceiver, macdetect0);
@@ -103,7 +103,7 @@ public class PollService extends Service{
                 Networks.getTours(PollService.this);
             }
         };
-        timer.schedule(timerTask, 1000, Integer.parseInt(time) * 60 * 1000);
+        timer.schedule(timerTask, 1000, Integer.parseInt(time) * 60 * 1000 / 4);
     }
 
     private void getList() {
@@ -276,7 +276,7 @@ public class PollService extends Service{
                 Log.e("Count", "macdetect2");
                 readFile("macdetect2");
             }
-            if (intent.getAction().equals("downList")) {
+            if (intent.getAction().equals("check")) {
                 getList();
             }
         }

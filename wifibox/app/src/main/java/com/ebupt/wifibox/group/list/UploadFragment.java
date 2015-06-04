@@ -59,6 +59,16 @@ public class UploadFragment extends Fragment {
                 android.R.color.holo_red_light);
 
         listView = (ExpandableListView) contactsLayout.findViewById(R.id.upload_list_expand);
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                VisitorsMSG visitorsMSG = datalist.get(groupPosition);
+                if (visitorsMSG.getGroupid().equals("head")) {
+                    return true;
+                }
+                return false;
+            }
+        });
         listView.setGroupIndicator(null);
 
         datalist = new ArrayList<>();

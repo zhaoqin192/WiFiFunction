@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -56,7 +55,7 @@ public class GroupFragment extends Fragment {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Networks.getTours(getActivity());
+                updateUI();
             }
         });
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -164,5 +163,8 @@ public class GroupFragment extends Fragment {
             datalist.add(0, groupMSG);
         }
         adapter.notifyDataSetChanged();
+        if (refreshLayout != null) {
+            refreshLayout.setRefreshing(false);
+        }
     }
 }

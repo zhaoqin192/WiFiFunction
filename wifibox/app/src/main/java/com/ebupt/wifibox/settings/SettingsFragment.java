@@ -52,7 +52,6 @@ public class SettingsFragment extends Fragment{
     private TextView login_text;
     private TextView wifi_text;
     private boolean flag;
-    private ProgressDialog progressDialog;
     private Timer timer;
     private Dialog dialog;
     private TextView timetext;
@@ -88,6 +87,9 @@ public class SettingsFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
+                UserMSG user = DataSupport.findFirst(UserMSG.class);
+                user.setAuto(false);
+                user.saveThrows();
                 startActivity(intent);
                 getActivity().finish();
             }
@@ -97,32 +99,8 @@ public class SettingsFragment extends Fragment{
         link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (deviceMSG.getLinkflag()) {
-//                    WifiManager wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-//                    WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-//                    String TAG = "WIFIinfo";
-//                    Log.e(TAG, "SSID: " + wifiInfo.getSSID());
-//                    Log.e(TAG, "BSSID: " + wifiInfo.getBSSID());
-//                    Log.e(TAG, "MAC: " + wifiInfo.getMacAddress());
-
-//                    int wcgID = wifiInfo.getNetworkId();
-//                    wifiAdmin.disconnectWifi(wcgID);
-//                    flag = true;
-//                    showDialog("正在断开连接...");
-//                } else {
-
-//                    Log.e("zzzz", deviceMSG.getMacAddress());
-//                    Log.e("zzzz", deviceMSG.getPasswd());
-//                    wifiAdmin.openWifi();
-//                    wifiAdmin.acquireWifiLock();
-//                    wifiAdmin.addNetwork(wifiAdmin.CreateWifiInfo(deviceMSG.getMacAddress(), deviceMSG.getPasswd(), 3));
-
-                    connection();
-//                    showDialog("正在连接设备...");
-//                    Intent intent = new Intent("android.settings.WIFI_SETTINGS");
-//                    startActivity(intent);
-//                    flag = true;
-//                }
+                Intent wifiSettingsIntent = new Intent("android.settings.WIFI_SETTINGS");
+                startActivity(wifiSettingsIntent);
             }
         });
 
@@ -139,10 +117,8 @@ public class SettingsFragment extends Fragment{
                 switch (msg.what) {
                     case 0:
                         link.setBackgroundResource(R.drawable.btn_unlink_background);
-//                        wifi_text.setText(wifi_name.replaceAll("\"", ""));
                         wifi_text.setText(wifi_name);
                         if (flag) {
-//                            progressDialog.hide();
                             flag = false;
                         }
                         break;
@@ -150,7 +126,6 @@ public class SettingsFragment extends Fragment{
                         link.setBackgroundResource(R.drawable.btn_link_background);
                         wifi_text.setText("未连接指定设备");
                         if (flag) {
-//                            progressDialog.hide();
                             flag = false;
                         }
                         break;
@@ -164,56 +139,33 @@ public class SettingsFragment extends Fragment{
         return contactslayout;
     }
 
-    private void showDialog(String str) {
-        //创建ProgressDialog对象
-        progressDialog = new ProgressDialog(getActivity());
-        // 设置进度条风格，风格为圆形，旋转的
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // 设置ProgressDialog 标题
-//        progressDialog.setTitle("提示");
-        // 设置ProgressDialog 提示信息
-        progressDialog.setMessage(str);
-        // 设置ProgressDialog 标题图标
-//        progressDialog.setIcon(R.drawable.a);
-        // 设置ProgressDialog 的进度条是否不明确
-        progressDialog.setIndeterminate(false);
-        // 设置ProgressDialog 是否可以按退回按键取消
-        progressDialog.setCancelable(true);
-        //设置ProgressDialog 的一个Button
-//        progressDialog.setButton("确定", new SureButtonListener());
-        // 让ProgressDialog显示
-        progressDialog.show();
-    }
 
     private void connection() {
-//        String networkSSID = "64:51:7e:3a:e4:1e";//E41E
-        String networkBSSID = "66:51:7e:38:e9:80";
+//        String networkSSID = "66:51:7e:38:e9:80";
+//        String networkSSID = "EBUPT-INNER-WIFI";
+        String networkSSID = "YUE-BOX-E41E";
         String networkPW = "1082325588";
 
         WifiConfiguration conf = new WifiConfiguration();
-        conf.BSSID = "\"" + networkBSSID + "\"";
-        conf.preSharedKey = "\"" + networkPW + "\"";
+        conf.SSID = "\"" + networkSSID + "\"";
+//        conf.preSharedKey = "\"" + networkPW + "\"";
         conf.wepTxKeyIndex = 0;
         conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-        conf.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-//        conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 
         int temp = wifiManager.addNetwork(conf);
         Log.e("addNetwork", temp + "");
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for (WifiConfiguration i : list) {
-            if (i.BSSID != null && i.BSSID.equals("\"" + networkBSSID + "\"")) {
+            if (i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
                 Log.e("xxx", "connect");
                 wifiManager.disconnect();
-                wifiManager.enableNetwork(temp, true);
+                wifiManager.enableNetwork(i.networkId, true);
                 Log.e("networkId", i.networkId + "");
-//                wifiManager.saveConfiguration();
                 wifiManager.reconnect();
                 break;
             }
         }
-
     }
 
     @Override

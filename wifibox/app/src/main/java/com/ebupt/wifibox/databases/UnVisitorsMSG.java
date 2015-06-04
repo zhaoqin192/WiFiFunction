@@ -10,6 +10,15 @@ public class UnVisitorsMSG extends DataSupport{
     private String passports;
     private String groupid;
     private String brokerage;
+    private String passportsid;
+
+    public String getPassportsid() {
+        return passportsid;
+    }
+
+    public void setPassportsid(String passportsid) {
+        this.passportsid = passportsid;
+    }
 
     public void setBrokerage(String brokerage) {
         this.brokerage = brokerage;

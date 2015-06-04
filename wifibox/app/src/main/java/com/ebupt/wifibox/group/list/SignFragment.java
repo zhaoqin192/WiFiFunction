@@ -140,8 +140,10 @@ public class SignFragment extends Fragment{
                     temp.get(0).setDownload(String.valueOf(list.size()));
                     temp.get(0).saveThrows();
                 }
+                Intent check = new Intent("check");
+                context.sendBroadcast(check);
             }
-            if (intent.getAction().equals("updateUserInfos")) {
+            if (intent.getAction().equals("uploadUserInfos")) {
                 Toast.makeText(getActivity(), "上传用户数据成功", Toast.LENGTH_SHORT).show();
             }
             adapter.notifyDataSetChanged();
@@ -155,4 +157,5 @@ public class SignFragment extends Fragment{
             listView.setSelection(0);
         }
     };
+
 }

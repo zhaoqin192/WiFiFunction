@@ -1,6 +1,7 @@
 package com.ebupt.wifibox.device;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import butterknife.InjectView;
 public class ManagerFragment extends Fragment{
     private View contactslayout;
     private WebView webView;
+    private ProgressDialog dialog;
 
     @InjectView(R.id.manager_refresh)
     SwipeRefreshLayout refreshLayout;
@@ -47,6 +49,7 @@ public class ManagerFragment extends Fragment{
 
         webView.getSettings().setAppCacheEnabled(true);
         webView.loadUrl(url);
+        dialog = ProgressDialog.show(getActivity(), null, "页面加载中,请稍后...");
         webView.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -66,6 +69,9 @@ public class ManagerFragment extends Fragment{
             public void onPageFinished(WebView view, String url) {
                 if (refreshLayout != null) {
                     refreshLayout.setRefreshing(false);
+                }
+                if (dialog != null) {
+                    dialog.dismiss();
                 }
             }
         });

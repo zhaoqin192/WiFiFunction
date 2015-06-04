@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
+import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
@@ -28,7 +29,9 @@ import com.ebupt.wifibox.networks.Networks;
 import org.litepal.crud.DataSupport;
 
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -48,6 +51,7 @@ public class ListActivity extends Activity{
     private ImageView groupadd;
     private ImageView addVisitor;
     private Dialog dialog;
+    private MyApp myApp;
 
     @InjectView(R.id.group_list_upload) ImageView uploadPassport;
     @OnClick(R.id.group_list_upload)
@@ -77,8 +81,8 @@ public class ListActivity extends Activity{
             }
             FTPUtils.downloadFileFromFTP(this, ServerPath, fileName);
             Toast.makeText(this, "签到列表已下载", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent("downList");
-            sendBroadcast(intent);
+//            Intent intent = new Intent("downList");
+//            sendBroadcast(intent);
         }
     }
     @Override
@@ -91,6 +95,8 @@ public class ListActivity extends Activity{
         TextView titletext = (TextView) findViewById(R.id.myTitle);
         intent = getIntent();
         titletext.setText(intent.getStringExtra("name"));
+
+        myApp = (MyApp) getApplicationContext();
 
         TextView backtext = (TextView) findViewById(R.id.myBack_text);
         backtext.setVisibility(View.VISIBLE);
@@ -176,6 +182,8 @@ public class ListActivity extends Activity{
                 visitorsMSG.setName(name.getText().toString());
                 visitorsMSG.setPassports(passport.getText().toString());
                 visitorsMSG.setBrokerage("0");
+                String id = System.currentTimeMillis() / 1000 + myApp.phone + getrandom();
+                visitorsMSG.setPassportsid(id);
                 visitorsMSG.saveThrows();
                 Intent add = new Intent("addVisitor");
                 sendBroadcast(add);
@@ -256,4 +264,25 @@ public class ListActivity extends Activity{
         }
     }
 
+    private int getrandom() {
+        Random ran=new Random();
+        int r = 0;
+        m1:while(true){
+            int n=ran.nextInt(10000000);
+            r=n;
+            int[] bs=new int[7];
+            for(int i=0;i<bs.length;i++){
+                bs[i]=n%10;
+                n/=10;
+            }
+            Arrays.sort(bs);
+            for(int i=1;i<bs.length;i++){
+                if(bs[i-1]==bs[i]){
+                    continue m1;
+                }
+            }
+            break;
+        }
+        return r;
+    }
 }

@@ -62,11 +62,12 @@ public class ListAdapter extends BaseExpandableListAdapter{
             convertView = View.inflate(context, R.layout.group_list_item_son, null);
             new ViewHolderSon(convertView);
         }
-        final ViewHolderSon holder = (ViewHolderSon) convertView.getTag();
         final VisitorsMSG visitorsMSG = list.get(groupPosition);
-        if (visitorsMSG.getGroupid().equals("head")) {
-            return null;
-        }
+//        if (visitorsMSG.getGroupid().equals("head")) {
+//            return null;
+//        }
+        final ViewHolderSon holder = (ViewHolderSon) convertView.getTag();
+
         holder.delete_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,6 +121,7 @@ public class ListAdapter extends BaseExpandableListAdapter{
 
         VisitorsMSG visitorsMSG = list.get(groupPosition);
         if (visitorsMSG.getGroupid().equals("head")) {
+
             holder.head.setVisibility(View.VISIBLE);
             holder.content.setVisibility(View.GONE);
         } else {

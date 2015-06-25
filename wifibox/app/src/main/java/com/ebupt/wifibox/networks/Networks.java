@@ -329,6 +329,7 @@ public class Networks {
                     UnVisitorsMSG unVisitorsMSG = list.get(i);
                     object.put("name", unVisitorsMSG.getName());
                     object.put("passport", unVisitorsMSG.getPassports());
+                    object.put("passportid", unVisitorsMSG.getPassportsid());
                     array.put(object);
                 }
             }
@@ -342,16 +343,6 @@ public class Networks {
                             try {
                                 if (jsonObject.getBoolean("status")) {
                                     if (size != 0) {
-                                        for (int i = 0; i < size; i++) {
-                                            VisitorsMSG visitorsMSG = new VisitorsMSG();
-                                            UnVisitorsMSG unVisitorsMSG = list.get(i);
-                                            visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
-                                            visitorsMSG.setGroupid(unVisitorsMSG.getGroupid());
-                                            visitorsMSG.setPassports(unVisitorsMSG.getPassports());
-                                            visitorsMSG.setName(unVisitorsMSG.getName());
-                                            visitorsMSG.setPassports_id(unVisitorsMSG.getPassportsid());
-                                            visitorsMSG.saveThrows();
-                                        }
                                         DataSupport.deleteAll(UnVisitorsMSG.class, "groupid = ?", groupid);
                                     }
                                     Intent intent = new Intent("updateList");

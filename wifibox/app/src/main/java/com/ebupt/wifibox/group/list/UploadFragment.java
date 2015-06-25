@@ -111,8 +111,7 @@ public class UploadFragment extends Fragment {
                 visitorsMSG.setPassports(unVisitorsMSG.getPassports());
                 visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
                 visitorsMSG.setGroupid(unVisitorsMSG.getGroupid());
-                visitorsMSG.saveThrows();
-
+                visitorsMSG.setPassports_id(unVisitorsMSG.getPassportsid());
                 datalist.add(visitorsMSG);
                 Toast.makeText(getActivity(), "添加成功", Toast.LENGTH_SHORT).show();
             }
@@ -137,6 +136,7 @@ public class UploadFragment extends Fragment {
                     list.get(0).setUpload(String.valueOf(temp.size()));
                     list.get(0).saveThrows();
                 }
+                Networks.getPassports(getActivity(), groupid);
             }
 
             adapter.notifyDataSetChanged();
@@ -177,8 +177,7 @@ public class UploadFragment extends Fragment {
                 visitorsMSG.setBrokerage(unVisitorsMSG.getBrokerage());
                 visitorsMSG.setPassports(unVisitorsMSG.getPassports());
                 visitorsMSG.setName(unVisitorsMSG.getName());
-                visitorsMSG.setPassports_id("none");
-                visitorsMSG.saveThrows();
+                visitorsMSG.setPassports_id(unVisitorsMSG.getPassportsid());
                 datalist.add(visitorsMSG);
             }
         }

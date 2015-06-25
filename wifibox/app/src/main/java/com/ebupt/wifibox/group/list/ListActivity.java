@@ -81,10 +81,10 @@ public class ListActivity extends Activity{
             }
             FTPUtils.downloadFileFromFTP(this, ServerPath, fileName);
             Toast.makeText(this, "签到列表已下载", Toast.LENGTH_LONG).show();
-//            Intent intent = new Intent("downList");
-//            sendBroadcast(intent);
         }
     }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -5,12 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
 
 import com.ebupt.wifibox.databases.BrokenData;
+import com.ebupt.wifibox.databases.DeviceMSG;
 import com.ebupt.wifibox.databases.DownVisitorMSG;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.MessageTable;
@@ -47,6 +50,13 @@ public class PollService extends Service{
     List<BrokenData> list;
     List<DownVisitorMSG> downList;
     long currentTimeMillis;
+    private WifiInfo wifiInfo;
+    private WifiManager wifiManager;
+    private String wifi_name;
+    private String wifi_mac;
+    private DeviceMSG deviceMSG;
+
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -58,6 +68,11 @@ public class PollService extends Service{
 
         myApp = (MyApp) getApplicationContext();
 
+        wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        List<DeviceMSG> list = DataSupport.findAll(DeviceMSG.class);
+        if (list.size() != 0) {
+            deviceMSG = list.get(0);
+        }
         pollInterface();
 
         handler = new Handler(){
@@ -103,10 +118,24 @@ public class PollService extends Service{
                 getList();
             }
         };
-        timer.schedule(timerTask, 1000, Integer.parseInt(time) * 60 * 1000 / 3);
+        timer.schedule(timerTask, Integer.parseInt(time) * 60 * 1000 / 3, Integer.parseInt(time) * 60 * 1000 / 3);
     }
 
     private void getList() {
+        wifiInfo = wifiManager.getConnectionInfo();
+        wifi_name = wifiInfo.getSSID();
+        wifi_mac = wifiInfo.getBSSID();
+        if (wifi_mac != null) {
+            Log.e("xxx", wifi_mac);
+            if (wifi_mac.equals(deviceMSG.getMacAddress())) {
+                myApp.wifiConnectFlag = true;
+            } else {
+                myApp.wifiConnectFlag = false;
+            }
+        } else {
+            myApp.wifiConnectFlag = false;
+        }
+
         Log.e(TAG, "getList");
         if (myApp.wifiConnectFlag) {
             list = new ArrayList<>();
@@ -142,7 +171,6 @@ public class PollService extends Service{
     }
 
     private void readFile(final String fileName) {
-        Log.e(TAG, "readFile");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -168,7 +196,9 @@ public class PollService extends Service{
                         }
                     }
                     int size = list.size();
+                    Log.e(TAG, size + "");
                     int outsize = downList.size();
+                    Log.e(TAG, downList + "");
                     List<BrokenData> temp = new ArrayList<>();
                     for (int i = 0; i < outsize; i++) {
                         DownVisitorMSG outData = downList.get(i);
@@ -198,9 +228,6 @@ public class PollService extends Service{
                             }
                         }
                     }
-
-                    Log.e("ListCount", "outsize " + outsize);
-                    Log.e("ListCount", "count " + count);
 
                     if (fileName.equals("assocmaclist.log")) {
                         if (count < outsize) {
@@ -232,9 +259,9 @@ public class PollService extends Service{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                Log.e(TAG, "readFile " + fileName);
             }
         }).start();
-
     }
 
     public static String decryptBASE64(String key) throws IOException {

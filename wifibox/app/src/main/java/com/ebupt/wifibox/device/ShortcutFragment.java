@@ -16,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
+import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.networks.Networks;
 
@@ -33,6 +35,7 @@ public class ShortcutFragment extends Fragment{
     private WebView webView;
     private String url = null;
     private ProgressDialog dialog;
+    private MyApp myApp;
 
     @InjectView(R.id.shortcut_refresh)
     SwipeRefreshLayout refreshLayout;
@@ -54,12 +57,13 @@ public class ShortcutFragment extends Fragment{
                 android.R.color.holo_green_light, android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        dialog = ProgressDialog.show(getActivity(), null, "页面加载中，请稍后...");
         Networks.getSettingUrl(getActivity(), "none");
 
 
         IntentFilter getURL = new IntentFilter("getURL");
         getActivity().registerReceiver(broadcastReceiver, getURL);
+
+        myApp = (MyApp) getActivity().getApplicationContext();
         return contactslayout;
     }
 
@@ -83,6 +87,7 @@ public class ShortcutFragment extends Fragment{
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
+                dialog = ProgressDialog.show(getActivity(), null, "页面加载中，请稍后...");
                 return true;
             }
 
@@ -111,8 +116,11 @@ public class ShortcutFragment extends Fragment{
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("getURL")) {
                 url = intent.getStringExtra("url");
-                present(url);
-
+                if (myApp.wifiConnectFlag) {
+                    present(url);
+                } else {
+                    Toast.makeText(getActivity(), "当前没有管控路由器", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     };

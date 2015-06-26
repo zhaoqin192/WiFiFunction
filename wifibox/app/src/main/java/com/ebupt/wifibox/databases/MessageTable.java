@@ -10,6 +10,15 @@ public class MessageTable extends DataSupport{
     private String content;
     private Boolean status;
     private String groupid;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getGroupid() {
         return groupid;

@@ -104,14 +104,14 @@ public class LoginActivity extends Activity{
         });
 
 
-        DeviceMSG deviceMSG = DataSupport.findFirst(DeviceMSG.class);
-        if (deviceMSG == null) {
-            deviceMSG = new DeviceMSG();
-        }
-        deviceMSG.setMacAddress("66:51:7e:38:e9:80");//EBUPT-INNER-WIFI
-        deviceMSG.setPasswd("1082325588");
-        deviceMSG.setLinkflag(false);
-        deviceMSG.saveThrows();
+//        DeviceMSG deviceMSG = DataSupport.findFirst(DeviceMSG.class);
+//        if (deviceMSG == null) {
+//            deviceMSG = new DeviceMSG();
+//        }
+//        deviceMSG.setMacAddress("66:51:7e:38:e9:80");//EBUPT-INNER-WIFI
+//        deviceMSG.setPasswd("1082325588");
+//        deviceMSG.setLinkflag(false);
+//        deviceMSG.saveThrows();
     }
 
     private void initViews() {

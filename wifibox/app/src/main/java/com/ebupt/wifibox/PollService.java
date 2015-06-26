@@ -58,7 +58,7 @@ public class PollService extends Service{
 
         myApp = (MyApp) getApplicationContext();
 
-        getList();
+        pollInterface();
 
         handler = new Handler(){
             @Override
@@ -70,7 +70,6 @@ public class PollService extends Service{
                         UserMSG userMSG = DataSupport.findFirst(UserMSG.class);
                         time = userMSG.getNoticetime();
                         pollInterface();
-                        getList();
                         break;
                 }
             }
@@ -101,33 +100,37 @@ public class PollService extends Service{
             @Override
             public void run() {
                 Networks.getTours(PollService.this);
+                getList();
             }
         };
-        timer.schedule(timerTask, 1000, Integer.parseInt(time) * 60 * 1000 / 4);
+        timer.schedule(timerTask, 1000, Integer.parseInt(time) * 60 * 1000 / 3);
     }
 
     private void getList() {
-        list = new ArrayList<>();
-        downList = new ArrayList<>();
+        Log.e(TAG, "getList");
+        if (myApp.wifiConnectFlag) {
+            list = new ArrayList<>();
+            downList = new ArrayList<>();
 
-        currentTimeMillis = System.currentTimeMillis() / 1000;
-        Log.e("CurrentTimeMils", String.valueOf(currentTimeMillis / 1000));
+            currentTimeMillis = System.currentTimeMillis() / 1000;
+            Log.e("CurrentTimeMils", String.valueOf(currentTimeMillis / 1000));
 
-        downList = DataSupport.findAll(DownVisitorMSG.class);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String ServerPath = "/tmp/beaconmaclist.log";
-                String localName = "beaconmaclist.log";
-                downloadFile(ServerPath, localName);
+            downList = DataSupport.findAll(DownVisitorMSG.class);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    String ServerPath = "/tmp/beaconmaclist.log";
+                    String localName = "beaconmaclist.log";
+                    downloadFile(ServerPath, localName);
 
-                FTPUtils.downloadFileFromFTPBySuffix(PollService.this, "/tmp/log", "macdetectlog");
+                    FTPUtils.downloadFileFromFTPBySuffix(PollService.this, "/tmp/log", "macdetectlog");
 
-                String ServerPath1 = "/tmp/assocmaclist.log";
-                String localName1 = "assocmaclist.log";
-                downloadFile(ServerPath1, localName1);
-            }
-        }).start();
+                    String ServerPath1 = "/tmp/assocmaclist.log";
+                    String localName1 = "assocmaclist.log";
+                    downloadFile(ServerPath1, localName1);
+                }
+            }).start();
+        }
     }
 
     private void downloadFile(String ServerPath, String localName) {
@@ -139,6 +142,7 @@ public class PollService extends Service{
     }
 
     private void readFile(final String fileName) {
+        Log.e(TAG, "readFile");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -211,6 +215,7 @@ public class PollService extends Service{
                             str.append(time);
                             str.append("分钟不在wifi范围内，该设备可能关闭wifi功能或关机");
                             messageTable.setContent(str.toString());
+                            messageTable.setType("alarm");
                             List<GroupMSG> groupMSGs = DataSupport.findAll(GroupMSG.class);
                             int groupSize = groupMSGs.size();
                             for (int i = 0; i < groupSize; i++) {
@@ -282,4 +287,9 @@ public class PollService extends Service{
         }
     };
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
 }

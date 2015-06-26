@@ -13,12 +13,14 @@ import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
+import com.ebupt.wifibox.databases.DeviceMSG;
 import com.ebupt.wifibox.databases.DownVisitorMSG;
 import com.ebupt.wifibox.databases.GroupMSG;
 import com.ebupt.wifibox.databases.MessageTable;
 import com.ebupt.wifibox.databases.UnVisitorsMSG;
 import com.ebupt.wifibox.databases.VisitorsMSG;
 
+import org.apache.commons.net.io.FromNetASCIIInputStream;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,6 +57,14 @@ public class Networks {
                         Log.e(TAG, jsonObject.toString());
                         try {
                             if (jsonObject.getBoolean("status")) {
+                                DataSupport.deleteAll(DeviceMSG.class);
+                                JSONArray array = jsonObject.getJSONArray("macs");
+                                for (int i = 0; i < array.length(); i++) {
+                                    DeviceMSG deviceMSG = new DeviceMSG();
+                                    deviceMSG.setMacAddress(array.get(i).toString());
+                                    deviceMSG.setPasswd("none");
+                                    deviceMSG.saveThrows();
+                                }
                                 Intent intent = new Intent("login_success");
                                 context.sendBroadcast(intent);
                             } else {
@@ -172,6 +182,7 @@ public class Networks {
                                         message.setContent(context.getResources().getString(R.string.brokerage));
                                         message.setStatus(true);
                                         message.setGroupid(jsonArray.get(i).toString());
+                                        message.setType("brokerage");
                                         message.saveThrows();
                                     }
                                     Intent intent = new Intent("updateBadge");
@@ -195,7 +206,7 @@ public class Networks {
         }
     }
 
-    public static void addTour(Context context, String tourid, String tourname) {
+    public static void addTour(Context context, String tourid, String tourname, String count) {
         final String TAG = "addTour";
         requestQueue = Volley.newRequestQueue(context);
         myApp = (MyApp) context.getApplicationContext();
@@ -206,6 +217,8 @@ public class Networks {
             jsonObject.put("tourid", tourid);
             jsonObject.put("tourname", tourname);
             jsonObject.put("guide", myApp.phone);
+            jsonObject.put("count", count);
+//            Log.e(TAG, "tourid:" + tourid + "tourname:" + tourname + "guide:" + myApp.phone + "count:" + count);
             JsonRequest<JSONObject> jsonRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                     new Response.Listener<JSONObject>() {
                         @Override

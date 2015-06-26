@@ -1,10 +1,7 @@
 package com.ebupt.wifibox.message;
 
 import android.app.Fragment;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.ebupt.wifibox.MyApp;
@@ -59,6 +55,7 @@ public class MessageFragment extends Fragment {
         Intent intent = new Intent(getActivity(), ListActivity.class);
         intent.putExtra("name", groupMSG.getGroup_name());
         intent.putExtra("groupid", groupMSG.getGroup_id());
+        intent.putExtra("type", messageTable.getType());
         startActivity(intent);
     }
 
@@ -93,8 +90,8 @@ public class MessageFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.e(TAG, "onResume");
         updateList();
-
     }
 
     @Override

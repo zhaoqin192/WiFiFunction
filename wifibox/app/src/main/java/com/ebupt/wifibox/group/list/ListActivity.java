@@ -130,7 +130,16 @@ public class ListActivity extends Activity{
             }
         });
 
-        setTabSelection(0);
+
+        if (intent.getStringExtra("type") != null) {
+            if (intent.getStringExtra("type").equals("alarm")) {
+                setTabSelection(1);
+            } else {
+                setTabSelection(0);
+            }
+        } else {
+            setTabSelection(0);
+        }
     }
 
     private void initViews() {

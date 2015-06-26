@@ -3,9 +3,9 @@ package com.ebupt.wifibox.settings;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -21,9 +21,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.ebupt.wifibox.LoginActivity;
+import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
 import com.ebupt.wifibox.databases.DeviceMSG;
 import com.ebupt.wifibox.databases.UserMSG;
@@ -40,7 +42,6 @@ import java.util.TimerTask;
  */
 public class SettingsFragment extends Fragment{
     private View contactslayout;
-    private WifiAdmin wifiAdmin;
     private WifiManager wifiManager;
     private WifiInfo wifiInfo;
     private String wifi_name;
@@ -56,6 +57,7 @@ public class SettingsFragment extends Fragment{
     private Dialog dialog;
     private TextView timetext;
     private Button timebutton;
+    private MyApp myApp;
 
 
 
@@ -99,16 +101,17 @@ public class SettingsFragment extends Fragment{
         link.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent wifiSettingsIntent = new Intent("android.settings.WIFI_SETTINGS");
-                startActivity(wifiSettingsIntent);
+                if (myApp.wifiConnectFlag) {
+                    disconnect();
+                } else {
+                    scanWIFI();
+                }
             }
         });
 
         wifiManager = (WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE);
-        wifiAdmin = new WifiAdmin(wifiManager);
 
-
-
+        myApp = (MyApp) getActivity().getApplicationContext();
 
         handler = new Handler() {
             @Override
@@ -117,7 +120,7 @@ public class SettingsFragment extends Fragment{
                 switch (msg.what) {
                     case 0:
                         link.setBackgroundResource(R.drawable.btn_unlink_background);
-                        wifi_text.setText(wifi_name);
+                        wifi_text.setText(wifi_name.replace("\"", ""));
                         if (flag) {
                             flag = false;
                         }
@@ -140,12 +143,7 @@ public class SettingsFragment extends Fragment{
     }
 
 
-    private void connection() {
-//        String networkSSID = "66:51:7e:38:e9:80";
-//        String networkSSID = "EBUPT-INNER-WIFI";
-        String networkSSID = "YUE-BOX-E41E";
-        String networkPW = "1082325588";
-
+    private void connection(String networkSSID) {
         WifiConfiguration conf = new WifiConfiguration();
         conf.SSID = "\"" + networkSSID + "\"";
 //        conf.preSharedKey = "\"" + networkPW + "\"";
@@ -153,19 +151,23 @@ public class SettingsFragment extends Fragment{
         conf.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
 
         int temp = wifiManager.addNetwork(conf);
-        Log.e("addNetwork", temp + "");
 
         List<WifiConfiguration> list = wifiManager.getConfiguredNetworks();
         for (WifiConfiguration i : list) {
             if (i.SSID != null && i.SSID.equals("\"" + networkSSID + "\"")) {
-                Log.e("xxx", "connect");
                 wifiManager.disconnect();
                 wifiManager.enableNetwork(i.networkId, true);
-                Log.e("networkId", i.networkId + "");
                 wifiManager.reconnect();
                 break;
             }
         }
+    }
+
+    private void disconnect() {
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int networkid = wifiInfo.getNetworkId();
+        wifiManager.disableNetwork(networkid);
+        wifiManager.disconnect();
     }
 
     @Override
@@ -184,21 +186,18 @@ public class SettingsFragment extends Fragment{
                         Message message = new Message();
                         message.what = 0;
                         handler.sendMessage(message);
-                        deviceMSG.setLinkflag(true);
-                        deviceMSG.saveThrows();
+                        myApp.wifiConnectFlag = true;
                     } else {
                         Message message = new Message();
                         message.what = 1;
                         handler.sendMessage(message);
-                        deviceMSG.setLinkflag(false);
-                        deviceMSG.saveThrows();
+                        myApp.wifiConnectFlag = false;
                     }
                 } else {
                     Message message = new Message();
                     message.what = 1;
                     handler.sendMessage(message);
-                    deviceMSG.setLinkflag(false);
-                    deviceMSG.saveThrows();
+                    myApp.wifiConnectFlag = false;
                 }
 
             }
@@ -245,5 +244,22 @@ public class SettingsFragment extends Fragment{
             }
         });
 
+    }
+
+    private void scanWIFI() {
+        List<ScanResult> results = wifiManager.getScanResults();
+        List<DeviceMSG> list = DataSupport.findAll(DeviceMSG.class);
+        if (list.size() != 0) {
+            DeviceMSG deviceMSG = list.get(0);
+            Log.e("ScanResult", deviceMSG.getMacAddress());
+            for (ScanResult scanResult : results) {
+                if (deviceMSG.getMacAddress().equals(scanResult.BSSID)) {
+                    connection(scanResult.SSID);
+                    break;
+                }
+            }
+        } else {
+            Toast.makeText(getActivity(), "没有获取到设备信息", Toast.LENGTH_SHORT).show();
+        }
     }
 }

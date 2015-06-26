@@ -8,15 +8,7 @@ import org.litepal.crud.DataSupport;
 public class DeviceMSG extends DataSupport{
     private String macAddress;
     private String passwd;
-    private Boolean linkflag;
 
-    public void setLinkflag(Boolean linkflag) {
-        this.linkflag = linkflag;
-    }
-
-    public Boolean getLinkflag() {
-        return linkflag;
-    }
 
     public void setMacAddress(String macAddress) {
         this.macAddress = macAddress;

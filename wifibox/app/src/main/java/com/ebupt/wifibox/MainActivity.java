@@ -282,7 +282,7 @@ public class MainActivity extends Activity implements View.OnClickListener{
                 sendBroadcast(intent);
                 dialog.hide();
 
-                Networks.addTour(MainActivity.this, str.toString(), groupName.getText().toString());
+                Networks.addTour(MainActivity.this, str.toString(), groupName.getText().toString(), groupCount.getText().toString());
             }
         });
 

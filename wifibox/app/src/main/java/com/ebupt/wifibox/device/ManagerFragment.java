@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
+import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
 
 import butterknife.ButterKnife;
@@ -24,6 +26,8 @@ public class ManagerFragment extends Fragment{
     private View contactslayout;
     private WebView webView;
     private ProgressDialog dialog;
+    private String url;
+    private MyApp myApp;
 
     @InjectView(R.id.manager_refresh)
     SwipeRefreshLayout refreshLayout;
@@ -32,7 +36,7 @@ public class ManagerFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactslayout = inflater.inflate(R.layout.manager_layout, container, false);
         ButterKnife.inject(this, contactslayout);
-        final String url = "http://a.miniap.cn";
+        url = "http://a.miniap.cn";
 
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -46,37 +50,46 @@ public class ManagerFragment extends Fragment{
                 android.R.color.holo_red_light);
 
         webView = (WebView) contactslayout.findViewById(R.id.manager_webview);
-
-        webView.getSettings().setAppCacheEnabled(true);
-        webView.loadUrl(url);
-        dialog = ProgressDialog.show(getActivity(), null, "页面加载中,请稍后...");
-        webView.setWebViewClient(new WebViewClient(){
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-
-            @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                if (refreshLayout != null) {
-                    refreshLayout.setRefreshing(false);
-                }
-                if (dialog != null) {
-                    dialog.dismiss();
-                }
-            }
-        });
-
+        myApp = (MyApp) getActivity().getApplicationContext();
 
         return contactslayout;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (myApp.wifiConnectFlag) {
+            webView.getSettings().setAppCacheEnabled(true);
+            webView.loadUrl(url);
+            webView.setWebViewClient(new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                    view.loadUrl(url);
+                    dialog = ProgressDialog.show(getActivity(), null, "页面加载中,请稍后...");
+
+                    return true;
+                }
+
+                @Override
+                public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                }
+
+                @Override
+                public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                }
+
+                @Override
+                public void onPageFinished(WebView view, String url) {
+                    if (refreshLayout != null) {
+                        refreshLayout.setRefreshing(false);
+                    }
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(getActivity(), "当前没有管控路由器", Toast.LENGTH_SHORT).show();
+        }
     }
 }

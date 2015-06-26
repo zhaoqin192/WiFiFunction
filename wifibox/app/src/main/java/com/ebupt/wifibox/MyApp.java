@@ -13,4 +13,5 @@ public class MyApp extends LitePalApplication{
     public PollService pollService;
     public int viewCount = 0;
     public List<String> fileList = new ArrayList<>();
+    public boolean wifiConnectFlag = false;
 }

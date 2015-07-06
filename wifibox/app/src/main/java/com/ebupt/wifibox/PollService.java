@@ -199,19 +199,64 @@ public class PollService extends Service{
                     Log.e(TAG, size + "");
                     int outsize = downList.size();
                     Log.e(TAG, downList + "");
-                    List<BrokenData> temp = new ArrayList<>();
-                    for (int i = 0; i < outsize; i++) {
-                        DownVisitorMSG outData = downList.get(i);
-                        for (int j = 0; j < size; j++) {
-                            BrokenData data = list.get(j);
-                            if (data.getMac().equals(outData.getMac())) {
-                                if (data.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
-                                    temp.add(data);
-                                }
+//                    List<BrokenData> temp = new ArrayList<>();
+                    List<BrokenData> temp = list;
+                    //删除不在名单中的mac地址
+                    //删除在规定时间中出现过的mac地址
+//                    for (int i = 0; i < outsize; i++) {
+//                        DownVisitorMSG outData = downList.get(i);
+//                        for (int j = 0; j < size; j++) {
+//                            BrokenData data = list.get(j);
+//                            if (data.getMac().equals(outData.getMac())) {
+//                                if (data.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
+//                                    temp.remove(data);
+//                                }
+//                            } else {
+//                                temp.remove(data);
+//                            }
+//                        }
+//                    }
+                    //删除不在名单中的mac地址
+                    for (int i = 0; i < size; i++) {
+                        boolean flag = false;
+                        BrokenData brokenData = list.get(i);
+                        for (int j = 0; j < outsize; j++) {
+                            DownVisitorMSG outData = downList.get(j);
+                            if (brokenData.getMac().equals(outData.getMac())) {
+                                flag = true;
+                                break;
+                            }
+                        }
+                        if (!flag) {
+                            temp.remove(brokenData);
+                        }
+                    }
+                    //得到在t时间内出现的mac地址集
+                    size = temp.size();
+                    List<BrokenData> temp2 = new ArrayList<>();
+                    for (int i = 0; i < size; i++) {
+                        BrokenData brokenData = temp.get(i);
+                        if (brokenData.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
+                            temp2.add(brokenData);
+                        }
+                    }
+                    //删除t时间内出现的mac地址
+                    //temp2为t时间内出现的mac地址集,temp为第一次过滤之后的mac地址集
+                    size = temp2.size();
+                    int tempSize = temp.size();
+                    List<BrokenData> temp3 = temp;
+                    for (int i = 0; i < size; i++) {
+                        BrokenData brokenData = temp2.get(i);
+                        for (int j = 0; j < tempSize; j++) {
+                            BrokenData brokenData1 = temp.get(j);
+                            if (brokenData1.getMac().equals(brokenData.getMac())) {
+                                temp3.remove(brokenData1);
                             }
                         }
                     }
-                    list = temp;
+
+
+                    list = temp3;
                     int listSize = list.size();
                     int count = 0;
                     for (int i = 0; i < outsize; i++) {

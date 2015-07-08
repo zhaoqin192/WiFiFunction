@@ -55,6 +55,7 @@ public class PollService extends Service{
     private String wifi_name;
     private String wifi_mac;
     private DeviceMSG deviceMSG;
+    private List<String> fileList = new ArrayList<>();
 
 
     @Override
@@ -69,9 +70,9 @@ public class PollService extends Service{
         myApp = (MyApp) getApplicationContext();
 
         wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-        List<DeviceMSG> list = DataSupport.findAll(DeviceMSG.class);
-        if (list.size() != 0) {
-            deviceMSG = list.get(0);
+        List<DeviceMSG> listdevice = DataSupport.findAll(DeviceMSG.class);
+        if (listdevice.size() != 0) {
+            deviceMSG = listdevice.get(0);
         }
         pollInterface();
 
@@ -94,9 +95,9 @@ public class PollService extends Service{
         IntentFilter beacon = new IntentFilter("beaconmaclist.log");
         IntentFilter assoc = new IntentFilter("assocmaclist.log");
         IntentFilter getfileList = new IntentFilter("getfileList");
-        IntentFilter macdetect0 = new IntentFilter("macdetect0");
-        IntentFilter macdetect1 = new IntentFilter("macdetect1");
-        IntentFilter macdetect2 = new IntentFilter("macdetect2");
+        IntentFilter macdetect0 = new IntentFilter("macdetect0.log");
+        IntentFilter macdetect1 = new IntentFilter("macdetect1.log");
+        IntentFilter macdetect2 = new IntentFilter("macdetect2.log");
         IntentFilter check = new IntentFilter("check");
         registerReceiver(broadcastReceiver, check);
         registerReceiver(broadcastReceiver, macdetect2);
@@ -136,7 +137,7 @@ public class PollService extends Service{
             myApp.wifiConnectFlag = false;
         }
 
-        Log.e(TAG, "getList");
+//        Log.e(TAG, "getList");
         if (myApp.wifiConnectFlag) {
             list = new ArrayList<>();
             downList = new ArrayList<>();
@@ -151,18 +152,18 @@ public class PollService extends Service{
                     String ServerPath = "/tmp/beaconmaclist.log";
                     String localName = "beaconmaclist.log";
                     downloadFile(ServerPath, localName);
-
-                    FTPUtils.downloadFileFromFTPBySuffix(PollService.this, "/tmp/log", "macdetectlog");
-
                     String ServerPath1 = "/tmp/assocmaclist.log";
                     String localName1 = "assocmaclist.log";
                     downloadFile(ServerPath1, localName1);
+                    FTPUtils.downloadFileFromFTPBySuffix(PollService.this, "/tmp/log", "macdetectlog");
                 }
             }).start();
         }
     }
 
     private void downloadFile(String ServerPath, String localName) {
+        Log.e(TAG, "add " + localName);
+        fileList.add(localName);
         String dataPath = "/mnt/sdcard/" + this.getPackageName() + "/" + localName;
         if (FTPUtils.isExists(dataPath)) {
             FTPUtils.deleteFiles(dataPath);
@@ -171,6 +172,7 @@ public class PollService extends Service{
     }
 
     private void readFile(final String fileName) {
+        Log.e(TAG, "read " + fileName);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -195,116 +197,14 @@ public class PollService extends Service{
                             }
                         }
                     }
-                    int size = list.size();
-                    Log.e(TAG, size + "");
-                    int outsize = downList.size();
-                    Log.e(TAG, downList + "");
-//                    List<BrokenData> temp = new ArrayList<>();
-                    List<BrokenData> temp = list;
-                    //删除不在名单中的mac地址
-                    //删除在规定时间中出现过的mac地址
-//                    for (int i = 0; i < outsize; i++) {
-//                        DownVisitorMSG outData = downList.get(i);
-//                        for (int j = 0; j < size; j++) {
-//                            BrokenData data = list.get(j);
-//                            if (data.getMac().equals(outData.getMac())) {
-//                                if (data.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
-//                                    temp.remove(data);
-//                                }
-//                            } else {
-//                                temp.remove(data);
-//                            }
-//                        }
-//                    }
-                    //删除不在名单中的mac地址
-                    for (int i = 0; i < size; i++) {
-                        boolean flag = false;
-                        BrokenData brokenData = list.get(i);
-                        for (int j = 0; j < outsize; j++) {
-                            DownVisitorMSG outData = downList.get(j);
-                            if (brokenData.getMac().equals(outData.getMac())) {
-                                flag = true;
-                                break;
-                            }
-                        }
-                        if (!flag) {
-                            temp.remove(brokenData);
-                        }
-                    }
-                    //得到在t时间内出现的mac地址集
-                    size = temp.size();
-                    List<BrokenData> temp2 = new ArrayList<>();
-                    for (int i = 0; i < size; i++) {
-                        BrokenData brokenData = temp.get(i);
-                        if (brokenData.getTime() >= (currentTimeMillis - Long.parseLong(time) * 60)) {
-                            temp2.add(brokenData);
-                        }
-                    }
-                    //删除t时间内出现的mac地址
-                    //temp2为t时间内出现的mac地址集,temp为第一次过滤之后的mac地址集
-                    size = temp2.size();
-                    int tempSize = temp.size();
-                    List<BrokenData> temp3 = temp;
-                    for (int i = 0; i < size; i++) {
-                        BrokenData brokenData = temp2.get(i);
-                        for (int j = 0; j < tempSize; j++) {
-                            BrokenData brokenData1 = temp.get(j);
-                            if (brokenData1.getMac().equals(brokenData.getMac())) {
-                                temp3.remove(brokenData1);
-                            }
-                        }
-                    }
-
-
-                    list = temp3;
-                    int listSize = list.size();
-                    int count = 0;
-                    for (int i = 0; i < outsize; i++) {
-                        DownVisitorMSG outData = downList.get(i);
-                        outData.setStatus("offline");
-                        outData.saveThrows();
-                        for (int j = 0; j < listSize; j++) {
-                            BrokenData data = list.get(j);
-                            if (outData.getMac().equals(data.getMac())) {
-                                outData.setStatus("online");
-                                outData.saveThrows();
-                                count++;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (fileName.equals("assocmaclist.log")) {
-                        if (count < outsize) {
-                            int diff = outsize - count;
-                            MessageTable messageTable = new MessageTable();
-                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-                            messageTable.setTime(simpleDateFormat.format(new Date()));
-                            messageTable.setStatus(true);
-                            StringBuffer str = new StringBuffer("已发现");
-                            str.append(diff);
-                            str.append("个设备连续");
-                            str.append(time);
-                            str.append("分钟不在wifi范围内，该设备可能关闭wifi功能或关机");
-                            messageTable.setContent(str.toString());
-                            messageTable.setType("alarm");
-                            List<GroupMSG> groupMSGs = DataSupport.findAll(GroupMSG.class);
-                            int groupSize = groupMSGs.size();
-                            for (int i = 0; i < groupSize; i++) {
-                                if (!groupMSGs.get(i).getInvalid()) {
-                                    messageTable.setGroupid(groupMSGs.get(i).getGroup_id());
-                                    break;
-                                }
-                            }
-                            messageTable.saveThrows();
-                            Intent intent = new Intent("updateBadge");
-                            sendBroadcast(intent);
-                        }
+                    Log.e(TAG, "remove " + fileName);
+                    fileList.remove(fileName);
+                    if (fileList.size() == 0) {
+                        analysize();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                Log.e(TAG, "readFile " + fileName);
             }
         }).start();
     }
@@ -314,6 +214,61 @@ public class PollService extends Service{
             return "";
         }
         return new String(new BASE64Decoder().decodeBuffer(key));
+    }
+
+    private void analysize() {
+        Log.e(TAG, "list " + list.size());
+        Log.e(TAG, "downlist " + downList.size());
+        List<BrokenData> temp = new ArrayList<>();
+        //get mac list for exist in t minutes
+        for (BrokenData brokenData : list) {
+            Log.e("filter2", (currentTimeMillis + " currentTimeMills"));
+            Log.e("filter2", brokenData.getTime() + " getTime");
+            if (currentTimeMillis - brokenData.getTime() < Long.parseLong(time) * 60 * 1000) {
+                temp.add(brokenData);
+            }
+        }
+
+        //update DownVisitorMSG status
+        int count = 0;
+        for (DownVisitorMSG downVisitorMSG : downList) {
+            downVisitorMSG.setStatus("offline");
+            downVisitorMSG.saveThrows();
+            for (BrokenData brokenData : temp) {
+                if (downVisitorMSG.getMac().equals(brokenData.getMac())) {
+                    downVisitorMSG.setStatus("online");
+                    downVisitorMSG.saveThrows();
+                    count++;
+                    break;
+                }
+            }
+        }
+
+        if (count < downList.size()) {
+            int diff = downList.size() - count;
+            MessageTable messageTable = new MessageTable();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            messageTable.setTime(simpleDateFormat.format(new Date()));
+            messageTable.setStatus(true);
+            StringBuffer str = new StringBuffer("已发现");
+            str.append(diff);
+            str.append("个设备连续");
+            str.append(time);
+            str.append("分钟不在wifi范围内，该设备可能关闭wifi功能或关机");
+            messageTable.setContent(str.toString());
+            messageTable.setType("alarm");
+            List<GroupMSG> groupMSGs = DataSupport.findAll(GroupMSG.class);
+            int groupSize = groupMSGs.size();
+            for (int i = 0; i < groupSize; i++) {
+                if (!groupMSGs.get(i).getInvalid()) {
+                    messageTable.setGroupid(groupMSGs.get(i).getGroup_id());
+                    break;
+                }
+            }
+            messageTable.saveThrows();
+            Intent intent = new Intent("updateBadge");
+            sendBroadcast(intent);
+        }
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -335,23 +290,22 @@ public class PollService extends Service{
             if (intent.getAction().equals("getfileList")) {
                 int size = myApp.fileList.size();
                 for (int i = 0; i < size; i++) {
-                    Log.e(TAG, myApp.fileList.get(i));
                     String ServerPath = "/tmp/log/" + myApp.fileList.get(i);
-                    String localName = "macdetect" + i;
+                    String localName = "macdetect" + i + ".log";
                     downloadFile(ServerPath, localName);
                 }
             }
-            if (intent.getAction().equals("macdetect0")) {
+            if (intent.getAction().equals("macdetect0.log")) {
                 Log.e("Count", "macdetect0");
-                readFile("macdetect0");
+                readFile("macdetect0.log");
             }
-            if (intent.getAction().equals("macdetect1")) {
+            if (intent.getAction().equals("macdetect1.log")) {
                 Log.e("Count", "macdetect1");
-                readFile("macdetect1");
+                readFile("macdetect1.log");
             }
-            if (intent.getAction().equals("macdetect2")) {
+            if (intent.getAction().equals("macdetect2.log")) {
                 Log.e("Count", "macdetect2");
-                readFile("macdetect2");
+                readFile("macdetect2.log");
             }
             if (intent.getAction().equals("check")) {
                 getList();

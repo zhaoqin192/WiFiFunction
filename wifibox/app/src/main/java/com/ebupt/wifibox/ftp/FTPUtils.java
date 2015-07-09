@@ -37,7 +37,8 @@ public class FTPUtils {
                     Log.e(TAG, filename);
                     context.sendBroadcast(intent);
                 } catch (Exception e) {
-                    Log.e(TAG, "下载失败");
+                    Log.e(TAG, "下载失败 " + filename);
+                    Log.e(TAG, e.toString());
                     e.printStackTrace();
                 }
             }

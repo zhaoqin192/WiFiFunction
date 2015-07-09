@@ -142,8 +142,8 @@ public class PollService extends Service{
             list = new ArrayList<>();
             downList = new ArrayList<>();
 
-            currentTimeMillis = System.currentTimeMillis() / 1000;
-            Log.e("CurrentTimeMils", String.valueOf(currentTimeMillis / 1000));
+//            currentTimeMillis = System.currentTimeMillis() / 1000;
+//            Log.e("CurrentTimeMils", String.valueOf(currentTimeMillis / 1000));
 
             downList = DataSupport.findAll(DownVisitorMSG.class);
             new Thread(new Runnable() {
@@ -189,6 +189,8 @@ public class PollService extends Service{
                                 brokenData.setMac(str[0]);
                                 brokenData.setMac(str[1]);
                                 list.add(brokenData);
+                            }else if (fileName.equals("boxtime.log")) {
+                                Log.e(TAG, str.toString());
                             } else {
                                 BrokenData brokenData = new BrokenData();
                                 brokenData.setMac(str[0]);
@@ -220,6 +222,14 @@ public class PollService extends Service{
         Log.e(TAG, "list " + list.size());
         Log.e(TAG, "downlist " + downList.size());
         List<BrokenData> temp = new ArrayList<>();
+
+        //get currentTimeMillis
+        for (BrokenData brokenData : list) {
+            if (brokenData.getTime() > currentTimeMillis) {
+                currentTimeMillis = brokenData.getTime();
+            }
+        }
+
         //get mac list for exist in t minutes
         for (BrokenData brokenData : list) {
             Log.e("filter2", (currentTimeMillis + " currentTimeMills"));
@@ -279,6 +289,7 @@ public class PollService extends Service{
                 message.what = 0;
                 handler.sendMessage(message);
             }
+
             if (intent.getAction().equals("beaconmaclist.log")) {
                 Log.e("Count", "beaconmaclist");
                 readFile("beaconmaclist.log");

@@ -2,6 +2,7 @@ package com.ebupt.wifibox.message;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;

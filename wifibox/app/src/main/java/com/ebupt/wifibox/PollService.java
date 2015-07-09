@@ -119,7 +119,7 @@ public class PollService extends Service{
                 getList();
             }
         };
-        timer.schedule(timerTask, Integer.parseInt(time) * 60 * 1000 / 3, Integer.parseInt(time) * 60 * 1000 / 3);
+        timer.schedule(timerTask, 0, Integer.parseInt(time) * 60 * 1000 / 3);
     }
 
     private void getList() {
@@ -137,13 +137,9 @@ public class PollService extends Service{
             myApp.wifiConnectFlag = false;
         }
 
-//        Log.e(TAG, "getList");
         if (myApp.wifiConnectFlag) {
             list = new ArrayList<>();
             downList = new ArrayList<>();
-
-//            currentTimeMillis = System.currentTimeMillis() / 1000;
-//            Log.e("CurrentTimeMils", String.valueOf(currentTimeMillis / 1000));
 
             downList = DataSupport.findAll(DownVisitorMSG.class);
             new Thread(new Runnable() {
@@ -300,6 +296,9 @@ public class PollService extends Service{
             }
             if (intent.getAction().equals("getfileList")) {
                 int size = myApp.fileList.size();
+                if (size > 3) {
+                    size = 3;
+                }
                 for (int i = 0; i < size; i++) {
                     String ServerPath = "/tmp/log/" + myApp.fileList.get(i);
                     String localName = "macdetect" + i + ".log";

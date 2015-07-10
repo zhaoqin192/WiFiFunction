@@ -16,6 +16,9 @@ import android.widget.Toast;
 import com.ebupt.wifibox.MyApp;
 import com.ebupt.wifibox.R;
 
+
+import org.apache.http.util.EncodingUtils;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -27,6 +30,7 @@ public class ManagerFragment extends Fragment{
     private WebView webView;
     private ProgressDialog dialog;
     private String url;
+    private String postData = "password=he123456";
     private MyApp myApp;
 
     @InjectView(R.id.manager_refresh)
@@ -36,13 +40,13 @@ public class ManagerFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         contactslayout = inflater.inflate(R.layout.manager_layout, container, false);
         ButterKnife.inject(this, contactslayout);
-        url = "http://a.miniap.cn";
+        url = "http://a.miniap.cn/actionAuth.cgi";
 
 
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                webView.loadUrl(url);
+                webView.postUrl(url, EncodingUtils.getBytes(postData, "base64"));
             }
         });
         refreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -60,7 +64,8 @@ public class ManagerFragment extends Fragment{
         super.onResume();
         if (myApp.wifiConnectFlag) {
             webView.getSettings().setAppCacheEnabled(true);
-            webView.loadUrl(url);
+            webView.loadUrl("sdf");
+            webView.postUrl(url, EncodingUtils.getBytes(postData, "base64"));
             webView.setWebViewClient(new WebViewClient() {
                 @Override
                 public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -92,4 +97,5 @@ public class ManagerFragment extends Fragment{
             Toast.makeText(getActivity(), "当前没有管控路由器", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

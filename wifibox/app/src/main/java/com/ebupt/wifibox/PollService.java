@@ -230,17 +230,19 @@ public class PollService extends Service{
         for (BrokenData brokenData : list) {
             Log.e("filter2", (currentTimeMillis + " currentTimeMills"));
             Log.e("filter2", brokenData.getTime() + " getTime");
-            if (currentTimeMillis - brokenData.getTime() < Long.parseLong(time) * 60 * 1000) {
+            Log.e("filter2", Long.parseLong(time) * 60 * 1000 + "");
+            if ((currentTimeMillis - brokenData.getTime()) < Long.parseLong(time) * 60) {
                 temp.add(brokenData);
             }
         }
-
         //update DownVisitorMSG status
         int count = 0;
         for (DownVisitorMSG downVisitorMSG : downList) {
             downVisitorMSG.setStatus("offline");
             downVisitorMSG.saveThrows();
             for (BrokenData brokenData : temp) {
+                Log.e("filter3", brokenData.getMac());
+                Log.e("filter3", brokenData.getTime() + "");
                 if (downVisitorMSG.getMac().equals(brokenData.getMac())) {
                     downVisitorMSG.setStatus("online");
                     downVisitorMSG.saveThrows();

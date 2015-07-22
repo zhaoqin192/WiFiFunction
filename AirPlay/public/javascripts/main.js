@@ -238,6 +238,23 @@ $(document).ready(function () {
         $workPanelsContainer.removeClass( 'bl-panel-items-show' );
         $workPanels.eq( currentWorkPanel ).removeClass( 'bl-show-work' );
     });
+
+    // Sends a chat message
+    function sendMessage () {
+        var message = $("#myMessage").val();
+        var ul = document.getElementById("list");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(message));
+        ul.appendChild(li);
+        $("#myMessage").val('');
+    }
+
+
+    $("button").click(function(){
+        sendMessage();
+    });
+
+
 });
 
 

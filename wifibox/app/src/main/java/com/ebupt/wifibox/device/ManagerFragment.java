@@ -64,7 +64,6 @@ public class ManagerFragment extends Fragment{
         super.onResume();
         if (myApp.wifiConnectFlag) {
             webView.getSettings().setAppCacheEnabled(true);
-            webView.loadUrl("sdf");
             webView.postUrl(url, EncodingUtils.getBytes(postData, "base64"));
             webView.setWebViewClient(new WebViewClient() {
                 @Override

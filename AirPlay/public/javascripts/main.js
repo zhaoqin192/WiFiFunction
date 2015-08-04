@@ -239,14 +239,18 @@ $(document).ready(function () {
         $workPanels.eq( currentWorkPanel ).removeClass( 'bl-show-work' );
     });
 
+    socket.on("res_message", function(msg){
+        var ul = document.getElementById("list");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode(msg));
+        ul.appendChild(li);
+        $("#myMessage").val('');
+    });
+
     // Sends a chat message
     function sendMessage () {
         var message = $("#myMessage").val();
-        var ul = document.getElementById("list");
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode(message));
-        ul.appendChild(li);
-        $("#myMessage").val('');
+        socket.emit("message", message);
     }
 
 

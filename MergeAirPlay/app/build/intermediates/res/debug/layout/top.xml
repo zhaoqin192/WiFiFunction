@@ -1,0 +1,8 @@
+<android.support.v7.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:background="#323A45"
+    android:minHeight="56dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
+<!-- From: file:/Users/zhaoqin/Muggins/GitHub/EB/WiFiFunction/MergeAirPlay/app/src/main/res/layout/top.xml -->
